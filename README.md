@@ -411,20 +411,6 @@ properties.setObject('MyObject',array);
 The event is fired when the application changes a KeyChain Property directly using one of the Properties methods.
 
 
-
-<b>setString</b>( String property, String value )
-Sets the value of a KeyChain Property as a string data type. The KeyChain Property will be created if it does not exist.
-
-<b>Parameters</b>
-property : String
-Name of property.
-value : String
-Property value.
-<b>Returns</b>
-void
-
-----
-
 <h2>FAQ</h2>
 
 <h3>What happens when I uninstall my App?</h3>
