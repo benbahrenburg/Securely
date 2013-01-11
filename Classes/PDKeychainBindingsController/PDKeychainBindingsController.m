@@ -81,7 +81,10 @@ static PDKeychainBindingsController *sharedInstance = nil;
         //NSLog(@"account = %@", account);
         if([account objectForKey:@"acct"] !=nil)
         {
-            [accountKeys addObject:[NSDictionary dictionaryWithObjectsAndKeys:[account objectForKey:@"acct"], @"key",nil]];
+            if([account objectForKey:@"acct"]!=nil)
+            {
+                [accountKeys addObject:[account objectForKey:@"acct"]];
+            }
         }
     }
 
@@ -96,7 +99,7 @@ static PDKeychainBindingsController *sharedInstance = nil;
 
     NSMutableDictionary *query = [self _queryForService:[self serviceName] account:nil];
     OSStatus status = SecItemDelete((CFDictionaryRef)query);
-    BOOL results = (status == errSecSuccess || status == errSecItemNotFound);
+//    BOOL results = (status == errSecSuccess || status == errSecItemNotFound);
 //    if(results)
 //    {
 //        NSLog(((results) ? @"Deleted" : @"No Delete"));

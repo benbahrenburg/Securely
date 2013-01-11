@@ -38,6 +38,29 @@
 #endif
 }
 
+#pragma Event APIs
+
+-(void) triggerEvent:(NSString *)eventName actionType:(NSString *)actionType
+{
+    if ([self _hasListeners:@"changed"])
+    {
+        //DebugLog(@"Firing listener");
+
+        NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:
+                               eventName,@"source",
+                               actionType,@"actionType",
+                               nil
+                               ];
+        
+		[self fireEvent:@"changed" withObject:event];
+    }
+//    else
+//    {
+//        DebugLog(@"No listener found");   
+//    }
+}
+
+
 #pragma Public APIs
 
 -(BOOL)propertyExists: (NSString *) key;
@@ -89,13 +112,8 @@ if (![self propertyExists:key]) return defaultValue; \
 -(id)getObject:(id)args
 {
     GETSPROP
-    id theObject = [[PDKeychainBindings sharedKeychainBindings] objectForKey:key];
-    if ([theObject isKindOfClass:[NSData class]]) {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:theObject];
-    }
-    else {
-        return ((theObject ==nil) ? [NSNull null] : theObject);
-    }
+	NSString *jsonValue = [[PDKeychainBindings sharedKeychainBindings] stringForKey:key];
+    return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
 }
 
 #define SETSPROP \
@@ -116,6 +134,7 @@ return;\
 	SETSPROP
 	[[PDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%d",[TiUtils boolValue:value]] forKey:key];
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setDouble:(id)args
@@ -123,6 +142,7 @@ return;\
 	SETSPROP
 	[[PDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%f",[TiUtils doubleValue:value]] forKey:key];
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setInt:(id)args
@@ -130,12 +150,14 @@ return;\
 	SETSPROP
 	[[PDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%i",[TiUtils intValue:value]] forKey:key];
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setString:(id)args
-{
+{    
 	SETSPROP
 	[[PDKeychainBindings sharedKeychainBindings] setObject:[TiUtils stringValue:value] forKey:key];
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setList:(id)args
@@ -144,14 +166,16 @@ return;\
     NSString *jsonValue = [value JSONString];
 	[[PDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
     //DebugLog(@"list JSON value  %@",jsonValue);
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setObject:(id)args
 {
     SETSPROP
-    NSData* encoded = [NSKeyedArchiver archivedDataWithRootObject:value];
-    NSString *myString = [[[NSString alloc] initWithData:encoded encoding:NSUTF8StringEncoding] autorelease];
-    [[PDKeychainBindings sharedKeychainBindings] setObject:myString forKey:key];
+    NSString *jsonValue = [value JSONString];
+	[[PDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
+    //DebugLog(@"list JSON value  %@",jsonValue);
+    [self triggerEvent:key actionType:@"modify"];
 }
 
 -(id)hasProperty:(id)args
@@ -163,6 +187,7 @@ return;\
 {
 	ENSURE_SINGLE_ARG(args,NSString);
 	[[PDKeychainBindings sharedKeychainBindings] removeObjectForKey:[TiUtils stringValue:args]];
+    [self triggerEvent:[TiUtils stringValue:args] actionType:@"remove"];
 }
 
 
@@ -170,6 +195,7 @@ return;\
 {
     ENSURE_SINGLE_ARG(args,NSString);
     [[PDKeychainBindings sharedKeychainBindings] setServiceName:[TiUtils stringValue:args]];
+    [self triggerEvent:@"indentifier" actionType:@"modify"];
 }
 
 -(void)setAccessGroup:(id)args
@@ -180,6 +206,7 @@ return;\
 #else
     ENSURE_SINGLE_ARG(args,NSString);
     [[PDKeychainBindings sharedKeychainBindings] setAccessGroup:[TiUtils stringValue:args]];
+    [self triggerEvent:@"AccountGroup" actionType:@"modify"];
 #endif
     
 }
@@ -187,6 +214,7 @@ return;\
 -(void)removeAllProperties:(id)args
 {
     [[PDKeychainBindings sharedKeychainBindings] removeAllItems];
+    [self triggerEvent:@"NA" actionType:@"removeall"];
 }
 
 -(id)listProperties:(id)args

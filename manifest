@@ -4,10 +4,10 @@
 #
 version: 0.1
 apiversion: 2
-description: My module
-author: Your Name
-license: Specify your license
-copyright: Copyright (c) 2013 by Your Company
+description: Security Plugin for Titanium Development
+author: Benjamin Bahrenburg
+license: See included license agreement
+copyright: Copyright (c) 2013 by Benjamin Bahrenburg
 
 
 # these should not be edited

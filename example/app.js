@@ -6,7 +6,17 @@ var securely = require('bencoding.securely');
 Ti.API.info("module is => " + securely);
 
 Ti.API.info("The properties object contains a secure version of the Ti.App.Properties API");
-var properties = securely.createProperties();
+
+//You can provide optional identifier, if none provided we use your bundle id
+var properties = securely.createProperties({
+	identifier:"Foo",
+	accessGroup:"Bar"
+});
+
+function onChange(e){
+	Ti.API.info("Property " + e.source + " had an action of type " + e.actionType);
+};
+
 
 function resultHelper(result, expected) {
 			
@@ -110,4 +120,8 @@ properties.removeProperty('Int');
 Titanium.API.info("String should be null - value = " + resultHelper(properties.getString('String'),null));
 Titanium.API.info("Int should be null - value = " + resultHelper(properties.getString('Int'),null));
 
+//Remove our Change Event Handler
+properties.removeEventListener('changed',onChange);
+
 win.open();
+
