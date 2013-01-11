@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 0.1
+apiversion: 2
+description: My module
+author: Your Name
+license: Specify your license
+copyright: Copyright (c) 2013 by Your Company
+
+
+# these should not be edited
+name: Securely
+moduleid: bencoding.securely
+guid: 36a465bb-c79d-4c6c-b90c-a5e14a7e817b
+platform: iphone
+minsdk: 3.0.0.GA
