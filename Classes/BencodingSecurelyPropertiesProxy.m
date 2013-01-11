@@ -18,7 +18,7 @@
     NSString *identifier = [properties objectForKey:@"identifier"];
     if (identifier != nil)
     {
-        NSLog(@"Created with a provieded identifier %@",identifier);
+        DebugLog(@"Created with a provieded identifier %@",identifier);
        [[PDKeychainBindings sharedKeychainBindings] setServiceName:identifier];
     }
     
@@ -27,12 +27,12 @@
 #if TARGET_IPHONE_SIMULATOR
     if(accessGroup !=nil)
     {
-        NSLog(@"Cannot set access group in simulator");
+        DebugLog(@"Cannot set access group in simulator");
     }
 #else
     if(accessGroup !=nil)
     {
-        NSLog(@"Created with a provieded accessGroup %@",accessGroup);
+        DebugLog(@"Created with a provieded accessGroup %@",accessGroup);
         [[PDKeychainBindings sharedKeychainBindings] setAccessGroup:accessGroup];
     }
 #endif
@@ -73,7 +73,8 @@ if (![self propertyExists:key]) return defaultValue; \
 -(NSString *)getString:(id)args
 {
     GETSPROP
-    return[[PDKeychainBindings sharedKeychainBindings] stringForKey:key];
+    id result = [[PDKeychainBindings sharedKeychainBindings] stringForKey:key];
+    return ((result ==nil) ? [NSNull null] : result);
     
 }
 
@@ -81,7 +82,7 @@ if (![self propertyExists:key]) return defaultValue; \
 {
 	GETSPROP
 	NSString *jsonValue = [[PDKeychainBindings sharedKeychainBindings] stringForKey:key];
-    return [jsonValue objectFromJSONString];
+    return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
     
 }
 
@@ -93,7 +94,7 @@ if (![self propertyExists:key]) return defaultValue; \
         return [NSKeyedUnarchiver unarchiveObjectWithData:theObject];
     }
     else {
-        return theObject;
+        return ((theObject ==nil) ? [NSNull null] : theObject);
     }
 }
 
@@ -142,7 +143,7 @@ return;\
 	SETSPROP    
     NSString *jsonValue = [value JSONString];
 	[[PDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
-    NSLog(@"list JSON value  %@",jsonValue);
+    //DebugLog(@"list JSON value  %@",jsonValue);
 }
 
 -(void)setObject:(id)args
@@ -173,8 +174,14 @@ return;\
 
 -(void)setAccessGroup:(id)args
 {
+#if TARGET_IPHONE_SIMULATOR
+
+    DebugLog(@"Cannot set access group in simulator");
+#else
     ENSURE_SINGLE_ARG(args,NSString);
     [[PDKeychainBindings sharedKeychainBindings] setAccessGroup:[TiUtils stringValue:args]];
+#endif
+    
 }
 
 -(void)removeAllProperties:(id)args
