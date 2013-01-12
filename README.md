@@ -410,6 +410,16 @@ properties.setObject('MyObject',array);
 <b>changed</b>
 The event is fired when the application changes a KeyChain Property directly using one of the Properties methods.
 
+<h2>Dependent Projects</h2>
+Securely uses several wonderful open source projects.  I highly encourage you to check them out using the information below.
+
+JSONKit 
+
+Project: [http://github.com/johnezang/JSONKit](http://github.com/johnezang/JSONKit)
+
+PDKeychainBindingsController
+
+Project: [https://github.com/carlbrown/PDKeychainBindingsController](https://github.com/carlbrown/PDKeychainBindingsController)
 
 <h2>FAQ</h2>
 

@@ -7,19 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PDKeychainBindings.h"
+#import "BCPDKeychainBindings.h"
 
 
-@interface PDKeychainBindingsController : NSObject {
+@interface BCPDKeychainBindingsController : NSObject {
 @private
-    PDKeychainBindings *_keychainBindings;
+    BCPDKeychainBindings *_keychainBindings;
     NSMutableDictionary *_valueBuffer;
     NSString* _serviceName;
     NSString* _accessGroup;
 }
 
-+ (PDKeychainBindingsController *)sharedKeychainBindingsController;
-- (PDKeychainBindings *) keychainBindings;
++ (BCPDKeychainBindingsController *)sharedKeychainBindingsController;
+- (BCPDKeychainBindings *) keychainBindings;
 
 - (id)values;    // accessor object for PDKeychainBindings values. This property is observable using key-value observing.
 

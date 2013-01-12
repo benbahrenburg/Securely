@@ -26,10 +26,10 @@
 		24DD6CFA1134B3F500162E58 /* BencodingSecurelyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* BencodingSecurelyModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */; };
 		24DE9E1211C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */; };
-		43857BD7169F7274004D600C /* PDKeychainBindings.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD3169F7274004D600C /* PDKeychainBindings.h */; };
-		43857BD8169F7274004D600C /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD4169F7274004D600C /* PDKeychainBindings.m */; };
-		43857BD9169F7274004D600C /* PDKeychainBindingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD5169F7274004D600C /* PDKeychainBindingsController.h */; };
-		43857BDA169F7274004D600C /* PDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD6169F7274004D600C /* PDKeychainBindingsController.m */; };
+		43857BD7169F7274004D600C /* BCPDKeychainBindings.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD3169F7274004D600C /* BCPDKeychainBindings.h */; };
+		43857BD8169F7274004D600C /* BCPDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD4169F7274004D600C /* BCPDKeychainBindings.m */; };
+		43857BD9169F7274004D600C /* BCPDKeychainBindingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD5169F7274004D600C /* BCPDKeychainBindingsController.h */; };
+		43857BDA169F7274004D600C /* BCPDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD6169F7274004D600C /* BCPDKeychainBindingsController.m */; };
 		43857BE1169F72B5004D600C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43857BE0169F72B5004D600C /* Security.framework */; };
 		43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */; };
 		43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */; };
@@ -55,10 +55,10 @@
 		24DD6D1B1134B66800162E58 /* titanium.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = titanium.xcconfig; sourceTree = "<group>"; };
 		24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyModuleAssets.h; path = Classes/BencodingSecurelyModuleAssets.h; sourceTree = "<group>"; };
 		24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyModuleAssets.m; path = Classes/BencodingSecurelyModuleAssets.m; sourceTree = "<group>"; };
-		43857BD3169F7274004D600C /* PDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDKeychainBindings.h; path = Classes/PDKeychainBindingsController/PDKeychainBindings.h; sourceTree = "<group>"; };
-		43857BD4169F7274004D600C /* PDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDKeychainBindings.m; path = Classes/PDKeychainBindingsController/PDKeychainBindings.m; sourceTree = "<group>"; };
-		43857BD5169F7274004D600C /* PDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDKeychainBindingsController.h; path = Classes/PDKeychainBindingsController/PDKeychainBindingsController.h; sourceTree = "<group>"; };
-		43857BD6169F7274004D600C /* PDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDKeychainBindingsController.m; path = Classes/PDKeychainBindingsController/PDKeychainBindingsController.m; sourceTree = "<group>"; };
+		43857BD3169F7274004D600C /* BCPDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCPDKeychainBindings.h; path = Classes/PDKeychainBindingsController/BCPDKeychainBindings.h; sourceTree = "<group>"; };
+		43857BD4169F7274004D600C /* BCPDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCPDKeychainBindings.m; path = Classes/PDKeychainBindingsController/BCPDKeychainBindings.m; sourceTree = "<group>"; };
+		43857BD5169F7274004D600C /* BCPDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCPDKeychainBindingsController.h; path = Classes/PDKeychainBindingsController/BCPDKeychainBindingsController.h; sourceTree = "<group>"; };
+		43857BD6169F7274004D600C /* BCPDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCPDKeychainBindingsController.m; path = Classes/PDKeychainBindingsController/BCPDKeychainBindingsController.m; sourceTree = "<group>"; };
 		43857BE0169F72B5004D600C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPropertiesProxy.h; path = Classes/BencodingSecurelyPropertiesProxy.h; sourceTree = "<group>"; };
 		43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPropertiesProxy.m; path = Classes/BencodingSecurelyPropertiesProxy.m; sourceTree = "<group>"; };
@@ -137,10 +137,10 @@
 		43857BD1169F7247004D600C /* PDKeychainBindingsController */ = {
 			isa = PBXGroup;
 			children = (
-				43857BD3169F7274004D600C /* PDKeychainBindings.h */,
-				43857BD4169F7274004D600C /* PDKeychainBindings.m */,
-				43857BD5169F7274004D600C /* PDKeychainBindingsController.h */,
-				43857BD6169F7274004D600C /* PDKeychainBindingsController.m */,
+				43857BD3169F7274004D600C /* BCPDKeychainBindings.h */,
+				43857BD4169F7274004D600C /* BCPDKeychainBindings.m */,
+				43857BD5169F7274004D600C /* BCPDKeychainBindingsController.h */,
+				43857BD6169F7274004D600C /* BCPDKeychainBindingsController.m */,
 			);
 			name = PDKeychainBindingsController;
 			sourceTree = "<group>";
@@ -165,8 +165,8 @@
 				AA747D9F0F9514B9006C5449 /* BencodingSecurely_Prefix.pch in Headers */,
 				24DD6CF91134B3F500162E58 /* BencodingSecurelyModule.h in Headers */,
 				24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */,
-				43857BD7169F7274004D600C /* PDKeychainBindings.h in Headers */,
-				43857BD9169F7274004D600C /* PDKeychainBindingsController.h in Headers */,
+				43857BD7169F7274004D600C /* BCPDKeychainBindings.h in Headers */,
+				43857BD9169F7274004D600C /* BCPDKeychainBindingsController.h in Headers */,
 				43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */,
 				43857BF1169FA0A3004D600C /* JSONKit.h in Headers */,
 			);
@@ -241,8 +241,8 @@
 			files = (
 				24DD6CFA1134B3F500162E58 /* BencodingSecurelyModule.m in Sources */,
 				24DE9E1211C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m in Sources */,
-				43857BD8169F7274004D600C /* PDKeychainBindings.m in Sources */,
-				43857BDA169F7274004D600C /* PDKeychainBindingsController.m in Sources */,
+				43857BD8169F7274004D600C /* BCPDKeychainBindings.m in Sources */,
+				43857BDA169F7274004D600C /* BCPDKeychainBindingsController.m in Sources */,
 				43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */,
 				43857BF2169FA0A3004D600C /* JSONKit.m in Sources */,
 			);
