@@ -9,7 +9,7 @@ The Securely Properties moduel is used to store values in the KeyChain using the
 
 <h2>Download the release</h2>
 
-There is two ways you can download this module. The go to the [dist](https://github.com/benbahrenburg/Securely/tree/master/dist) folder. This will have a release compiled for anyone download it from github.
+There is two ways you can download this module. The go to the [dist](https://github.com/benbahrenburg/Securely/tree/master/iOS/dist) folder. This will have a release compiled for anyone download it from github.
 
 
 <h2>Building from source?</h2>
@@ -24,7 +24,7 @@ If you are building from source you will need to do the following:
 * You can now use the module via the commonJS require method, example shown below.
 
 <pre><code>
-var sms = require('bencoding.sms').createSMSDialog();
+var securely = require('bencoding.securely');
 </code></pre>
 
 <h2>Creating the Properties Object</h2>
@@ -436,6 +436,9 @@ This project is licensed under the OSI approved Apache Public License (version 2
 Developed by [Ben Bahrenburg](http://bahrenburgs.com) available on twitter [@benCoding](http://twitter.com/benCoding)
 
 <h2>Learn More</h2>
+
+<h3>Examples</h3>
+Please check the module's example folder or [github repo](https://github.com/benbahrenburg/Securely/tree/master/iOS/example) for samples on how to use this project.
 
 <h3>Twitter</h3>
 
