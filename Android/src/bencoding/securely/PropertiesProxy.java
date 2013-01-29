@@ -10,7 +10,6 @@ package bencoding.securely;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
-import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.TiC;
@@ -18,7 +17,6 @@ import org.appcelerator.titanium.TiC;
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
 public class PropertiesProxy extends KrollProxy 
 {
-	private static final String TAG = "PropertiesProxy";
 	private String _secret = "";
 	private Properties appProperties;
 
@@ -39,24 +37,24 @@ public class PropertiesProxy extends KrollProxy
 		if (options.containsKey("identifier")) {
 			String identifier = TiConvert.toString(options.get("identifier"));
 			appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(identifier),false);
-			Log.i(TAG, "Setting identifer to : " + identifier, Log.DEBUG_MODE);			
+			Helpers.DebugLog("Setting identifer to : " + identifier);			
 		}
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
-			Log.i(TAG, "Setting secret to : " + _secret, Log.DEBUG_MODE);			
+			Helpers.DebugLog("Setting secret to : " + _secret);		
 		}		
 	}
 	
 	@Kroll.method
 	public void setSecret(String value){
 		_secret = value;
-		Log.i(TAG, "Setting secret to : " + _secret, Log.DEBUG_MODE);			
+		Helpers.DebugLog("Setting secret to : " + _secret);			
 	}
 	
 	@Kroll.method
 	public void setIdentifier(String key){
 		appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),key,false);
-		Log.i(TAG, "Setting identifer to : " + key, Log.DEBUG_MODE);		
+		Helpers.DebugLog("Setting identifer to : " + key);		
 	}
 	@Kroll.method
 	public boolean getBool(String key)
@@ -156,6 +154,6 @@ public class PropertiesProxy extends KrollProxy
 	}
 	@Kroll.method
 	public void setAccessGroup(String key){
-		Log.i(TAG, "setAccessGroup is not used on Android, method is available for parity sake only", Log.DEBUG_MODE);		
+		Helpers.DebugLog("setAccessGroup is not used on Android, method is available for parity sake only");		
 	}
 }
