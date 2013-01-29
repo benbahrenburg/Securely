@@ -20,9 +20,10 @@ import org.appcelerator.kroll.common.TiConfig;
 public class SecurelyModule extends KrollModule
 {
 
+	public static final String SECURELY_MODULE_FULL_NAME = "becoding.securely";
 	// Standard Debugging variables
-	private static final String LCAT = "SecurelyModule";
-	private static final boolean DBG = TiConfig.LOGD;
+//	private static final String LCAT = "SecurelyModule";
+//	private static final boolean DBG = TiConfig.LOGD;
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
@@ -35,31 +36,31 @@ public class SecurelyModule extends KrollModule
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app)
 	{
-		Log.d(LCAT, "inside onAppCreate");
+//		Log.d(DBG, "inside onAppCreate");
 		// put module init code that needs to run when the application is created
 	}
 
-	// Methods
-	@Kroll.method
-	public String example()
-	{
-		Log.d(LCAT, "example called");
-		return "hello world";
-	}
-	
-	// Properties
-	@Kroll.getProperty
-	public String getExampleProp()
-	{
-		Log.d(LCAT, "get example property");
-		return "hello world";
-	}
-	
-	
-	@Kroll.setProperty
-	public void setExampleProp(String value) {
-		Log.d(LCAT, "set example property: " + value);
-	}
+//	// Methods
+//	@Kroll.method
+//	public String example()
+//	{
+//		Log.d(LCAT, "example called");
+//		return "hello world";
+//	}
+//	
+//	// Properties
+//	@Kroll.getProperty
+//	public String getExampleProp()
+//	{
+//		Log.d(LCAT, "get example property");
+//		return "hello world";
+//	}
+//	
+//	
+//	@Kroll.setProperty
+//	public void setExampleProp(String value) {
+//		Log.d(LCAT, "set example property: " + value);
+//	}
 
 }
 
