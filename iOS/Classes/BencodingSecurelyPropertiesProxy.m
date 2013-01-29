@@ -223,4 +223,8 @@ return;\
     return ((results ==nil) ? [NSNull null] : results);
 }
 
+-(void)setSecret:(id)args
+{
+    NSLog(@"setSecret is not used on iOS and is included for parity sake with Android");
+}
 @end
