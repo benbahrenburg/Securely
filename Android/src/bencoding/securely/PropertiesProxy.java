@@ -201,12 +201,13 @@ public class PropertiesProxy extends KrollProxy
 			if(temp == null){
 				return null;
 			}
-			JSONObject jsonObject;
+			
 			try {
-				jsonObject = new JSONObject(temp);
+				JSONObject jsonObject = new JSONObject(temp);
 				return (HashMap)JsonHelper.toMap(jsonObject);
 			} catch (JSONException e) {
 				e.printStackTrace();
+				LogHelpers.Log(e);				
 				return null;
 			}						
 		}
@@ -251,8 +252,8 @@ public class PropertiesProxy extends KrollProxy
 			try {
 				JSONArray inputArray = new JSONArray(temp);				
 				Object[] result = new Object[inputArray.length()];
-				for (int i = 0; i < inputArray.length(); i++) {				
-					result[i] =JsonHelper.toMap((JSONObject) inputArray.get(i));
+				for (int iLoop = 0; iLoop < inputArray.length(); iLoop++) {				
+					result[iLoop] =JsonHelper.toMap((JSONObject) inputArray.get(iLoop));
 				}
 				return result;
 			} catch (JSONException e) {
