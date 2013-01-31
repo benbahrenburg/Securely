@@ -92,13 +92,6 @@ properties.setList('MyList',array);
 // test getters
 //
 
-
-var foo = properties.listProperties();
-
-properties.removeAllProperties();
-
-foo = properties.listProperties();
-
 Titanium.API.info('String: '+ properties.getString('String'));
 Titanium.API.info('Int: '+ properties.getString('Int'));
 Titanium.API.info('Bool: '+ properties.getString('Bool'));
@@ -111,6 +104,15 @@ for (var i=0;i<list.length;i++)
 {
 	Titanium.API.info('row['+i+'].name=' + list[i].name + ' row['+i+'].address=' + list[i].address );
 }
+
+
+var allProperties = properties.listProperties();
+Ti.API.info(JSON.stringify(allProperties));
+
+properties.removeAllProperties();
+
+allProperties = properties.listProperties();
+Ti.API.info(JSON.stringify(allProperties));
 
 //
 // test out remove property and setting to null

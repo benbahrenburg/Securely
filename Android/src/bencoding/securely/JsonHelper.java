@@ -9,6 +9,19 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class JsonHelper {
+	@SuppressWarnings("rawtypes")
+	public static HashMap toHashMap(JSONArray array) throws JSONException {
+		HashMap<String, Object> pairs = new HashMap<String, Object>();
+		for (int i = 0; i < array.length(); i++) {
+		   JSONObject j = array.optJSONObject(i);
+			Iterator keys = j.keys();
+	        while (keys.hasNext()) {
+	            String key = (String) keys.next();
+	            pairs.put(key, fromJson(j.get(key)));
+	        }
+		}
+		return pairs;
+	}
     @SuppressWarnings("rawtypes")
 	public static Object toJSON(Object object) throws JSONException {
         if (object instanceof HashMap) {
@@ -69,7 +82,7 @@ public class JsonHelper {
         return list;
     }
 
-    private static Object fromJson(Object json) throws JSONException {
+    public static Object fromJson(Object json) throws JSONException {
         if (json == JSONObject.NULL) {
             return null;
         } else if (json instanceof JSONObject) {

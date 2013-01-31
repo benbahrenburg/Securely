@@ -42,7 +42,7 @@ public class Properties
 	 */
 	public String getString(String key, String def)
 	{
-		Helpers.DebugLog("getString called with key:" + key + ", def:" + def);
+		LogHelpers.DebugLog("getString called with key:" + key + ", def:" + def);
 
 		Object value = preferences.getAll().get(key);
 		if (value != null) {
@@ -66,7 +66,7 @@ public class Properties
 	 */
 	public void setString(String key, String value)
 	{
-		Helpers.DebugLog("setString called with key:"+key+", value:"+value);
+		LogHelpers.DebugLog("setString called with key:"+key+", value:"+value);
 		SharedPreferences.Editor editor = preferences.edit();
 		if (value==null) {
 			editor.remove(key);
@@ -85,7 +85,7 @@ public class Properties
 	 */
 	public int getInt(String key, int def)
 	{
-		Helpers.DebugLog("getInt called with key:" + key + ", def:" + def);
+		LogHelpers.DebugLog("getInt called with key:" + key + ", def:" + def);
 		try {
 			return preferences.getInt(key,def);
 		} catch(ClassCastException cce) {
@@ -107,7 +107,7 @@ public class Properties
 	 */
 	public void setInt(String key, int value)
 	{
-		Helpers.DebugLog("setInt called with key:" + key + ", value:" + value);
+		LogHelpers.DebugLog("setInt called with key:" + key + ", value:" + value);
 
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(key,value);
@@ -123,7 +123,7 @@ public class Properties
 	 */
 	public double getDouble(String key, double def)
 	{
-		Helpers.DebugLog("getDouble called with key:" + key + ", def:" + def);
+		LogHelpers.DebugLog("getDouble called with key:" + key + ", def:" + def);
 		String stringValue = null;
 		Object string = preferences.getAll().get(key);
 		if (string == null) {
@@ -146,7 +146,7 @@ public class Properties
 	 */
 	public void setDouble(String key, double value)
 	{
-		Helpers.DebugLog("setDouble called with key:" + key + ", value:" + value);
+		LogHelpers.DebugLog("setDouble called with key:" + key + ", value:" + value);
 		
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(key,value + "");
@@ -162,7 +162,7 @@ public class Properties
 	 */
 	public boolean getBool(String key, boolean def)
 	{
-		Helpers.DebugLog("getBool called with key:" + key + ", def:" + def);
+		LogHelpers.DebugLog("getBool called with key:" + key + ", def:" + def);
 		try {
 			return preferences.getBoolean(key,def);
 		} catch(ClassCastException cce) {
@@ -185,7 +185,7 @@ public class Properties
 	 */
 	public void setBool(String key, boolean value)
 	{
-		Helpers.DebugLog("setBool called with key:" + key + ", value:" + value);
+		LogHelpers.DebugLog("setBool called with key:" + key + ", value:" + value);
 
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(key,value);
@@ -201,7 +201,7 @@ public class Properties
 	 */
 	public String[] getList(String key, String def[])
 	{
-		Helpers.DebugLog("getList called with key:" + key + ", def:" + def);
+		LogHelpers.DebugLog("getList called with key:" + key + ", def:" + def);
 
 		int length = preferences.getInt(key+".length", -1);
 		if (length == -1) {
@@ -224,7 +224,7 @@ public class Properties
 	 */
 	public void setList(String key, String[] value)
 	{
-		Helpers.DebugLog("setList called with key:" + key + ", value:" + value);
+		LogHelpers.DebugLog("setList called with key:" + key + ", value:" + value);
 
 		SharedPreferences.Editor editor = preferences.edit();
 		for (int i = 0; i < value.length; i++)

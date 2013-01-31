@@ -17,6 +17,7 @@ import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.TiC;
 
 import com.google.gson.Gson;
+
 import org.json.*;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
@@ -42,24 +43,24 @@ public class PropertiesProxy extends KrollProxy
 		if (options.containsKey("identifier")) {
 			String identifier = TiConvert.toString(options.get("identifier"));
 			appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(identifier),false);
-			Helpers.DebugLog("Setting identifer to : " + identifier);			
+			LogHelpers.DebugLog("Setting identifer to : " + identifier);			
 		}
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
-			Helpers.DebugLog("Setting secret to : " + _secret);		
+			LogHelpers.DebugLog("Setting secret to : " + _secret);		
 		}		
 	}
 	
 	@Kroll.method
 	public void setSecret(String value){
 		_secret = value;
-		Helpers.DebugLog("Setting secret to : " + _secret);			
+		LogHelpers.DebugLog("Setting secret to : " + _secret);			
 	}
 	
 	@Kroll.method
 	public void setIdentifier(String key){
 		appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),key,false);
-		Helpers.DebugLog("Setting identifer to : " + key);		
+		LogHelpers.DebugLog("Setting identifer to : " + key);		
 	}
 	@Kroll.method
 	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
@@ -68,6 +69,7 @@ public class PropertiesProxy extends KrollProxy
 		if(defaultValue != null){
 			ifMissingValue = TiConvert.toBoolean(defaultValue);
 		}
+
 		return appProperties.getBool(key, ifMissingValue);
 	}
 
@@ -184,7 +186,7 @@ public class PropertiesProxy extends KrollProxy
 		
 		Gson gson = new Gson();
         String jsonText = gson.toJson(value);
-		Helpers.DebugLog("object jsonText : " + jsonText);	
+        LogHelpers.DebugLog("object jsonText : " + jsonText);	
 		setString(key,jsonText);		
 	}
 	@SuppressWarnings("rawtypes")
@@ -195,7 +197,7 @@ public class PropertiesProxy extends KrollProxy
 			return defaultValue;
 		}else{
 			String temp = getString(key,null);
-			Helpers.DebugLog("object JSON : " + temp);	
+			LogHelpers.DebugLog("object JSON : " + temp);	
 			if(temp == null){
 				return null;
 			}
@@ -211,7 +213,7 @@ public class PropertiesProxy extends KrollProxy
 
 	}
 	@Kroll.method
-	public void setList(String key, Object[] value)
+	public void setList(String key, @SuppressWarnings("rawtypes") HashMap value)
 	{
 		if(value == null){
 			setString(key,null);
@@ -222,36 +224,47 @@ public class PropertiesProxy extends KrollProxy
 		}
 
         String jsonText = new Gson().toJson(value);
-		Helpers.DebugLog("object jsonText : " + jsonText);	
+        LogHelpers.DebugLog("object jsonText : " + jsonText);	
 		setString(key,jsonText);
 	}
 
+
 	@Kroll.method
-	public Object[] getList(String key, @Kroll.argument(optional=true) Object[] defaultValue)
+	public Object[] getList(String key, @Kroll.argument(optional=true) Object defaultValue)
 	{
 		if(!appProperties.hasProperty(key)){
-			return defaultValue;
+			if(defaultValue==null){
+				return null;
+			}else{
+				if (!(defaultValue.getClass().isArray())) {
+					throw new IllegalArgumentException("Default value must be an array");
+				}					
+				return (Object[]) defaultValue;
+			}			
 		}else{
 			String temp = getString(key,null);
-			Helpers.DebugLog("object JSON : " + temp);	
+			LogHelpers.DebugLog("object JSON : " + temp);	
 			if(temp == null){
 				return null;
 			}
 			
 			try {
-				JSONArray inputArray = new JSONArray(temp);
-				Object[] result = new Object[1];				
-				result[0] =JsonHelper.toMap((JSONObject) inputArray.get(0));
+				JSONArray inputArray = new JSONArray(temp);				
+				Object[] result = new Object[inputArray.length()];
+				for (int i = 0; i < inputArray.length(); i++) {				
+					result[i] =JsonHelper.toMap((JSONObject) inputArray.get(i));
+				}
 				return result;
 			} catch (JSONException e) {
 				e.printStackTrace();
+				LogHelpers.Log(e);
 				return null;
 			}				
 		}
 	}	
 	@Kroll.method
 	public void setAccessGroup(String key){
-		Helpers.DebugLog("setAccessGroup is not used on Android, method is available for parity sake only");		
+		LogHelpers.DebugLog("setAccessGroup is not used on Android, method is available for parity sake only");		
 	}
 	@Kroll.method
 	public void removeAllProperties(){

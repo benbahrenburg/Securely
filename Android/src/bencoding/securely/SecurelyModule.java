@@ -36,12 +36,12 @@ public class SecurelyModule extends KrollModule
 	@Kroll.method
 	public void disableLogging()
 	{
-		Helpers.UpdateWriteStatus(false);
+		LogHelpers.UpdateWriteStatus(false);
 	}
 	@Kroll.method
 	public void enableLogging()
 	{
-		Helpers.UpdateWriteStatus(true);
+		LogHelpers.UpdateWriteStatus(true);
 	}
 }
 
