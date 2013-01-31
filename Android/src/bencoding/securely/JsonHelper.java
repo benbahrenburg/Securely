@@ -1,3 +1,6 @@
+// Modified from the great work from Eric Butler 
+//https://gist.github.com/2339666
+
 package bencoding.securely;
 import org.json.JSONArray;
 import org.json.JSONException;
