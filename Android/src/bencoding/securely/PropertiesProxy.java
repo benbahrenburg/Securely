@@ -7,6 +7,7 @@
  */
 package bencoding.securely;
 
+
 import java.util.HashMap;
 
 import org.appcelerator.kroll.annotations.Kroll;
@@ -36,6 +37,31 @@ public class PropertiesProxy extends KrollProxy
 		_secret = TiApplication.getInstance().getAppGUID();
 	}
 
+	private String ComposeSecret(String key){
+		String Seed = _secret + "_" + key;
+		String composed =  SHA.sha256(Seed);
+		return ((composed == null)? Seed : composed);
+	};
+	private String EncryptContent(String key, String value){
+		try {
+			String EncryptedText = AES128Crypto.encrypt(key, value);
+			return EncryptedText;
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+			return null;
+		}
+	}
+	private String DecryptContent(String PassKey, String value){
+		try {
+			String ClearText = AES128Crypto.decrypt(PassKey, value);
+			return ClearText;
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+			return null;
+		}
+	}	
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{
@@ -66,41 +92,62 @@ public class PropertiesProxy extends KrollProxy
 	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
 		Boolean ifMissingValue = false;
-		if(defaultValue != null){
-			ifMissingValue = TiConvert.toBoolean(defaultValue);
+		if(!appProperties.hasProperty(key)){
+			if(defaultValue != null){
+				ifMissingValue = TiConvert.toBoolean(defaultValue);
+			}
+			return ifMissingValue;
 		}
 
-		return appProperties.getBool(key, ifMissingValue);
+		String DecryptedStored = getString(key,ifMissingValue);
+		return Converters.StringToBoolean(DecryptedStored);
 	}
 
 	@Kroll.method
 	public double getDouble(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
 		double ifMissingValue = 0D;
-		if(defaultValue != null){
-			ifMissingValue = TiConvert.toDouble(defaultValue);
-		}		
-		return appProperties.getDouble(key, ifMissingValue);
+		if(!appProperties.hasProperty(key)){
+			if(defaultValue != null){
+				ifMissingValue = TiConvert.toDouble(defaultValue);
+			}		
+			return ifMissingValue;
+		}
+		
+		String DecryptedStored = getString(key,ifMissingValue);
+		return Converters.StringToDouble(DecryptedStored);
 	}
 
 	@Kroll.method
 	public int getInt(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
 		int ifMissingValue = 0;
-		if(defaultValue != null){
-			ifMissingValue = TiConvert.toInt(defaultValue);
-		}			
-		return appProperties.getInt(key, ifMissingValue);
+		if(!appProperties.hasProperty(key)){
+			if(defaultValue != null){
+				ifMissingValue = TiConvert.toInt(defaultValue);
+			}			
+			return ifMissingValue;
+		}		
+		
+		String DecryptedStored = getString(key,ifMissingValue);		
+		return Converters.StringToInt(DecryptedStored);
 	}
 
 	@Kroll.method
 	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
 		String ifMissingValue = null;
-		if(defaultValue != null){
-			ifMissingValue = TiConvert.toString(defaultValue);
-		}			
-		return appProperties.getString(key, ifMissingValue);
+		if(!appProperties.hasProperty(key)){
+			if(defaultValue != null){
+				ifMissingValue = TiConvert.toString(defaultValue);
+			}	
+			
+			return ifMissingValue;
+		}
+		String StoredValue = appProperties.getString(key, ifMissingValue);
+		String tempS = ComposeSecret(key);
+		String ReturnValue = DecryptContent(StoredValue,tempS);
+		return ReturnValue;
 	}
 
 	@Kroll.method
@@ -118,7 +165,7 @@ public class PropertiesProxy extends KrollProxy
 	@Kroll.method
 	public void removeProperty(String key)
 	{
-		if (hasProperty(key)) {
+		if (appProperties.hasProperty(key)) {
 			appProperties.removeProperty(key);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
@@ -135,7 +182,10 @@ public class PropertiesProxy extends KrollProxy
 	{
 		Object boolValue = getPreferenceValue(key);
 		if (boolValue == null || !boolValue.equals(value)) {
-			appProperties.setBool(key, value);
+			String ValueAsString = Converters.BooleanToString(value);
+			String tempS = ComposeSecret(key);
+			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
+			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
@@ -147,7 +197,10 @@ public class PropertiesProxy extends KrollProxy
 		//Since there is no double type in SharedPreferences, we store doubles as strings, i.e "10.0"
 		//so we need to convert before comparing.
 		if (doubleValue == null || !doubleValue.equals(String.valueOf(value))) {
-			appProperties.setDouble(key, value);
+			String ValueAsString = Converters.DoubleToString(value);
+			String tempS = ComposeSecret(key);
+			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
+			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 
@@ -158,9 +211,10 @@ public class PropertiesProxy extends KrollProxy
 	{
 		Object intValue = getPreferenceValue(key);
 		if (intValue == null || !intValue.equals(value)) {
-//			String foo = TiConvert.toString(intValue);
-//			setString(key,foo);
-			appProperties.setInt(key, value);
+			String ValueAsString = Converters.IntToString(value);
+			String tempS = ComposeSecret(key);
+			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
+			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 
@@ -171,7 +225,10 @@ public class PropertiesProxy extends KrollProxy
 	{
 		Object stringValue = getPreferenceValue(key);
 		if (stringValue == null || !stringValue.equals(value)) {
-			appProperties.setString(key, value);
+			String ValueAsString = TiConvert.toString(stringValue);
+			String tempS = ComposeSecret(key);
+			String EncryptedValue = EncryptContent(tempS,ValueAsString);						
+			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
@@ -204,7 +261,7 @@ public class PropertiesProxy extends KrollProxy
 			
 			try {
 				JSONObject jsonObject = new JSONObject(temp);
-				return (HashMap)JsonHelper.toMap(jsonObject);
+				return (HashMap)Converters.toMap(jsonObject);
 			} catch (JSONException e) {
 				e.printStackTrace();
 				LogHelpers.Log(e);				
@@ -214,7 +271,7 @@ public class PropertiesProxy extends KrollProxy
 
 	}
 	@Kroll.method
-	public void setList(String key, @SuppressWarnings("rawtypes") HashMap value)
+	public void setList(String key, Object value)
 	{
 		if(value == null){
 			setString(key,null);
@@ -223,10 +280,8 @@ public class PropertiesProxy extends KrollProxy
 		if (!(value.getClass().isArray())) {
 			throw new IllegalArgumentException("Argument must be an array");
 		}
-
-        String jsonText = new Gson().toJson(value);
-        LogHelpers.DebugLog("object jsonText : " + jsonText);	
-		setString(key,jsonText);
+		
+		setString(key,Converters.objectToGson(value));
 	}
 
 
@@ -253,7 +308,7 @@ public class PropertiesProxy extends KrollProxy
 				JSONArray inputArray = new JSONArray(temp);				
 				Object[] result = new Object[inputArray.length()];
 				for (int iLoop = 0; iLoop < inputArray.length(); iLoop++) {				
-					result[iLoop] =JsonHelper.toMap((JSONObject) inputArray.get(iLoop));
+					result[iLoop] =Converters.toMap((JSONObject) inputArray.get(iLoop));
 				}
 				return result;
 			} catch (JSONException e) {
