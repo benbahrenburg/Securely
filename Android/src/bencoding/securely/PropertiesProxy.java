@@ -7,12 +7,17 @@
  */
 package bencoding.securely;
 
+import java.util.HashMap;
+
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.TiC;
+
+import com.google.gson.Gson;
+import org.json.*;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
 public class PropertiesProxy extends KrollProxy 
@@ -57,27 +62,43 @@ public class PropertiesProxy extends KrollProxy
 		Helpers.DebugLog("Setting identifer to : " + key);		
 	}
 	@Kroll.method
-	public boolean getBool(String key)
+	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
-		return appProperties.getBool(key, false);
+		Boolean ifMissingValue = false;
+		if(defaultValue != null){
+			ifMissingValue = TiConvert.toBoolean(defaultValue);
+		}
+		return appProperties.getBool(key, ifMissingValue);
 	}
 
 	@Kroll.method
-	public double getDouble(String key)
+	public double getDouble(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
-		return appProperties.getDouble(key, 0D);
+		double ifMissingValue = 0D;
+		if(defaultValue != null){
+			ifMissingValue = TiConvert.toDouble(defaultValue);
+		}		
+		return appProperties.getDouble(key, ifMissingValue);
 	}
 
 	@Kroll.method
-	public int getInt(String key)
+	public int getInt(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
-		return appProperties.getInt(key, 0);
+		int ifMissingValue = 0;
+		if(defaultValue != null){
+			ifMissingValue = TiConvert.toInt(defaultValue);
+		}			
+		return appProperties.getInt(key, ifMissingValue);
 	}
 
 	@Kroll.method
-	public String getString(String key)
+	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
-		return appProperties.getString(key, null);
+		String ifMissingValue = null;
+		if(defaultValue != null){
+			ifMissingValue = TiConvert.toString(defaultValue);
+		}			
+		return appProperties.getString(key, ifMissingValue);
 	}
 
 	@Kroll.method
@@ -115,8 +136,6 @@ public class PropertiesProxy extends KrollProxy
 			appProperties.setBool(key, value);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
-
-
 	}
 
 	@Kroll.method
@@ -137,6 +156,8 @@ public class PropertiesProxy extends KrollProxy
 	{
 		Object intValue = getPreferenceValue(key);
 		if (intValue == null || !intValue.equals(value)) {
+//			String foo = TiConvert.toString(intValue);
+//			setString(key,foo);
 			appProperties.setInt(key, value);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
@@ -152,8 +173,88 @@ public class PropertiesProxy extends KrollProxy
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
+	
+	@Kroll.method
+	public void setObject(String key, @SuppressWarnings("rawtypes") HashMap value)
+	{
+		if(value == null){
+			setString(key,null);
+			return;
+		}
+		
+		Gson gson = new Gson();
+        String jsonText = gson.toJson(value);
+		Helpers.DebugLog("object jsonText : " + jsonText);	
+		setString(key,jsonText);		
+	}
+	@SuppressWarnings("rawtypes")
+	@Kroll.method
+	public HashMap getObject(String key, @Kroll.argument(optional=true) HashMap defaultValue)
+	{	
+		if(!appProperties.hasProperty(key)){
+			return defaultValue;
+		}else{
+			String temp = getString(key,null);
+			Helpers.DebugLog("object JSON : " + temp);	
+			if(temp == null){
+				return null;
+			}
+			JSONObject jsonObject;
+			try {
+				jsonObject = new JSONObject(temp);
+				return (HashMap)JsonHelper.toMap(jsonObject);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				return null;
+			}						
+		}
+
+	}
+	@Kroll.method
+	public void setList(String key, Object[] value)
+	{
+		if(value == null){
+			setString(key,null);
+			return;
+		}
+		if (!(value.getClass().isArray())) {
+			throw new IllegalArgumentException("Argument must be an array");
+		}
+
+        String jsonText = new Gson().toJson(value);
+		Helpers.DebugLog("object jsonText : " + jsonText);	
+		setString(key,jsonText);
+	}
+
+	@Kroll.method
+	public Object[] getList(String key, @Kroll.argument(optional=true) Object[] defaultValue)
+	{
+		if(!appProperties.hasProperty(key)){
+			return defaultValue;
+		}else{
+			String temp = getString(key,null);
+			Helpers.DebugLog("object JSON : " + temp);	
+			if(temp == null){
+				return null;
+			}
+			
+			try {
+				JSONArray inputArray = new JSONArray(temp);
+				Object[] result = new Object[1];				
+				result[0] =JsonHelper.toMap((JSONObject) inputArray.get(0));
+				return result;
+			} catch (JSONException e) {
+				e.printStackTrace();
+				return null;
+			}				
+		}
+	}	
 	@Kroll.method
 	public void setAccessGroup(String key){
 		Helpers.DebugLog("setAccessGroup is not used on Android, method is available for parity sake only");		
+	}
+	@Kroll.method
+	public void removeAllProperties(){
+		appProperties.getPreference().edit().clear().commit();
 	}
 }

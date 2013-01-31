@@ -32,7 +32,7 @@ function resultHelper(result, expected) {
 	} else {
 		return "Test Failure: result (" + result + ") != expected (" + expected + ")";
 	}
-}
+};
 
 
 var l = Titanium.UI.createLabel({
