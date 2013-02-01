@@ -12,7 +12,8 @@ Ti.API.info("The properties object contains a secure version of the Ti.App.Prope
 //You can provide optional identifier, if none provided we use your bundle id
 var properties = securely.createProperties({
 	identifier:"Foo",
-	accessGroup:"Bar"
+	accessGroup:"Bar",
+	secret:"sshh_dont_tell"
 });
 
 function onChange(e){
