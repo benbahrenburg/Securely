@@ -16,6 +16,10 @@ var properties = securely.createProperties({
 	secret:"sshh_dont_tell"
 });
 
+Ti.API.info("On Android you can also set your secret this way");
+Ti.API.info("If called on iOS it wont do anything, but it wont error either");
+properties.setSecret("it_is_a_secret");
+
 function onChange(e){
 	Ti.API.info("Property " + e.source + " had an action of type " + e.actionType);
 };
