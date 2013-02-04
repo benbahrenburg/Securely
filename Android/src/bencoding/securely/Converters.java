@@ -19,10 +19,49 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
+import android.util.Base64;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Converters {
 
+    public static String serializeObjectToString(Object object) throws Exception 
+    {
+
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(arrayOutputStream);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(gzipOutputStream);
+
+        objectOutputStream.writeObject(object);
+
+        objectOutputStream.flush();
+        gzipOutputStream.close();
+        arrayOutputStream.close();
+        objectOutputStream.close();
+        String objectString = new String(Base64.encodeToString(arrayOutputStream.toByteArray(), Base64.DEFAULT));
+
+        return objectString;
+    }
+    public static Object deserializeObjectFromString(String objectString) throws Exception 
+    {
+
+        ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(Base64.decode(objectString, Base64.DEFAULT));
+        GZIPInputStream gzipInputStream = new GZIPInputStream(arrayInputStream);
+        ObjectInputStream objectInputStream = new ObjectInputStream(gzipInputStream);
+
+        Object object = objectInputStream.readObject();
+
+        objectInputStream.close();
+        gzipInputStream.close();
+        arrayInputStream.close();
+
+        return object;
+    }
 	public static byte[] toByte(String hexString) {
 	        int len = hexString.length()/2;
 	        byte[] result = new byte[len];
@@ -80,11 +119,6 @@ public class Converters {
 		String sValue = new Double(value).toString();
 		return sValue;
 	}		
-	public static String objectToGson(Object value){
-	      String jsonText = new Gson().toJson(value);
-	      //LogHelpers.DebugLog("object jsonText : " + jsonText);
-	      return jsonText;
-	}
 	@SuppressWarnings("rawtypes")
 	public static HashMap toHashMap(JSONArray array) throws JSONException {
 		HashMap<String, Object> pairs = new HashMap<String, Object>();

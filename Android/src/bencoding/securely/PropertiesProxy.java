@@ -17,9 +17,6 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.TiC;
 
-import com.google.gson.Gson;
-
-import org.json.*;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
 public class PropertiesProxy extends KrollProxy 
@@ -42,9 +39,9 @@ public class PropertiesProxy extends KrollProxy
 		String composed =  SHA.sha256(Seed);
 		return ((composed == null)? Seed : composed);
 	};
-	private String EncryptContent(String key, String value){
+	private String EncryptContent(String PassKey, String value){
 		try {
-			String EncryptedText = AES128Crypto.encrypt(key, value);
+			String EncryptedText = AES128Crypto.encrypt(PassKey, value);
 			return EncryptedText;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,11 +66,11 @@ public class PropertiesProxy extends KrollProxy
 		if (options.containsKey("identifier")) {
 			String identifier = TiConvert.toString(options.get("identifier"));
 			appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(identifier),false);
-			LogHelpers.DebugLog("Setting identifer to : " + identifier);			
+			LogHelpers.Level2Log("Setting identifer to : " + identifier);			
 		}
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
-			LogHelpers.DebugLog("Setting secret to : " + _secret);		
+			LogHelpers.Level2Log("Setting secret to : " + _secret);		
 		}		
 	}
 	
@@ -86,7 +83,7 @@ public class PropertiesProxy extends KrollProxy
 	@Kroll.method
 	public void setIdentifier(String key){
 		appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),key,false);
-		LogHelpers.DebugLog("Setting identifer to : " + key);		
+		LogHelpers.Level2Log("Setting identifer to : " + key);		
 	}
 	@Kroll.method
 	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
@@ -131,23 +128,6 @@ public class PropertiesProxy extends KrollProxy
 		
 		String DecryptedStored = getString(key,ifMissingValue);		
 		return Converters.StringToInt(DecryptedStored);
-	}
-
-	@Kroll.method
-	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
-	{
-		String ifMissingValue = null;
-		if(!appProperties.hasProperty(key)){
-			if(defaultValue != null){
-				ifMissingValue = TiConvert.toString(defaultValue);
-			}	
-			
-			return ifMissingValue;
-		}
-		String StoredValue = appProperties.getString(key, ifMissingValue);
-		String tempS = ComposeSecret(key);
-		String ReturnValue = DecryptContent(StoredValue,tempS);
-		return ReturnValue;
 	}
 
 	@Kroll.method
@@ -203,7 +183,6 @@ public class PropertiesProxy extends KrollProxy
 			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
-
 	}
 
 	@Kroll.method
@@ -225,46 +204,81 @@ public class PropertiesProxy extends KrollProxy
 	{
 		Object stringValue = getPreferenceValue(key);
 		if (stringValue == null || !stringValue.equals(value)) {
-			String ValueAsString = TiConvert.toString(stringValue);
-			String tempS = ComposeSecret(key);
-			String EncryptedValue = EncryptContent(tempS,ValueAsString);						
+			String ValueAsString = TiConvert.toString(value);
+			LogHelpers.Level2Log("setString key:" + key + " value:" + ValueAsString);
+			
+			String PassKey = ComposeSecret(key);
+			LogHelpers.Level2Log("setString PassKey:" + PassKey);
+			
+			String EncryptedValue = EncryptContent(PassKey,ValueAsString);	
+			LogHelpers.Level2Log("setString EncryptedValue:" + EncryptedValue);
+
 			appProperties.setString(key, EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
+		}else{
+			LogHelpers.Level2Log("setString not value to update. Key:" + key + " value:" + value);
 		}
 	}
-	
+
 	@Kroll.method
-	public void setObject(String key, @SuppressWarnings("rawtypes") HashMap value)
+	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
+	{
+		String ifMissingValue = null;
+		if(!appProperties.hasProperty(key)){
+			if(defaultValue != null){
+				ifMissingValue = TiConvert.toString(defaultValue);
+			}	
+			
+			return ifMissingValue;
+		}
+		String StoredValue = appProperties.getString(key, ifMissingValue);
+		LogHelpers.Level2Log("getString key:" + key + " value:" + StoredValue);
+		String PassKey = ComposeSecret(key);
+		LogHelpers.Level2Log("getString PassKey:" + PassKey);
+		String TextValue = DecryptContent(PassKey,StoredValue);
+		return TextValue;
+	}
+	@Kroll.method
+	public void setObject(String key, @SuppressWarnings("rawtypes") HashMap value) 
 	{
 		if(value == null){
 			setString(key,null);
 			return;
 		}
-		
-		Gson gson = new Gson();
-        String jsonText = gson.toJson(value);
-        LogHelpers.DebugLog("object jsonText : " + jsonText);	
-		setString(key,jsonText);		
+			
+		try {
+			String serializedString = Converters.serializeObjectToString(value);
+	        LogHelpers.Level2Log("setObject serialized : " + serializedString);	
+			setString(key,serializedString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+		}
 	}
+
 	@SuppressWarnings("rawtypes")
 	@Kroll.method
 	public HashMap getObject(String key, @Kroll.argument(optional=true) HashMap defaultValue)
 	{	
 		if(!appProperties.hasProperty(key)){
+			LogHelpers.DebugLog("getObject no properties found returning default");	
 			return defaultValue;
 		}else{
+			//String temp = appProperties.getString(key,null);
 			String temp = getString(key,null);
-			LogHelpers.DebugLog("object JSON : " + temp);	
+			LogHelpers.DebugLog("getObject string return : " + temp);	
 			if(temp == null){
 				return null;
 			}
 			
 			try {
-				JSONObject jsonObject = new JSONObject(temp);
-				return (HashMap)Converters.toMap(jsonObject);
-			} catch (JSONException e) {
+				LogHelpers.DebugLog("getObject Start deserialization ");	
+				Object convertedObject = Converters.deserializeObjectFromString(temp);
+				LogHelpers.DebugLog("getObject Finished deserialization ");	
+				return (HashMap) convertedObject;
+			} catch (Exception e) {
 				e.printStackTrace();
-				LogHelpers.Log(e);				
+				LogHelpers.Log(e);
 				return null;
 			}						
 		}
@@ -280,8 +294,15 @@ public class PropertiesProxy extends KrollProxy
 		if (!(value.getClass().isArray())) {
 			throw new IllegalArgumentException("Argument must be an array");
 		}
-		
-		setString(key,Converters.objectToGson(value));
+
+		try {
+			String serializedString = Converters.serializeObjectToString(value);
+	        LogHelpers.Level2Log("setList serialized : " + serializedString);	
+			setString(key,serializedString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+		}
 	}
 
 
@@ -290,6 +311,7 @@ public class PropertiesProxy extends KrollProxy
 	{
 		if(!appProperties.hasProperty(key)){
 			if(defaultValue==null){
+				LogHelpers.DebugLog("getList null value returned");	
 				return null;
 			}else{
 				if (!(defaultValue.getClass().isArray())) {
@@ -298,24 +320,23 @@ public class PropertiesProxy extends KrollProxy
 				return (Object[]) defaultValue;
 			}			
 		}else{
+
 			String temp = getString(key,null);
-			LogHelpers.DebugLog("object JSON : " + temp);	
+			LogHelpers.Level2Log("getList string return : " + temp);	
 			if(temp == null){
 				return null;
 			}
 			
 			try {
-				JSONArray inputArray = new JSONArray(temp);				
-				Object[] result = new Object[inputArray.length()];
-				for (int iLoop = 0; iLoop < inputArray.length(); iLoop++) {				
-					result[iLoop] =Converters.toMap((JSONObject) inputArray.get(iLoop));
-				}
-				return result;
-			} catch (JSONException e) {
+				LogHelpers.Level2Log("getList Start deserialization ");	
+				Object convertedObject = Converters.deserializeObjectFromString(temp);
+				LogHelpers.Level2Log("getList Finished deserialization ");	
+				return (Object[]) convertedObject;
+			} catch (Exception e) {
 				e.printStackTrace();
 				LogHelpers.Log(e);
 				return null;
-			}				
+			}			
 		}
 	}	
 	@Kroll.method

@@ -17,9 +17,6 @@ public class SecurelyModule extends KrollModule
 {
 
 	public static final String SECURELY_MODULE_FULL_NAME = "becoding.securely";
-	// Standard Debugging variables
-//	private static final String LCAT = "SecurelyModule";
-//	private static final boolean DBG = TiConfig.LOGD;
 	
 	public SecurelyModule()
 	{
@@ -29,10 +26,19 @@ public class SecurelyModule extends KrollModule
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app)
 	{
-//		Log.d(DBG, "inside onAppCreate");
-		// put module init code that needs to run when the application is created
 	}
 
+	@Kroll.method
+	public void disableLevel2Logging()
+	{
+		LogHelpers.UpdateSecureWrite(false);
+	}
+	@Kroll.method
+	public void enableLevel2Logging()
+	{
+		LogHelpers.UpdateSecureWrite(true);
+	}
+	
 	@Kroll.method
 	public void disableLogging()
 	{
