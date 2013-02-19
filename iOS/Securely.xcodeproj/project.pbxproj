@@ -26,6 +26,12 @@
 		24DD6CFA1134B3F500162E58 /* BencodingSecurelyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* BencodingSecurelyModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */; };
 		24DE9E1211C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */; };
+		435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D316D41B680093B1BD /* NSData+Base64.h */; };
+		435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D416D41B680093B1BD /* NSData+Base64.m */; };
+		435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */; };
+		435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D616D41B680093B1BD /* NSData+CommonCrypto.m */; };
+		435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D716D41B680093B1BD /* NSString+Base64.h */; };
+		435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D816D41B680093B1BD /* NSString+Base64.m */; };
 		43857BD7169F7274004D600C /* BCPDKeychainBindings.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD3169F7274004D600C /* BCPDKeychainBindings.h */; };
 		43857BD8169F7274004D600C /* BCPDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD4169F7274004D600C /* BCPDKeychainBindings.m */; };
 		43857BD9169F7274004D600C /* BCPDKeychainBindingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD5169F7274004D600C /* BCPDKeychainBindingsController.h */; };
@@ -57,6 +63,12 @@
 		24DD6D1B1134B66800162E58 /* titanium.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = titanium.xcconfig; sourceTree = "<group>"; };
 		24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyModuleAssets.h; path = Classes/BencodingSecurelyModuleAssets.h; sourceTree = "<group>"; };
 		24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyModuleAssets.m; path = Classes/BencodingSecurelyModuleAssets.m; sourceTree = "<group>"; };
+		435D89D316D41B680093B1BD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "Classes/AESCrypt/NSData+Base64.h"; sourceTree = "<group>"; };
+		435D89D416D41B680093B1BD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "Classes/AESCrypt/NSData+Base64.m"; sourceTree = "<group>"; };
+		435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+CommonCrypto.h"; path = "Classes/AESCrypt/NSData+CommonCrypto.h"; sourceTree = "<group>"; };
+		435D89D616D41B680093B1BD /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+CommonCrypto.m"; path = "Classes/AESCrypt/NSData+CommonCrypto.m"; sourceTree = "<group>"; };
+		435D89D716D41B680093B1BD /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Base64.h"; path = "Classes/AESCrypt/NSString+Base64.h"; sourceTree = "<group>"; };
+		435D89D816D41B680093B1BD /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Base64.m"; path = "Classes/AESCrypt/NSString+Base64.m"; sourceTree = "<group>"; };
 		43857BD3169F7274004D600C /* BCPDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCPDKeychainBindings.h; path = Classes/PDKeychainBindingsController/BCPDKeychainBindings.h; sourceTree = "<group>"; };
 		43857BD4169F7274004D600C /* BCPDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCPDKeychainBindings.m; path = Classes/PDKeychainBindingsController/BCPDKeychainBindings.m; sourceTree = "<group>"; };
 		43857BD5169F7274004D600C /* BCPDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCPDKeychainBindingsController.h; path = Classes/PDKeychainBindingsController/BCPDKeychainBindingsController.h; sourceTree = "<group>"; };
@@ -117,10 +129,11 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				435D89E116D41DD50093B1BD /* Categories */,
 				43857BEE169FA0A3004D600C /* JSONKit */,
 				43857BD1169F7247004D600C /* PDKeychainBindingsController */,
-				43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */,
 				43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */,
+				43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */,
 				24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */,
 				24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */,
 				24DD6CF71134B3F500162E58 /* BencodingSecurelyModule.h */,
@@ -138,6 +151,19 @@
 				24DD6D1B1134B66800162E58 /* titanium.xcconfig */,
 			);
 			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		435D89E116D41DD50093B1BD /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				435D89D316D41B680093B1BD /* NSData+Base64.h */,
+				435D89D416D41B680093B1BD /* NSData+Base64.m */,
+				435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */,
+				435D89D616D41B680093B1BD /* NSData+CommonCrypto.m */,
+				435D89D716D41B680093B1BD /* NSString+Base64.h */,
+				435D89D816D41B680093B1BD /* NSString+Base64.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		43857BD1169F7247004D600C /* PDKeychainBindingsController */ = {
@@ -176,6 +202,9 @@
 				43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */,
 				43857BF1169FA0A3004D600C /* JSONKit.h in Headers */,
 				43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */,
+				435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */,
+				435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */,
+				435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +282,9 @@
 				43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */,
 				43857BF2169FA0A3004D600C /* JSONKit.m in Sources */,
 				43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */,
+				435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */,
+				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
+				435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

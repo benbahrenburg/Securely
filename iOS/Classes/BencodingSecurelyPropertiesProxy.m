@@ -44,8 +44,6 @@
 {
     if ([self _hasListeners:@"changed"])
     {
-        //DebugLog(@"Firing listener");
-
         NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:
                                eventName,@"source",
                                actionType,@"actionType",
@@ -54,10 +52,6 @@
         
 		[self fireEvent:@"changed" withObject:event];
     }
-//    else
-//    {
-//        DebugLog(@"No listener found");   
-//    }
 }
 
 

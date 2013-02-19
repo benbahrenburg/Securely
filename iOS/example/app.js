@@ -125,5 +125,19 @@ Titanium.API.info("Int should be null - value = " + resultHelper(properties.getS
 //Remove our Change Event Handler
 properties.removeEventListener('changed',onChange);
 
+Ti.API.info("Next we will demonstrate string crypto");
+var stringCrypto = securely.createStringCrypto();
+
+var password = "helloworld";
+var testString = "Some string you want to protect from anyone being able to see";
+
+var encryptedText = stringCrypto.AESEncrypt(password,testString);
+Ti.API.info("Encrypted Test Passed? " + (encryptedText!=testString));
+Ti.API.info("Encrypted value " + encryptedText);
+
+var decryptedText = stringCrypto.AESDecrypt(password,encryptedText);	
+Ti.API.info("Decrypted Test Passed? " + (decryptedText==testString));
+Ti.API.info("Decrypted value " + decryptedText);	
+
 win.open();
 

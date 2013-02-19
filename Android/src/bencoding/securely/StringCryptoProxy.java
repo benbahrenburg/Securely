@@ -25,7 +25,7 @@ public class StringCryptoProxy  extends KrollProxy {
 	}
 
 	@Kroll.method
-	public static String AESEncrypt(String key, String value) {
+	public String AESEncrypt(String key, String value) {
 		try {
 			String EncryptedText = AES128Crypto.encrypt(key, value);
 			return EncryptedText;
@@ -36,7 +36,7 @@ public class StringCryptoProxy  extends KrollProxy {
 		}		
 	}
 	@Kroll.method
-	public static String AESDecrypt(String key, String value) {		
+	public String AESDecrypt(String key, String value) {		
 		try {
 			String ClearText = AES128Crypto.decrypt(key, value);
 			return ClearText;
@@ -47,7 +47,7 @@ public class StringCryptoProxy  extends KrollProxy {
 		}
 	}
 	@Kroll.method
-	public static String DESEncrypt(String key, String value) {
+	public String DESEncrypt(String key, String value) {
 		try {
 			String EncryptedText = DESCrypto.encrypt(key, value);
 			return EncryptedText;
@@ -58,7 +58,7 @@ public class StringCryptoProxy  extends KrollProxy {
 		}	
 	}
 	@Kroll.method
-	public static String DESDecrypt(String key, String value) {
+	public String DESDecrypt(String key, String value) {
 		try {
 			String ClearText = DESCrypto.decrypt(key, value);
 			return ClearText;
@@ -70,12 +70,12 @@ public class StringCryptoProxy  extends KrollProxy {
 	}
 	
 	@Kroll.method
-    public static String toHex(String txt) {
+    public String toHex(String txt) {
         return Converters.toHex(txt.getBytes());
     }
 	
 	@Kroll.method
-	public static String fromHex(String hex) {
+	public String fromHex(String hex) {
 	     return new String(Converters.toByte(hex));
 	}
 }
