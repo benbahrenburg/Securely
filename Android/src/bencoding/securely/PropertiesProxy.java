@@ -14,12 +14,15 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.TiLifecycle;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.TiC;
 
+import android.app.Activity;
+
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
-public class PropertiesProxy extends KrollProxy 
+public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent 
 {
 	private String _secret = "";
 	private Properties appProperties;
@@ -347,4 +350,19 @@ public class PropertiesProxy extends KrollProxy
 	public void removeAllProperties(){
 		appProperties.getPreference().edit().clear().commit();
 	}
+	@Override
+	public void onDestroy(Activity arg0) {
+		if(appProperties!=null){
+			appProperties.getPreference().edit().commit();
+			appProperties = null;
+		}	
+	}
+	@Override
+	public void onPause(Activity arg0) {}
+	@Override
+	public void onResume(Activity arg0) {}
+	@Override
+	public void onStart(Activity arg0) {}
+	@Override
+	public void onStop(Activity arg0) {}
 }
