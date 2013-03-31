@@ -50,7 +50,8 @@
 
 -(void)dealloc
 {
-	// release any resources that have been retained by the module
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[super dealloc];
 	[super dealloc];
 }
 
@@ -70,4 +71,53 @@
      return NUMBOOL(available);
         
 }
+
+-(void)_listenerAdded:(NSString *)type count:(int)count
+{
+	if (count == 1 && [type isEqualToString:@"protectedDataDidBecomeAvailable"])
+	{
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(ProtectedDataDidBecomeAvailable:)
+                                                     name:UIApplicationProtectedDataDidBecomeAvailable object:nil];
+	}
+	if (count == 1 && [type isEqualToString:@"protectedDataWillBecomeUnavailable"])
+	{
+        [[NSNotificationCenter defaultCenter] addObserver:self
+          selector:@selector(ProtectedDataWillBecomeUnavailable:)
+                   name:UIApplicationProtectedDataWillBecomeUnavailable object:nil];
+	}
+}
+
+-(void)_listenerRemoved:(NSString *)type count:(int)count
+{
+	if (count == 0 && [type isEqualToString:@"protectedDataDidBecomeAvailable"])
+	{
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationProtectedDataDidBecomeAvailable object:nil];
+	}
+	if (count == 0 && [type isEqualToString:@"protectedDataWillBecomeUnavailable"])
+	{
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                        name:UIApplicationProtectedDataWillBecomeUnavailable object:nil];
+	}
+}
+
+-(void)ProtectedDataDidBecomeAvailable:(NSNotification*)info
+{
+     if ([self _hasListeners:@"protectedDataDidBecomeAvailable"])
+     {
+         NSDictionary *notification = [info object];
+         [self fireEvent:@"protectedDataDidBecomeAvailable" withObject:notification];
+     }
+}
+
+-(void)ProtectedDataWillBecomeUnavailable:(NSNotification*)info
+{
+    if ([self _hasListeners:@"protectedDataWillBecomeUnavailable"])
+    {
+        NSDictionary *notification = [info object];
+        [self fireEvent:@"protectedDataWillBecomeUnavailable" withObject:notification];
+    }
+}
+    
 @end
