@@ -63,4 +63,11 @@
 	[super didReceiveMemoryWarning:notification];
 }
 
+-(NSNumber *) isProtectedDataAvailable:(id)unused
+{
+     BOOL available = [[UIApplication sharedApplication] isProtectedDataAvailable];
+    
+     return NUMBOOL(available);
+        
+}
 @end
