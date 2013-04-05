@@ -33,7 +33,7 @@
 	// you *must* call the superclass
 	[super startup];
 	
-	NSLog(@"[INFO] %@ loaded",self);
+	//NSLog(@"[INFO] %@ loaded",self);
 }
 
 -(void)shutdown:(id)sender
