@@ -53,6 +53,8 @@
 		43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD7171366070073BEC8 /* RNDecryptor.m */; };
 		43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD8171366070073BEC8 /* RNEncryptor.h */; };
 		43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD9171366070073BEC8 /* RNEncryptor.m */; };
+		43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */; };
+		43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */; };
 		43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */; };
 		43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */; };
 		AA747D9F0F9514B9006C5449 /* BencodingSecurely_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */; };
@@ -102,6 +104,8 @@
 		43A5CAD7171366070073BEC8 /* RNDecryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNDecryptor.m; sourceTree = "<group>"; };
 		43A5CAD8171366070073BEC8 /* RNEncryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNEncryptor.h; sourceTree = "<group>"; };
 		43A5CAD9171366070073BEC8 /* RNEncryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEncryptor.m; sourceTree = "<group>"; };
+		43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPDFProxy.h; path = Classes/BencodingSecurelyPDFProxy.h; sourceTree = "<group>"; };
+		43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPDFProxy.m; path = Classes/BencodingSecurelyPDFProxy.m; sourceTree = "<group>"; };
 		43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyStringCryptoProxy.h; path = Classes/BencodingSecurelyStringCryptoProxy.h; sourceTree = "<group>"; };
 		43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyStringCryptoProxy.m; path = Classes/BencodingSecurelyStringCryptoProxy.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BencodingSecurely_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -167,6 +171,8 @@
 				43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */,
 				43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */,
 				43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */,
+				43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */,
+				43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -257,6 +263,7 @@
 				43A5CAE4171366070073BEC8 /* RNCryptorEngine.h in Headers */,
 				43A5CAE6171366070073BEC8 /* RNDecryptor.h in Headers */,
 				43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */,
+				43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +349,7 @@
 				43A5CAE5171366070073BEC8 /* RNCryptorEngine.m in Sources */,
 				43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */,
 				43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */,
+				43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

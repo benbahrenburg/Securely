@@ -30,63 +30,6 @@
 	return source;
 }
 
-//
-//-(void) AESDecrypt:(id)args
-//{
-//    ENSURE_SINGLE_ARG(args,NSDictionary);
-//    ENSURE_TYPE(args,NSDictionary);
-// 
-//    if (![args objectForKey:@"secret"]) {
-//		NSLog(@"[ERROR] decrypt secret is required");
-//		return;
-//	}
-//    NSString* secret = [args objectForKey:@"secret"];
-//    
-//    NSString* fileEncryptedFile = [args objectForKey:@"from"];
-//	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
-//
-//    if (fileEncryptedFileName == nil) {
-//		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
-//		return;
-//	}
-//    
-//    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
-// 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
-//		return;
-//    }
-//    
-//    NSString* fileDecryptedFile = [args objectForKey:@"to"];
-//	NSString* fileDecryptedFileName = [self getNormalizedPath:fileDecryptedFile];
-//
-//    if (fileDecryptedFileName == nil) {
-//		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
-//		return;
-//	}
-//    
-//    if(![[NSFileManager defaultManager] fileExistsAtPath:fileDecryptedFileName]){
-// 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
-//		return;
-//    }
-// 
-//    if (![args objectForKey:@"completed"]) {
-//		NSLog(@"[ERROR] completed callback method is required");
-//		return;
-//	}
-//    
-//    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
-//	ENSURE_TYPE(callback,KrollCallback);
-//    
-//    [self decryptAsCallback:fileEncryptedFileName
-//                    withFileToDecrypt:fileDecryptedFileName
-//                    withSecret:secret
-//                    completion:^(NSMutableDictionary *event) {
-//                        if(callback != nil ){
-//                            [self _fireEventToListener:@"completed" withObject:event
-//                                              listener:callback thisObject:nil];
-//                        }
-//                    }];
-//}
-
 
 
 -(void) AESDecrypt:(id)args
@@ -99,31 +42,33 @@
 		return;
 	}
     NSString* secret = [args objectForKey:@"secret"];
-    
+    BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
+	NSString* sourceFile = [self getNormalizedPath:fileEncryptedFile];
     
-    if (fileEncryptedFileName == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+    if (sourceFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", sourceFile]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", sourceFile]);
 		return;
     }
     
     NSString* fileDecryptedFile = [args objectForKey:@"to"];
-	NSString* fileDecryptedFileName = [self getNormalizedPath:fileDecryptedFile];
+	NSString* outputFile = [self getNormalizedPath:fileDecryptedFile];
     
-    if (fileDecryptedFileName == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
+    if (outputFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", outputFile]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:fileDecryptedFileName]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
-		return;
+    if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
+        NSLog(@"[DEBUG] Output file already exists removing");
+        NSError *error;
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
+        if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
     }
     
     if (![args objectForKey:@"completed"]) {
@@ -135,8 +80,8 @@
 	ENSURE_TYPE(callback,KrollCallback);
 
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                  fileDecryptedFileName,@"to",
-                                  fileEncryptedFileName,@"from",
+                                  outputFile,@"to",
+                                  sourceFile,@"from",
                                   nil];
     
     // Make sure that this number is larger than the header + 1 block.
@@ -144,9 +89,9 @@
     int blockSize = 32 * 1024;
     __block NSError *decryptionError = nil;
     
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:fileEncryptedFileName];
+    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:sourceFile];
     [inputStream open];
-    NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:fileDecryptedFileName append:NO];
+    NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:outputFile append:NO];
     [outputStream open];
     
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);  
@@ -207,6 +152,16 @@
             }
         }
     }
+    
+    if(deleteSource){
+        if([[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
+            NSLog(@"[Debug] Removing source file");
+            NSError *error;
+            BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:sourceFile error:&error];
+            if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+        }
+    }
+    
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
@@ -224,31 +179,33 @@
 		return;
 	}
     NSString* secret = [args objectForKey:@"secret"];
-    
+    BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* filePlainFileName = [self getNormalizedPath:filePlainFile];
+	NSString* sourceFile = [self getNormalizedPath:filePlainFile];
 
-    if (filePlainFileName == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", filePlainFileName]);
+    if (sourceFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:filePlainFileName]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", filePlainFileName]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
 		return;
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [self getNormalizedPath:fileEncryptedFile];
 
-    if (fileEncryptedFileName == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", fileEncryptedFileName]);
+    if (outputFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", outputFile]);
 		return;
 	}
-    
-    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", fileEncryptedFileName]);
-		return;
+
+    if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
+        NSLog(@"[Debug] Output file already exists, removing");
+        NSError *error;
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
+        if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
     }
     if (![args objectForKey:@"completed"]) {
 		NSLog(@"[ERROR] completed callback method is required");
@@ -259,17 +216,17 @@
 	ENSURE_TYPE(callback,KrollCallback);
  
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                  fileEncryptedFileName,@"to",
-                                  filePlainFileName,@"from",
+                                  outputFile,@"to",
+                                  sourceFile,@"from",
                                   nil];
         
     __block int total = 0;
     int blockSize = 32 * 1024;
     __block NSError *encryptionError = nil;
     
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:filePlainFileName];
+    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:sourceFile];
     [inputStream open];
-    __block NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:fileEncryptedFileName append:NO];
+    __block NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:outputFile append:NO];
         [outputStream open];
     
     __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
@@ -298,7 +255,7 @@
     encryptor = [[RNEncryptor alloc] initWithSettings:kRNCryptorAES256Settings
                               password:secret
                             handler:^(RNCryptor *cryptor, NSData *data) {
-        NSLog(@"[Debug] Received %d bytes", data.length);
+        NSLog(@"[DEBUG] Received %d bytes", data.length);
         [outputStream write:data.bytes maxLength:data.length];
         if (cryptor.isFinished) {
             [outputStream close];
@@ -332,6 +289,16 @@
             }
         }
     }
+    
+    if(deleteSource){
+        if([[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
+            NSLog(@"[DEBUG] Removing source file");
+            NSError *error;
+            BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:sourceFile error:&error];
+            if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+        }
+    }
+    
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
