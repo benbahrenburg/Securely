@@ -43,6 +43,16 @@
 		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; };
 		43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */; };
 		43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */; };
+		43A5CAE0171366070073BEC8 /* RNCryptor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */; };
+		43A5CAE1171366070073BEC8 /* RNCryptor-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */; };
+		43A5CAE2171366070073BEC8 /* RNCryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD2171366070073BEC8 /* RNCryptor.h */; };
+		43A5CAE3171366070073BEC8 /* RNCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD3171366070073BEC8 /* RNCryptor.m */; };
+		43A5CAE4171366070073BEC8 /* RNCryptorEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */; };
+		43A5CAE5171366070073BEC8 /* RNCryptorEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */; };
+		43A5CAE6171366070073BEC8 /* RNDecryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD6171366070073BEC8 /* RNDecryptor.h */; };
+		43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD7171366070073BEC8 /* RNDecryptor.m */; };
+		43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD8171366070073BEC8 /* RNEncryptor.h */; };
+		43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD9171366070073BEC8 /* RNEncryptor.m */; };
 		43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */; };
 		43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */; };
 		AA747D9F0F9514B9006C5449 /* BencodingSecurely_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */; };
@@ -82,6 +92,16 @@
 		43857BF0169FA0A3004D600C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyFileCryptoProxy.h; path = Classes/BencodingSecurelyFileCryptoProxy.h; sourceTree = "<group>"; };
 		43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyFileCryptoProxy.m; path = Classes/BencodingSecurelyFileCryptoProxy.m; sourceTree = "<group>"; };
+		43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor+Private.h"; sourceTree = "<group>"; };
+		43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor-Prefix.pch"; sourceTree = "<group>"; };
+		43A5CAD2171366070073BEC8 /* RNCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptor.h; sourceTree = "<group>"; };
+		43A5CAD3171366070073BEC8 /* RNCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptor.m; sourceTree = "<group>"; };
+		43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptorEngine.h; sourceTree = "<group>"; };
+		43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptorEngine.m; sourceTree = "<group>"; };
+		43A5CAD6171366070073BEC8 /* RNDecryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNDecryptor.h; sourceTree = "<group>"; };
+		43A5CAD7171366070073BEC8 /* RNDecryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNDecryptor.m; sourceTree = "<group>"; };
+		43A5CAD8171366070073BEC8 /* RNEncryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNEncryptor.h; sourceTree = "<group>"; };
+		43A5CAD9171366070073BEC8 /* RNEncryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEncryptor.m; sourceTree = "<group>"; };
 		43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyStringCryptoProxy.h; path = Classes/BencodingSecurelyStringCryptoProxy.h; sourceTree = "<group>"; };
 		43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyStringCryptoProxy.m; path = Classes/BencodingSecurelyStringCryptoProxy.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BencodingSecurely_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -133,6 +153,7 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				43A5CACF171366070073BEC8 /* RNCryptor */,
 				435D89E116D41DD50093B1BD /* Categories */,
 				43857BEE169FA0A3004D600C /* JSONKit */,
 				43857BD1169F7247004D600C /* PDKeychainBindingsController */,
@@ -193,6 +214,24 @@
 			path = Classes/JSONKit;
 			sourceTree = "<group>";
 		};
+		43A5CACF171366070073BEC8 /* RNCryptor */ = {
+			isa = PBXGroup;
+			children = (
+				43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */,
+				43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */,
+				43A5CAD2171366070073BEC8 /* RNCryptor.h */,
+				43A5CAD3171366070073BEC8 /* RNCryptor.m */,
+				43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */,
+				43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */,
+				43A5CAD6171366070073BEC8 /* RNDecryptor.h */,
+				43A5CAD7171366070073BEC8 /* RNDecryptor.m */,
+				43A5CAD8171366070073BEC8 /* RNEncryptor.h */,
+				43A5CAD9171366070073BEC8 /* RNEncryptor.m */,
+			);
+			name = RNCryptor;
+			path = Classes/RNCryptor;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -212,6 +251,12 @@
 				435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */,
 				435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */,
 				43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */,
+				43A5CAE0171366070073BEC8 /* RNCryptor+Private.h in Headers */,
+				43A5CAE1171366070073BEC8 /* RNCryptor-Prefix.pch in Headers */,
+				43A5CAE2171366070073BEC8 /* RNCryptor.h in Headers */,
+				43A5CAE4171366070073BEC8 /* RNCryptorEngine.h in Headers */,
+				43A5CAE6171366070073BEC8 /* RNDecryptor.h in Headers */,
+				43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +338,10 @@
 				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
 				435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */,
 				43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */,
+				43A5CAE3171366070073BEC8 /* RNCryptor.m in Sources */,
+				43A5CAE5171366070073BEC8 /* RNCryptorEngine.m in Sources */,
+				43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */,
+				43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

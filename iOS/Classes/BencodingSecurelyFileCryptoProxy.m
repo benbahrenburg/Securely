@@ -14,117 +14,329 @@
 #import "TiFilesystemFileProxy.h"
 @implementation BencodingSecurelyFileCryptoProxy
 
-#define fileURLify(foo)	[[NSURL fileURLWithPath:foo isDirectory:YES] absoluteString]
 
--(NSString*)resourcesDirectory
+-(NSString*)getNormalizedPath:(NSString*)source
 {
-	return fileURLify([TiHost resourcePath]);
-}
-
-// internal
--(id)resolveFile:(id)arg
-{
-	if ([arg isKindOfClass:[TiFilesystemFileProxy class]])
-	{
-		return [arg path];
+	// NOTE: File paths may contain URL prefix as of release 1.7 of the SDK
+	if ([source hasPrefix:@"file:/"]) {
+		NSURL* url = [NSURL URLWithString:source];
+		return [url path];
 	}
-	return [TiUtils stringValue:arg];
-}
-
--(NSString*)pathFromComponents:(NSString*)path
-{
-	NSString * newpath;
     
-	if ([path hasPrefix:@"file://localhost/"])
-	{
-		NSURL * fileUrl = [NSURL URLWithString:path];
-		//Why not just crop? Because the url may have some things escaped that need to be unescaped.
-		newpath =[fileUrl path];
-	}
-	else if ([path characterAtIndex:0]!='/')
-	{
-		NSURL* url = [NSURL URLWithString:[self resourcesDirectory]];
-        newpath = [[url path] stringByAppendingPathComponent:[self resolveFile:path]];
-	}
-	else
-	{
-		newpath = [self resolveFile:path];
-	}
-        
-    return [newpath stringByStandardizingPath];
+	// NOTE: Here is where you can perform any other processing needed to
+	// convert the source path. For example, if you need to handle
+	// tilde, then add the call to stringByExpandingTildeInPath
+    
+	return source;
 }
 
--(NSData *) loadToData:(id)value
-{
-    NSData *data = nil;
-    if([value isKindOfClass:[NSString class]])
-    {
-        
-        NSURL* fileUrl = [self sanitizeURL:value];
-        if (![fileUrl isKindOfClass:[NSURL class]]) {
-            [self throwException:@"invalid image type"
-                       subreason:[NSString stringWithFormat:@"expected TiBlob, String, TiFile, was: %@",[value class]]
-                        location:CODELOCATION];
-        }
-        
-        NSError* error = nil;
-        data = [NSData dataWithContentsOfURL:fileUrl options:NSDataReadingUncached error:&error];
-        if (error) {
-            NSLog(@"%@", [error localizedDescription]);
-            [error release];
-        } 
-        
-    }
-    else if ([value isKindOfClass:[TiBlob class]])
-    {
-        data = [(TiBlob*)value data];
-        
-    }else if ([value isKindOfClass:[TiFile class]])
-    {
-        TiFile *file = (TiFile*)value;
-        NSString *path = [file path];
-        data = [NSData dataWithContentsOfFile:path];
-    }
-    
-    return data;
-    
-}
--(NSString *)AESEncryptToFile:(id)args
+//
+//-(void) AESDecrypt:(id)args
+//{
+//    ENSURE_SINGLE_ARG(args,NSDictionary);
+//    ENSURE_TYPE(args,NSDictionary);
+// 
+//    if (![args objectForKey:@"secret"]) {
+//		NSLog(@"[ERROR] decrypt secret is required");
+//		return;
+//	}
+//    NSString* secret = [args objectForKey:@"secret"];
+//    
+//    NSString* fileEncryptedFile = [args objectForKey:@"from"];
+//	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
+//
+//    if (fileEncryptedFileName == nil) {
+//		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+//		return;
+//	}
+//    
+//    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
+// 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+//		return;
+//    }
+//    
+//    NSString* fileDecryptedFile = [args objectForKey:@"to"];
+//	NSString* fileDecryptedFileName = [self getNormalizedPath:fileDecryptedFile];
+//
+//    if (fileDecryptedFileName == nil) {
+//		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
+//		return;
+//	}
+//    
+//    if(![[NSFileManager defaultManager] fileExistsAtPath:fileDecryptedFileName]){
+// 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
+//		return;
+//    }
+// 
+//    if (![args objectForKey:@"completed"]) {
+//		NSLog(@"[ERROR] completed callback method is required");
+//		return;
+//	}
+//    
+//    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+//	ENSURE_TYPE(callback,KrollCallback);
+//    
+//    [self decryptAsCallback:fileEncryptedFileName
+//                    withFileToDecrypt:fileDecryptedFileName
+//                    withSecret:secret
+//                    completion:^(NSMutableDictionary *event) {
+//                        if(callback != nil ){
+//                            [self _fireEventToListener:@"completed" withObject:event
+//                                              listener:callback thisObject:nil];
+//                        }
+//                    }];
+//}
+
+
+
+-(void) AESDecrypt:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
     
-    id from = [args objectForKey:@"from"];
-    id to = [args objectForKey:@"to"];;
-    KrollCallback *callbackComplete = [args objectForKey:@"completed"];
-    KrollCallback *callbackErr = [args objectForKey:@"error"];
-    NSData *data = nil;
+    if (![args objectForKey:@"secret"]) {
+		NSLog(@"[ERROR] decrypt secret is required");
+		return;
+	}
+    NSString* secret = [args objectForKey:@"secret"];
     
-    if((![from isKindOfClass:[NSString class]]) ||
-       (![from isKindOfClass:[NSString class]])||
-       (![from isKindOfClass:[NSString class]]))
-    {
-        NSLog(@"Invalid from Parameter provided");
-        return;
+    NSString* fileEncryptedFile = [args objectForKey:@"from"];
+	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
+    
+    if (fileEncryptedFileName == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+		return;
+	}
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", fileEncryptedFileName]);
+		return;
     }
+    
+    NSString* fileDecryptedFile = [args objectForKey:@"to"];
+	NSString* fileDecryptedFileName = [self getNormalizedPath:fileDecryptedFile];
+    
+    if (fileDecryptedFileName == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
+		return;
+	}
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fileDecryptedFileName]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", fileDecryptedFileName]);
+		return;
+    }
+    
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback method is required");
+		return;
+	}
+    
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
 
-    if((![to isKindOfClass:[NSString class]]) ||
-       (![to isKindOfClass:[NSString class]])||
-       (![to isKindOfClass:[NSString class]]))
-    {
-        NSLog(@"Invalid to Parameter provided");
-        return;
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                  fileDecryptedFileName,@"to",
+                                  fileEncryptedFileName,@"from",
+                                  nil];
+    
+    // Make sure that this number is larger than the header + 1 block.
+    // 33+16 bytes = 49 bytes. So it shouldn't be a problem.
+    int blockSize = 32 * 1024;
+    __block NSError *decryptionError = nil;
+    
+    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:fileEncryptedFileName];
+    [inputStream open];
+    NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:fileDecryptedFileName append:NO];
+    [outputStream open];
+    
+    __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);  
+    __block RNDecryptor *decryptor;
+    __block NSMutableData *buffer = [NSMutableData dataWithLength:blockSize];
+
+    dispatch_block_t readStreamBlock = ^{
+        [buffer setLength:blockSize];
+        NSInteger bytesRead = [inputStream read:[buffer mutableBytes] maxLength:blockSize];
+        if (bytesRead < 0) {
+            NSLog(@"[Error] reading block:%@", inputStream.streamError);
+            [inputStream close];
+            dispatch_semaphore_signal(sem);
+        }
+        else if (bytesRead == 0) {
+            [inputStream close];
+            [decryptor finish];
+        }
+        else {
+            [buffer setLength:bytesRead];
+            [decryptor addData:buffer];
+            NSLog(@"[Debug] Sent %ld bytes to decryptor", (unsigned long)bytesRead);
+        }
+    };
+
+    decryptor = [[RNDecryptor alloc] initWithPassword:secret handler:^(RNCryptor *cryptor, NSData *data) {
+        NSLog(@"[Debug] Received %d bytes", data.length);
+        [outputStream write:data.bytes maxLength:data.length];
+        if (cryptor.isFinished) {
+            [outputStream close];
+            dispatch_semaphore_signal(sem);
+        }
+        else {
+            readStreamBlock();
+        }  }];
+    
+    readStreamBlock();
+    
+    long timedout = dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    
+    if(timedout){
+        [event setObject:NUMBOOL(NO) forKey:@"success"];
+        [event setObject:@"process timed out" forKey:@"message"];
+    }else{
+        if(decryptionError!=nil){
+            [event setObject:NUMBOOL(NO) forKey:@"success"];
+            [event setObject:[NSString stringWithFormat:@"Decrypt error: %@", decryptionError]
+                      forKey:@"message"];
+
+        }else{
+            //Retrieve the decrypted data
+            NSData *decryptedData = [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+            if([decryptedData length] == 0){
+                [event setObject:NUMBOOL(NO) forKey:@"success"];
+                [event setObject:@"Failed to decrypt" forKey:@"message"];
+            }else{
+                [event setObject:NUMBOOL(YES) forKey:@"success"];
+            }
+        }
     }
-    
-    
-    NSData * fromData = [self loadToData:from];
-    NSData * toData = [self loadToData:to];
+    if(callback != nil ){
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
     
 }
-
--(NSString *)AESEncryptToBlob:(id)args
+-(void) AESEncrypt:(id)args
 {
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    ENSURE_TYPE(args,NSDictionary);
+
+    if (![args objectForKey:@"secret"]) {
+		NSLog(@"[ERROR] encryption secret is required");
+		return;
+	}
+    NSString* secret = [args objectForKey:@"secret"];
     
+    NSString* filePlainFile = [args objectForKey:@"from"];
+	NSString* filePlainFileName = [self getNormalizedPath:filePlainFile];
+
+    if (filePlainFileName == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", filePlainFileName]);
+		return;
+	}
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filePlainFileName]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", filePlainFileName]);
+		return;
+    }
+    
+    NSString* fileEncryptedFile = [args objectForKey:@"to"];
+	NSString* fileEncryptedFileName = [self getNormalizedPath:fileEncryptedFile];
+
+    if (fileEncryptedFileName == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", fileEncryptedFileName]);
+		return;
+	}
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fileEncryptedFileName]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", fileEncryptedFileName]);
+		return;
+    }
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback method is required");
+		return;
+	}
+    
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
+ 
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                  fileEncryptedFileName,@"to",
+                                  filePlainFileName,@"from",
+                                  nil];
+        
+    __block int total = 0;
+    int blockSize = 32 * 1024;
+    __block NSError *encryptionError = nil;
+    
+    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:filePlainFileName];
+    [inputStream open];
+    __block NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:fileEncryptedFileName append:NO];
+        [outputStream open];
+    
+    __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    __block RNEncryptor *encryptor;
+    __block NSMutableData *buffer = [NSMutableData dataWithLength:blockSize];
+    
+    dispatch_block_t readStreamBlock = ^{
+        [buffer setLength:blockSize];
+        NSInteger bytesRead = [inputStream read:[buffer mutableBytes] maxLength:blockSize];
+        if (bytesRead < 0) {
+            NSLog(@"[Error] reading block:%@", inputStream.streamError);
+            [inputStream close];
+            dispatch_semaphore_signal(sem);
+        }
+        else if (bytesRead == 0) {
+            [inputStream close];
+            [encryptor finish];
+        }
+        else {
+            [buffer setLength:bytesRead];
+            [encryptor addData:buffer];
+            NSLog(@"[Debug] Sent %ld bytes to encryptor", (unsigned long)bytesRead);
+        }
+    };
+        
+    encryptor = [[RNEncryptor alloc] initWithSettings:kRNCryptorAES256Settings
+                              password:secret
+                            handler:^(RNCryptor *cryptor, NSData *data) {
+        NSLog(@"[Debug] Received %d bytes", data.length);
+        [outputStream write:data.bytes maxLength:data.length];
+        if (cryptor.isFinished) {
+            [outputStream close];
+            dispatch_semaphore_signal(sem);
+        }
+        else {
+            readStreamBlock();
+        }  }];
+    
+    readStreamBlock();
+    
+    long timedout = dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    
+    if(timedout){
+        [event setObject:NUMBOOL(NO) forKey:@"success"];
+        [event setObject:@"process timed out" forKey:@"message"];
+    }else{
+        if(encryptionError!=nil){
+            [event setObject:NUMBOOL(NO) forKey:@"success"];
+            [event setObject:[NSString stringWithFormat:@"Encryption error: %@", encryptionError]
+                      forKey:@"message"];
+            
+        }else{
+            //Retrieve the encrypted data
+            NSData *encryptedData = [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+            if([encryptedData length] == 0){
+                [event setObject:NUMBOOL(NO) forKey:@"success"];
+                [event setObject:@"Failed to encrypt" forKey:@"message"];
+            }else{
+                [event setObject:NUMBOOL(YES) forKey:@"success"];
+            }
+        }
+    }
+    if(callback != nil ){
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
 }
 
 @end
