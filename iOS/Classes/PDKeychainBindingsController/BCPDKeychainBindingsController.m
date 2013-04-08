@@ -98,7 +98,8 @@ static BCPDKeychainBindingsController *sharedInstance = nil;
 -(void) removeAllItems {
 
     NSMutableDictionary *query = [self _queryForService:[self serviceName] account:nil];
-    OSStatus status = SecItemDelete((CFDictionaryRef)query);
+    SecItemDelete((CFDictionaryRef)query);
+    //OSStatus status = SecItemDelete((CFDictionaryRef)query);
 //    BOOL results = (status == errSecSuccess || status == errSecItemNotFound);
 //    if(results)
 //    {
@@ -228,7 +229,7 @@ static BCPDKeychainBindingsController *sharedInstance = nil;
 - (id)init
 {
 	@synchronized(self) {
-		[super init];
+		self = [super init];
 		return self;
 	}
 }
