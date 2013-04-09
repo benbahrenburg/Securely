@@ -218,8 +218,8 @@
                                              &kCFTypeDictionaryKeyCallBacks,
                                              &kCFTypeDictionaryValueCallBacks);
     
-    CFDictionarySetValue(myDictionary, kCGPDFContextOwnerPassword, CFSTR("user"));
-    CFDictionarySetValue(myDictionary, kCGPDFContextUserPassword, CFSTR("user"));
+    ///CFDictionarySetValue(myDictionary, kCGPDFContextOwnerPassword, CFSTR(secret));
+    CFDictionarySetValue(myDictionary, kCGPDFContextUserPassword, CFSTR(secret));
 
     
     if (!allowCopy){
