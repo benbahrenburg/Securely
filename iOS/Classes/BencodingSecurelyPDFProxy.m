@@ -161,11 +161,17 @@
     //Make sure we're on the UI thread, this stops bad things
 	ENSURE_UI_THREAD(protect,args);
     
-    if (![args objectForKey:@"secret"]) {
+    if (![args objectForKey:@"userPassword"]) {
 		NSLog(@"[ERROR] secret is required");
 		return;
 	}
-    NSString* secret = [args objectForKey:@"secret"];
+
+    NSString* userPassword = [args objectForKey:@"userPassword"];
+    
+    NSString* ownerPassword = nil;
+    if ([args objectForKey:@"ownerPassword"]) {
+        ownerPassword = [args objectForKey:@"ownerPassword"];
+	}
     
     NSString* filePlainFile = [args objectForKey:@"from"];
 	NSString* sourceFile = [self getNormalizedPath:filePlainFile];
@@ -218,8 +224,12 @@
                                              &kCFTypeDictionaryKeyCallBacks,
                                              &kCFTypeDictionaryValueCallBacks);
     
-    ///CFDictionarySetValue(myDictionary, kCGPDFContextOwnerPassword, CFSTR(secret));
-    CFDictionarySetValue(myDictionary, kCGPDFContextUserPassword, CFSTR(secret));
+    if(ownerPassword!=nil)
+    {
+        CFDictionarySetValue(myDictionary, kCGPDFContextOwnerPassword, (CFStringRef)ownerPassword);
+    }
+
+    CFDictionarySetValue(myDictionary, kCGPDFContextUserPassword, (CFStringRef)userPassword);
 
     
     if (!allowCopy){
