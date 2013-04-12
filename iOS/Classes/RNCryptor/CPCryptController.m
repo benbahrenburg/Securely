@@ -77,15 +77,19 @@ static NSString * const kModeKey = @"mode";
                                             password:password error:error];
     
     if (success) {
+        //NSLog(@"[DEBUG] RNCryptManager returned true");
         NSData *data = [outStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
         if([data length]>0)
         {
             NSError *writeError = nil;
-            [data writeToFile:outputFilePath options:NSDataWritingFileProtectionComplete | NSDataWritingAtomic error:error];
+            [data writeToFile:outputFilePath options:NSDataWritingFileProtectionComplete | NSDataWritingAtomic error:&writeError];
             
-            if(error != nil) {
+             //NSLog(@"[DEBUG] Error writing file");
+            
+            if(writeError != nil) {
                 success = NO;
             }
+            *error = writeError;
         }else{
             success = NO;
             *error = [NSError errorWithDomain:@"bencoding.securely"
@@ -93,6 +97,8 @@ static NSString * const kModeKey = @"mode";
                                      userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"unable to decrypt file, check if password is correct  at %@", inputFilePath]  forKey:NSLocalizedDescriptionKey]];
             
         }
+    }else{
+        NSLog(@"[DEBUG] Encryption provider returned false");
     }
     
     [inStream close];
