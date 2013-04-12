@@ -26,6 +26,10 @@
 		24DD6CFA1134B3F500162E58 /* BencodingSecurelyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* BencodingSecurelyModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */; };
 		24DE9E1211C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */; };
+		434A45A71717429C0052C173 /* CPCryptController.h in Headers */ = {isa = PBXBuildFile; fileRef = 434A45A31717429C0052C173 /* CPCryptController.h */; };
+		434A45A81717429C0052C173 /* CPCryptController.m in Sources */ = {isa = PBXBuildFile; fileRef = 434A45A41717429C0052C173 /* CPCryptController.m */; };
+		434A45A91717429C0052C173 /* RNCryptManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 434A45A51717429C0052C173 /* RNCryptManager.h */; };
+		434A45AA1717429C0052C173 /* RNCryptManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 434A45A61717429C0052C173 /* RNCryptManager.m */; };
 		435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D316D41B680093B1BD /* NSData+Base64.h */; };
 		435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D416D41B680093B1BD /* NSData+Base64.m */; };
 		435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */; };
@@ -43,16 +47,6 @@
 		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; };
 		43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */; };
 		43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */; };
-		43A5CAE0171366070073BEC8 /* RNCryptor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */; };
-		43A5CAE1171366070073BEC8 /* RNCryptor-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */; };
-		43A5CAE2171366070073BEC8 /* RNCryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD2171366070073BEC8 /* RNCryptor.h */; };
-		43A5CAE3171366070073BEC8 /* RNCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD3171366070073BEC8 /* RNCryptor.m */; };
-		43A5CAE4171366070073BEC8 /* RNCryptorEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */; };
-		43A5CAE5171366070073BEC8 /* RNCryptorEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */; };
-		43A5CAE6171366070073BEC8 /* RNDecryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD6171366070073BEC8 /* RNDecryptor.h */; };
-		43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD7171366070073BEC8 /* RNDecryptor.m */; };
-		43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A5CAD8171366070073BEC8 /* RNEncryptor.h */; };
-		43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A5CAD9171366070073BEC8 /* RNEncryptor.m */; };
 		43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */; };
 		43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */; };
 		43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */; };
@@ -77,6 +71,10 @@
 		24DD6D1B1134B66800162E58 /* titanium.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = titanium.xcconfig; sourceTree = "<group>"; };
 		24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyModuleAssets.h; path = Classes/BencodingSecurelyModuleAssets.h; sourceTree = "<group>"; };
 		24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyModuleAssets.m; path = Classes/BencodingSecurelyModuleAssets.m; sourceTree = "<group>"; };
+		434A45A31717429C0052C173 /* CPCryptController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPCryptController.h; sourceTree = "<group>"; };
+		434A45A41717429C0052C173 /* CPCryptController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPCryptController.m; sourceTree = "<group>"; };
+		434A45A51717429C0052C173 /* RNCryptManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptManager.h; sourceTree = "<group>"; };
+		434A45A61717429C0052C173 /* RNCryptManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptManager.m; sourceTree = "<group>"; };
 		435D89D316D41B680093B1BD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "Classes/AESCrypt/NSData+Base64.h"; sourceTree = "<group>"; };
 		435D89D416D41B680093B1BD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "Classes/AESCrypt/NSData+Base64.m"; sourceTree = "<group>"; };
 		435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+CommonCrypto.h"; path = "Classes/AESCrypt/NSData+CommonCrypto.h"; sourceTree = "<group>"; };
@@ -94,16 +92,6 @@
 		43857BF0169FA0A3004D600C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyFileCryptoProxy.h; path = Classes/BencodingSecurelyFileCryptoProxy.h; sourceTree = "<group>"; };
 		43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyFileCryptoProxy.m; path = Classes/BencodingSecurelyFileCryptoProxy.m; sourceTree = "<group>"; };
-		43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor+Private.h"; sourceTree = "<group>"; };
-		43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor-Prefix.pch"; sourceTree = "<group>"; };
-		43A5CAD2171366070073BEC8 /* RNCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptor.h; sourceTree = "<group>"; };
-		43A5CAD3171366070073BEC8 /* RNCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptor.m; sourceTree = "<group>"; };
-		43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptorEngine.h; sourceTree = "<group>"; };
-		43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptorEngine.m; sourceTree = "<group>"; };
-		43A5CAD6171366070073BEC8 /* RNDecryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNDecryptor.h; sourceTree = "<group>"; };
-		43A5CAD7171366070073BEC8 /* RNDecryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNDecryptor.m; sourceTree = "<group>"; };
-		43A5CAD8171366070073BEC8 /* RNEncryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNEncryptor.h; sourceTree = "<group>"; };
-		43A5CAD9171366070073BEC8 /* RNEncryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEncryptor.m; sourceTree = "<group>"; };
 		43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPDFProxy.h; path = Classes/BencodingSecurelyPDFProxy.h; sourceTree = "<group>"; };
 		43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPDFProxy.m; path = Classes/BencodingSecurelyPDFProxy.m; sourceTree = "<group>"; };
 		43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyStringCryptoProxy.h; path = Classes/BencodingSecurelyStringCryptoProxy.h; sourceTree = "<group>"; };
@@ -223,16 +211,10 @@
 		43A5CACF171366070073BEC8 /* RNCryptor */ = {
 			isa = PBXGroup;
 			children = (
-				43A5CAD0171366070073BEC8 /* RNCryptor+Private.h */,
-				43A5CAD1171366070073BEC8 /* RNCryptor-Prefix.pch */,
-				43A5CAD2171366070073BEC8 /* RNCryptor.h */,
-				43A5CAD3171366070073BEC8 /* RNCryptor.m */,
-				43A5CAD4171366070073BEC8 /* RNCryptorEngine.h */,
-				43A5CAD5171366070073BEC8 /* RNCryptorEngine.m */,
-				43A5CAD6171366070073BEC8 /* RNDecryptor.h */,
-				43A5CAD7171366070073BEC8 /* RNDecryptor.m */,
-				43A5CAD8171366070073BEC8 /* RNEncryptor.h */,
-				43A5CAD9171366070073BEC8 /* RNEncryptor.m */,
+				434A45A31717429C0052C173 /* CPCryptController.h */,
+				434A45A41717429C0052C173 /* CPCryptController.m */,
+				434A45A51717429C0052C173 /* RNCryptManager.h */,
+				434A45A61717429C0052C173 /* RNCryptManager.m */,
 			);
 			name = RNCryptor;
 			path = Classes/RNCryptor;
@@ -257,13 +239,9 @@
 				435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */,
 				435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */,
 				43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */,
-				43A5CAE0171366070073BEC8 /* RNCryptor+Private.h in Headers */,
-				43A5CAE1171366070073BEC8 /* RNCryptor-Prefix.pch in Headers */,
-				43A5CAE2171366070073BEC8 /* RNCryptor.h in Headers */,
-				43A5CAE4171366070073BEC8 /* RNCryptorEngine.h in Headers */,
-				43A5CAE6171366070073BEC8 /* RNDecryptor.h in Headers */,
-				43A5CAE8171366070073BEC8 /* RNEncryptor.h in Headers */,
 				43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */,
+				434A45A71717429C0052C173 /* CPCryptController.h in Headers */,
+				434A45A91717429C0052C173 /* RNCryptManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,11 +323,9 @@
 				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
 				435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */,
 				43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */,
-				43A5CAE3171366070073BEC8 /* RNCryptor.m in Sources */,
-				43A5CAE5171366070073BEC8 /* RNCryptorEngine.m in Sources */,
-				43A5CAE7171366070073BEC8 /* RNDecryptor.m in Sources */,
-				43A5CAE9171366070073BEC8 /* RNEncryptor.m in Sources */,
 				43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */,
+				434A45A81717429C0052C173 /* CPCryptController.m in Sources */,
+				434A45AA1717429C0052C173 /* RNCryptManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

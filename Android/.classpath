@@ -15,5 +15,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/benjamin/Library/Application Support/Titanium/mobilesdk/osx/2.1.4.GA/android/modules/titanium-utils.jar"/>
+	<classpathentry kind="lib" path="/Users/benjamin/Library/Application Support/Titanium/mobilesdk/osx/3.0.2.GA/android/modules/titanium-filesystem.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

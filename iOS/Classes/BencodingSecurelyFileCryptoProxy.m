@@ -12,6 +12,8 @@
 #import "TiFile.h"
 #import "TiBlob.h"
 #import "TiFilesystemFileProxy.h"
+#import "CPCryptController.h"
+#import <CommonCrypto/CommonCryptor.h>
 @implementation BencodingSecurelyFileCryptoProxy
 
 
@@ -37,22 +39,22 @@
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
     
-    if (![args objectForKey:@"secret"]) {
-		NSLog(@"[ERROR] decrypt secret is required");
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] decrypt password is required");
 		return;
 	}
-    NSString* secret = [args objectForKey:@"secret"];
+    NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* sourceFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* inputFilePath = [self getNormalizedPath:fileEncryptedFile];
     
-    if (sourceFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", sourceFile]);
+    if (inputFilePath == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", inputFilePath]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", sourceFile]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", inputFilePath]);
 		return;
     }
     
@@ -66,9 +68,9 @@
     
     if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
         NSLog(@"[DEBUG] Output file already exists removing");
-        NSError *error;
-        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
-        if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+        NSError *errorD;
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&errorD];
+        if (!deleted) NSLog(@"[ERROR] %@", [errorD localizedDescription]);
     }
     
     if (![args objectForKey:@"completed"]) {
@@ -81,84 +83,36 @@
 
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   outputFile,@"to",
-                                  sourceFile,@"from",
+                                  inputFilePath,@"from",
                                   nil];
     
-    // Make sure that this number is larger than the header + 1 block.
-    // 33+16 bytes = 49 bytes. So it shouldn't be a problem.
-    int blockSize = 32 * 1024;
-    __block NSError *decryptionError = nil;
+    NSError *error = nil;
     
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:sourceFile];
-    [inputStream open];
-    NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:outputFile append:NO];
-    [outputStream open];
-    
-    __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);  
-    __block RNDecryptor *decryptor;
-    __block NSMutableData *buffer = [NSMutableData dataWithLength:blockSize];
-
-    dispatch_block_t readStreamBlock = ^{
-        [buffer setLength:blockSize];
-        NSInteger bytesRead = [inputStream read:[buffer mutableBytes] maxLength:blockSize];
-        if (bytesRead < 0) {
-            NSLog(@"[Error] reading block:%@", inputStream.streamError);
-            [inputStream close];
-            dispatch_semaphore_signal(sem);
-        }
-        else if (bytesRead == 0) {
-            [inputStream close];
-            [decryptor finish];
-        }
-        else {
-            [buffer setLength:bytesRead];
-            [decryptor addData:buffer];
-            NSLog(@"[Debug] Sent %ld bytes to decryptor", (unsigned long)bytesRead);
-        }
-    };
-
-    decryptor = [[RNDecryptor alloc] initWithPassword:secret handler:^(RNCryptor *cryptor, NSData *data) {
-        NSLog(@"[Debug] Received %d bytes", data.length);
-        [outputStream write:data.bytes maxLength:data.length];
-        if (cryptor.isFinished) {
-            [outputStream close];
-            dispatch_semaphore_signal(sem);
-        }
-        else {
-            readStreamBlock();
-        }  }];
-    
-    readStreamBlock();
-    
-    long timedout = dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
-    
-    if(timedout){
+    if (![[CPCryptController sharedController]
+           decryptWithPassword:inputFilePath withOutputFilePath:outputFile
+           password:secret error:&error] ){
+        
         [event setObject:NUMBOOL(NO) forKey:@"success"];
-        [event setObject:@"process timed out" forKey:@"message"];
-    }else{
-        if(decryptionError!=nil){
-            [event setObject:NUMBOOL(NO) forKey:@"success"];
-            [event setObject:[NSString stringWithFormat:@"Decrypt error: %@", decryptionError]
-                      forKey:@"message"];
+        
+        if ([error code] == kCCDecodeError) {
+            NSLog(@"[ERROR] Incorrect password provided");
 
-        }else{
-            //Retrieve the decrypted data
-            NSData *decryptedData = [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-            if([decryptedData length] == 0){
-                [event setObject:NUMBOOL(NO) forKey:@"success"];
-                [event setObject:@"Failed to decrypt" forKey:@"message"];
-            }else{
-                [event setObject:NUMBOOL(YES) forKey:@"success"];
-            }
+            [event setObject:@"Incorrect password provided" forKey:@"message"];
         }
-    }
-    
-    if(deleteSource){
-        if([[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
-            NSLog(@"[Debug] Removing source file");
-            NSError *error;
-            BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:sourceFile error:&error];
-            if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+        else {
+            NSLog(@"[ERROR] Could not decrypt data: %@", error);
+            [event setObject:[error localizedDescription] forKey:@"message"];
+        }
+        
+    }else{
+        [event setObject:NUMBOOL(YES) forKey:@"success"];
+        if(deleteSource){
+            if([[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
+                NSLog(@"[DEBUG] Removing source file");
+                NSError *errorD2;
+                BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
+                if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
+            }
         }
     }
     
@@ -174,22 +128,22 @@
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
 
-    if (![args objectForKey:@"secret"]) {
-		NSLog(@"[ERROR] encryption secret is required");
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] encryption password is required");
 		return;
 	}
-    NSString* secret = [args objectForKey:@"secret"];
+    NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* sourceFile = [self getNormalizedPath:filePlainFile];
+	NSString* inputFilePath = [self getNormalizedPath:filePlainFile];
 
-    if (sourceFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
+    if (inputFilePath == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFilePath]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFilePath]);
 		return;
     }
     
@@ -202,10 +156,10 @@
 	}
 
     if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
-        NSLog(@"[Debug] Output file already exists, removing");
-        NSError *error;
-        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
-        if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+        NSLog(@"[DEBUG] Output file already exists, removing");
+        NSError *errorD;
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&errorD];
+        if (!deleted) NSLog(@"[ERROR] %@", [errorD localizedDescription]);
     }
     if (![args objectForKey:@"completed"]) {
 		NSLog(@"[ERROR] completed callback method is required");
@@ -217,86 +171,28 @@
  
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   outputFile,@"to",
-                                  sourceFile,@"from",
+                                  inputFilePath,@"from",
                                   nil];
         
-    __block int total = 0;
-    int blockSize = 32 * 1024;
-    __block NSError *encryptionError = nil;
-    
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:sourceFile];
-    [inputStream open];
-    __block NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:outputFile append:NO];
-        [outputStream open];
-    
-    __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    __block RNEncryptor *encryptor;
-    __block NSMutableData *buffer = [NSMutableData dataWithLength:blockSize];
-    
-    dispatch_block_t readStreamBlock = ^{
-        [buffer setLength:blockSize];
-        NSInteger bytesRead = [inputStream read:[buffer mutableBytes] maxLength:blockSize];
-        if (bytesRead < 0) {
-            NSLog(@"[Error] reading block:%@", inputStream.streamError);
-            [inputStream close];
-            dispatch_semaphore_signal(sem);
-        }
-        else if (bytesRead == 0) {
-            [inputStream close];
-            [encryptor finish];
-        }
-        else {
-            [buffer setLength:bytesRead];
-            [encryptor addData:buffer];
-            NSLog(@"[Debug] Sent %ld bytes to encryptor", (unsigned long)bytesRead);
-        }
-    };
-        
-    encryptor = [[RNEncryptor alloc] initWithSettings:kRNCryptorAES256Settings
-                              password:secret
-                            handler:^(RNCryptor *cryptor, NSData *data) {
-        NSLog(@"[DEBUG] Received %d bytes", data.length);
-        [outputStream write:data.bytes maxLength:data.length];
-        if (cryptor.isFinished) {
-            [outputStream close];
-            dispatch_semaphore_signal(sem);
-        }
-        else {
-            readStreamBlock();
-        }  }];
-    
-    readStreamBlock();
-    
-    long timedout = dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
-    
-    if(timedout){
+    NSError *error;
+    if (! [[CPCryptController sharedController]
+           encryptWithPassword:inputFilePath withOutputFilePath:outputFile
+                                               password:secret error:&error] )
+    {
+        NSLog(@"[ERROR] Could not encrypt data: %@", error);
         [event setObject:NUMBOOL(NO) forKey:@"success"];
-        [event setObject:@"process timed out" forKey:@"message"];
+        [event setObject:[error localizedDescription] forKey:@"message"];
     }else{
-        if(encryptionError!=nil){
-            [event setObject:NUMBOOL(NO) forKey:@"success"];
-            [event setObject:[NSString stringWithFormat:@"Encryption error: %@", encryptionError]
-                      forKey:@"message"];
-            
-        }else{
-            //Retrieve the encrypted data
-            NSData *encryptedData = [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-            if([encryptedData length] == 0){
-                [event setObject:NUMBOOL(NO) forKey:@"success"];
-                [event setObject:@"Failed to encrypt" forKey:@"message"];
-            }else{
-                [event setObject:NUMBOOL(YES) forKey:@"success"];
+        [event setObject:NUMBOOL(YES) forKey:@"success"];
+                
+        if(deleteSource){
+            if([[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
+                NSLog(@"[DEBUG] Removing source file");
+                NSError *errorD2;
+                BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
+                if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
             }
-        }
-    }
-    
-    if(deleteSource){
-        if([[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
-            NSLog(@"[DEBUG] Removing source file");
-            NSError *error;
-            BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:sourceFile error:&error];
-            if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
-        }
+        }    
     }
     
     if(callback != nil ){

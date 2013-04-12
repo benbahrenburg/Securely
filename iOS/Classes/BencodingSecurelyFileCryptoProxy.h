@@ -5,8 +5,6 @@
  * Please see the LICENSE included with this distribution for details.
  */
 #import "TiProxy.h"
-#import "RNEncryptor.h"
-#import "RNDecryptor.h"
 @interface BencodingSecurelyFileCryptoProxy : TiProxy {
 
 
