@@ -75,8 +75,8 @@
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFURLRef url = (CFURLRef)[NSURL fileURLWithPath:protectedFile];
-    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)url);
+    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:protectedFile];
+    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
  
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -98,7 +98,7 @@
     
     if(unlocked){
         
-        CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:protectedFile];
+        CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:outputFile];
         NSInteger numberOfPages1 = CGPDFDocumentGetNumberOfPages(pdf);
         // Create the output context
         CGContextRef writeContext = CGPDFContextCreateWithURL(pdfURLOutput, NULL, NULL);
@@ -130,7 +130,7 @@
     // Release from memory
     CFRelease(url);
     CGPDFDocumentRelease(pdf);
- 
+
     if(unlocked){
         if(![[NSFileManager defaultManager] fileExistsAtPath:protectedFile]){
             [event setObject:NUMBOOL(NO) forKey:@"success"];
@@ -213,13 +213,30 @@
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFMutableDictionaryRef myDictionary = NULL;
-    // This dictionary contains extra options mostly for 'signing' the PDF
-
-    CFURLRef url = (CFURLRef)[NSURL fileURLWithPath:sourceFile];
-    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)url);
+    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:sourceFile];
+    CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
     
+    if(encrypted){
+        CFRelease(url);
+        CGPDFDocumentRelease(pdf);
+        NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      NUMBOOL(NO),@"success",
+                                      @"file already protected",@"message",
+                                       protectedFile,@"to",
+                                          sourceFile,@"from",
+                                          nil];
+            if(callback != nil ){
+                [self _fireEventToListener:@"completed" withObject:event
+                                listener:callback thisObject:nil];
+            [callback autorelease];
+        }
+        
+        return;
+        
+    }
+    
+    CFMutableDictionaryRef myDictionary = NULL;
     myDictionary = CFDictionaryCreateMutable(NULL, 0,
                                              &kCFTypeDictionaryKeyCallBacks,
                                              &kCFTypeDictionaryValueCallBacks);
@@ -264,11 +281,11 @@
     CGPDFContextClose(writeContext);
     
     // Release from memory
+    CFRelease(myDictionary);
     CFRelease(url);
     CFRelease(pdfURLOutput);
     CGPDFDocumentRelease(pdf);
     CGContextRelease(writeContext);
-
     
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   protectedFile,@"to",
@@ -280,6 +297,7 @@
         [event setObject:@"Failed writing protected file"
                   forKey:@"message"];
     }else{
+        [event setObject:NUMBOOL(YES) forKey:@"success"];
         if(deleteSource){
             NSLog(@"[DEBUG] Removing source file");
             NSError *error;

@@ -1,9 +1,7 @@
 package bencoding.securely;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,11 +21,8 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiLifecycle;
-import org.appcelerator.titanium.io.TiBaseFile;
-import org.appcelerator.titanium.io.TiFileFactory;
 import org.appcelerator.titanium.util.TiConvert;
 
 import android.app.Activity;
@@ -36,7 +31,6 @@ import android.app.Activity;
 public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent 
 {
 
-	public static final String RESOURCE_ROOT_ASSETS = "file:///android_asset/Resources";
 	static int _aesBytes = 128;
 
 	public FileCryptoProxy()
@@ -45,13 +39,6 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 
 	}
 	
-	private boolean isInResources(TiBaseFile file)
-	{		
-		if (file.isFile()) {
-			return file.nativePath().startsWith(RESOURCE_ROOT_ASSETS);
-		}
-		return false;
-	}
 	
 	private void copy(InputStream is, OutputStream os) throws IOException {
 	    int i;
@@ -88,15 +75,15 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 
 	private class AESDecryptRunnable implements Runnable
 	{
-		private FileOutputStream _to = null;
-		private FileInputStream _from = null;
+		private OutputStream _to = null;
+		private InputStream _from = null;
 		KrollFunction _callback = null;
 		String _secret = null;
 		String _inputFile = null;
 		String _outputFile = null;
 		public AESDecryptRunnable(String password, 
-								 FileInputStream from, 
-								 FileOutputStream to,
+								 InputStream from, 
+								 OutputStream to,
 								 KrollFunction callback,
 								 String inputFile, String outputFile ){
 			_secret = password;
@@ -161,15 +148,15 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	}
 	private class AESEncryptRunnable implements Runnable
 	{
-		private FileOutputStream _to = null;
-		private FileInputStream _from = null;
+		private OutputStream _to = null;
+		private InputStream _from = null;
 		KrollFunction _callback = null;
 		String _secret = null;
 		String _inputFile = null;
 		String _outputFile = null;
 		public AESEncryptRunnable(String password, 
-								 FileInputStream from, 
-								 FileOutputStream to,
+								 InputStream from, 
+								 OutputStream to,
 								 KrollFunction callback,
 								 String inputFile, String outputFile ){
 			_secret = password;
@@ -232,7 +219,6 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		}			
 	}
 	
-
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{
@@ -264,60 +250,33 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if (object instanceof KrollFunction) {
 			callback = (KrollFunction)object;
 		}
-		String rawSourceFile = args.getString("from");
-		TiBaseFile sourceFile = TiFileFactory.createTitaniumFile(rawSourceFile,false);
-		if(!sourceFile.exists()){
-			throw new IllegalArgumentException("File to decrypt does not exist " + sourceFile.nativePath());
-		}
-		String rawOutputFile = args.getString("to");
-		TiBaseFile outputFile = TiFileFactory.createTitaniumFile(rawOutputFile,false);
-		if(isInResources(outputFile)){
-			throw new IllegalArgumentException("Output file cannot be in a protected directory " + outputFile.nativePath());
-		}
-		if(outputFile.exists()){
-			outputFile.deleteFile();
-		}
-  
+		String inputParam = args.getString("from");
+		String outputParam = args.getString("to");
+		  
 		try{
-			
-			FileInputStream fis = null;
-			if(isInResources(sourceFile)){
-				String path = removeResourcesDirectory(sourceFile.nativePath());
-				fis = new FileInputStream(TiApplication.getInstance().getApplicationContext().getFileStreamPath(path));
-			}else{
-				fis = new FileInputStream(sourceFile.getNativeFile());
+			if(Utils.pathIsInResources(outputParam)){
+				throw new IllegalArgumentException("Output file cannot be in the Resources directory: " + outputParam);
 			}
-
-			String path = removeFilePrefix(outputFile.nativePath());
-			//LogHelpers.Log("path=" + path);					
-	        FileOutputStream fos = new FileOutputStream(path); 
+			
+			if(!Utils.fileCanBeLoadedFromPath(inputParam)){
+				throw new IllegalArgumentException("Input file cannot be loaded: " + inputParam);
+			}
+			
+			FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(inputParam));
+			OutputStream fos = Utils.createOutputStreamFromPath(outputParam); 
 	        			
-			Thread clientThread = new Thread(new AESDecryptRunnable(secret,fis,fos, callback,sourceFile.nativePath(),outputFile.nativePath() ));
+			Thread clientThread = new Thread(new AESDecryptRunnable(secret,fis,fos, callback,inputParam,outputParam));
 			clientThread.run();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			LogHelpers.Log(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);	
 		}
 	}
 
-	private String removeResourcesDirectory(String path){
-		if(path.startsWith("file:///android_asset/Resources/")){
-			int len = "file:///android_asset/Resources/".length();
-			return path.substring(len);
-		}else{
-			return path;
-		}
-	}
-   
-	private String removeFilePrefix(String path){
-		if(path.startsWith("file:/")){
-			int len = "file:/".length();
-			return path.substring(len);
-		}else{
-			return path;
-		}
-	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Kroll.method
@@ -342,42 +301,31 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if (object instanceof KrollFunction) {
 			callback = (KrollFunction)object;
 		}
-		String rawSourceFile = args.getString("from");
-		TiBaseFile sourceFile = TiFileFactory.createTitaniumFile(rawSourceFile,false);
-		if(!sourceFile.exists()){
-			throw new IllegalArgumentException("File to encrypt does not exist " + sourceFile.nativePath());
-		}
-
-		String rawOutputFile = args.getString("to");
-		TiBaseFile outputFile = TiFileFactory.createTitaniumFile(rawOutputFile,false);
-		if(isInResources(outputFile)){
-			throw new IllegalArgumentException("Output file cannot be in a protected directory " + outputFile.nativePath());
-		}
-		
-		if(outputFile.exists()){
-			outputFile.deleteFile();
-		}
-
+		String inputParam = args.getString("from");
+		String outputParam = args.getString("to");
+		  
 		try{
-				
-			FileInputStream fis = null;
-			if(isInResources(sourceFile)){
-				String path = removeResourcesDirectory(sourceFile.nativePath());
-				fis = new FileInputStream(TiApplication.getInstance().getApplicationContext().getFileStreamPath(path));
-			}else{
-				fis = new FileInputStream(sourceFile.getNativeFile());
+		
+			if(Utils.pathIsInResources(outputParam)){
+				throw new IllegalArgumentException("Output file cannot be in the Resources directory: " + outputParam);
 			}
-
-			String path = removeFilePrefix(outputFile.nativePath());
-			//LogHelpers.Log("path=" + path);					
-	        FileOutputStream fos = new FileOutputStream(path);
 			
-			Thread clientThread = new Thread(new AESEncryptRunnable(secret,fis,fos, callback,sourceFile.nativePath(),outputFile.nativePath() ));
+			if(!Utils.fileCanBeLoadedFromPath(inputParam)){
+				throw new IllegalArgumentException("Input file cannot be loaded: " + inputParam);
+			}
+			
+			FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(inputParam));				
+	        OutputStream fos = Utils.createOutputStreamFromPath(outputParam); 
+	        			
+			Thread clientThread = new Thread(new AESEncryptRunnable(secret,fis,fos, callback,inputParam,outputParam));
 			clientThread.run();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			LogHelpers.Log(e);			
+			LogHelpers.Log(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);	
 		}	
 	}
 	@Override

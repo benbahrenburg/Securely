@@ -1,0 +1,82 @@
+package bencoding.securely;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.io.TiBaseFile;
+import org.appcelerator.titanium.io.TiFileFactory;
+import org.appcelerator.titanium.util.TiFileHelper;
+
+public class Utils {
+
+	public static final String RESOURCE_ROOT_ASSETS = "file:///android_asset/";
+	public static final String TEMP_PREFIX = "bencodesecCache";
+	
+	public static boolean fileCanBeLoadedFromPath(String path){
+		
+		TiFileHelper foo = new TiFileHelper(TiApplication.getInstance().getApplicationContext());
+		try {
+			InputStream stream = foo.openInputStream(path, true);
+			stream.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+			return false;
+		}
+	}
+
+	public static OutputStream createOutputStreamFromPath(String path) throws IOException{
+		TiBaseFile outFile = TiFileFactory.createTitaniumFile(path,false);					
+        return outFile.getOutputStream(); 		
+	}
+	public static File createTempFileFromFileAtPath(String path) throws IOException{	
+		TiFileHelper helper = new TiFileHelper(TiApplication.getInstance().getApplicationContext());
+		InputStream stream = helper.openInputStream(path, true);
+		File tempFile = helper.getTempFileFromInputStream(stream,TEMP_PREFIX,true);
+		stream.close();
+		return tempFile;
+	}
+	
+	public static boolean pathIsInAssets(TiBaseFile file)
+	{		
+		if (file.isFile()) {
+			return file.nativePath().startsWith(RESOURCE_ROOT_ASSETS);
+		}
+		return false;
+	}
+
+	public static boolean pathIsInResources(String path)
+	{		
+		return path.startsWith(RESOURCE_ROOT_ASSETS + "Resources");
+	}
+	
+	public static boolean pathIsInResources(TiBaseFile file)
+	{		
+		if (file.isFile()) {
+			return pathIsInResources(file.nativePath());
+		}
+		return false;
+	}
+	
+	public static String removeResourcesDirectoryFromPath(String path){
+		if(path.startsWith(RESOURCE_ROOT_ASSETS + "Resources")){
+			int len = (RESOURCE_ROOT_ASSETS + "Resources").length();
+			return path.substring(len);
+		}else{
+			return path;
+		}
+	}
+   
+	public static String removeFilePrefixFromPath(String path){
+		if(path.startsWith("file:/")){
+			int len = "file:/".length();
+			return path.substring(len);
+		}else{
+			return path;
+		}
+	}	
+}
