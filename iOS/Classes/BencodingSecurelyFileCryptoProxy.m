@@ -108,10 +108,14 @@
         [event setObject:NUMBOOL(YES) forKey:@"success"];
         if(deleteSource){
             if([[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
-                NSLog(@"[DEBUG] Removing source file");
-                NSError *errorD2;
-                BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
-                if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
+                if(![[NSFileManager defaultManager] isDeletableFileAtPath:inputFilePath]){
+                    NSLog(@"[ERROR] Unable to remove input file");
+                }else{
+                    NSLog(@"[DEBUG] Removing source file");
+                    NSError *errorD2;
+                    BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
+                    if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
+                }
             }
         }
     }
@@ -187,10 +191,14 @@
                 
         if(deleteSource){
             if([[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
-                NSLog(@"[DEBUG] Removing source file");
-                NSError *errorD2;
-                BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
-                if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
+                if(![[NSFileManager defaultManager] isDeletableFileAtPath:inputFilePath]){
+                    NSLog(@"[ERROR] Unable to remove input file");
+                }else{
+                    NSLog(@"[DEBUG] Removing source file");
+                    NSError *errorD2;
+                    BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFilePath error:&errorD2];
+                    if (!deleted) NSLog(@"[ERROR] %@", [errorD2 localizedDescription]);
+                }
             }
         }    
     }

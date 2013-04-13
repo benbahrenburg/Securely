@@ -25,30 +25,30 @@
 }
 
 
--(void) unlock:(id)args
+-(void) unprotect:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
     
     //Make sure we're on the UI thread, this stops bad things
-	ENSURE_UI_THREAD(protect,args);
+	ENSURE_UI_THREAD(unprotect,args);
     
-    if (![args objectForKey:@"secret"]) {
-		NSLog(@"[ERROR] decrypt secret is required");
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] password is required");
 		return;
 	}
-    NSString* secret = [args objectForKey:@"secret"];
+    NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* protectedFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* inputFile = [self getNormalizedPath:fileEncryptedFile];
     
-    if (protectedFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", protectedFile]);
+    if (inputFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", inputFile]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:protectedFile]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", protectedFile]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", inputFile]);
 		return;
     }
     
@@ -56,14 +56,14 @@
 	NSString* outputFile = [self getNormalizedPath:fileDecryptedFile];
     
     if (outputFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", outputFile]);
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", outputFile]);
 		return;
 	}
     
     if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
         NSLog(@"[DEBUG] Output file already exists, removing");
         NSError *error;
-        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:protectedFile error:&error];
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
         if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
     }
     
@@ -75,12 +75,12 @@
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:protectedFile];
+    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:inputFile];
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
  
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                  protectedFile,@"to",
+                                  inputFile,@"to",
                                   outputFile,@"from",
                                   nil];
     
@@ -93,22 +93,30 @@
             [event setObject:@"Failed to unlock try another password"
                       forKey:@"message"];
         }
-        
     }
     
     if(unlocked){
+        CFMutableDictionaryRef myDictionary = NULL;
+        myDictionary = CFDictionaryCreateMutable(NULL, 0,
+                                                 &kCFTypeDictionaryKeyCallBacks,
+                                                 &kCFTypeDictionaryValueCallBacks);
+        
+        
+        CFDictionarySetValue(myDictionary, kCGPDFContextAllowsCopying, kCFBooleanTrue);
+        CFDictionarySetValue(myDictionary, kCGPDFContextAllowsPrinting, kCFBooleanTrue);
         
         CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:outputFile];
         NSInteger numberOfPages1 = CGPDFDocumentGetNumberOfPages(pdf);
+        
         // Create the output context
-        CGContextRef writeContext = CGPDFContextCreateWithURL(pdfURLOutput, NULL, NULL);
+        CGContextRef writeContext = CGPDFContextCreateWithURL(pdfURLOutput, NULL, myDictionary);
 
         // Loop variables
         CGPDFPageRef page;
         CGRect mediaBox;
         
         // Read the first PDF and generate the output pages
-        NSLog(@"[Debug] Pages from pdf (%i)", numberOfPages1);
+        NSLog(@"[ERROR] Pages from pdf (%i)", numberOfPages1);
         for (int i=1; i<=numberOfPages1; i++) {
             page = CGPDFDocumentGetPage(pdf, i);
             mediaBox = CGPDFPageGetBoxRect(page, kCGPDFMediaBox);
@@ -119,29 +127,39 @@
         
         // Finalize the output file
         CGPDFContextClose(writeContext);
-        
         // Release from memory
-        CFRelease(pdfURLOutput);
         CGContextRelease(writeContext);
+        CFRelease(pdfURLOutput);
+        CFRelease(myDictionary);
         
-        [event setObject:NUMBOOL(YES) forKey:@"success"];
+         [event setObject:NUMBOOL(YES) forKey:@"success"];
     }
 
-    // Release from memory
-    CFRelease(url);
-    CGPDFDocumentRelease(pdf);
 
+    
+
+    
+    // Release from memory
+    
+    CFRelease(url);    
+    CGPDFDocumentRelease(pdf);
+        
+    
     if(unlocked){
-        if(![[NSFileManager defaultManager] fileExistsAtPath:protectedFile]){
+        if(![[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
             [event setObject:NUMBOOL(NO) forKey:@"success"];
             [event setObject:@"Failed unlocking protected file"
                       forKey:@"message"];
         }else{
             if(deleteSource){
-                NSLog(@"[DEBUG] Removing source file");
-                NSError *error;
-                BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:protectedFile error:&error];
-                if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+                if(![[NSFileManager defaultManager] isDeletableFileAtPath:inputFile]){
+                    NSLog(@"[ERROR] unable to remove input file");
+                }else{
+                    NSLog(@"[DEBUG] Removing source file");
+                    NSError *error;
+                    BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFile error:&error];
+                    if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+                }
             }
         }
     }
@@ -153,6 +171,7 @@
     }
     
 }
+
 -(void) protect:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSDictionary);
@@ -162,7 +181,7 @@
 	ENSURE_UI_THREAD(protect,args);
     
     if (![args objectForKey:@"userPassword"]) {
-		NSLog(@"[ERROR] secret is required");
+		NSLog(@"[ERROR] user password is required");
 		return;
 	}
 
@@ -174,30 +193,30 @@
 	}
     
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* sourceFile = [self getNormalizedPath:filePlainFile];
+	NSString* inputFile = [self getNormalizedPath:filePlainFile];
     
-    if (sourceFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
+    if (inputFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFile]);
 		return;
 	}
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:sourceFile]){
- 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", sourceFile]);
+    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
+ 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFile]);
 		return;
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* protectedFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [self getNormalizedPath:fileEncryptedFile];
     
-    if (protectedFile == nil) {
-		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", protectedFile]);
+    if (outputFile == nil) {
+		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", outputFile]);
 		return;
 	}
     
-    if([[NSFileManager defaultManager] fileExistsAtPath:protectedFile]){
+    if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
         NSLog(@"[Debug] File already exists, removing");
         NSError *error;
-        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:protectedFile error:&error];
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&error];
         if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
     }
     
@@ -207,13 +226,13 @@
 	}
 
     BOOL allowCopy = [TiUtils boolValue:[args objectForKey:@"allowCopy"] def:YES];
-    BOOL allowPrint = [TiUtils boolValue:[args objectForKey:@"allowPrint"] def:YES];
+    //BOOL allowPrint = [TiUtils boolValue:[args objectForKey:@"allowPrint"] def:YES];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:sourceFile];
+    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:inputFile];
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
     
@@ -223,8 +242,8 @@
         NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       NUMBOOL(NO),@"success",
                                       @"file already protected",@"message",
-                                       protectedFile,@"to",
-                                          sourceFile,@"from",
+                                       outputFile,@"to",
+                                          inputFile,@"from",
                                           nil];
             if(callback != nil ){
                 [self _fireEventToListener:@"completed" withObject:event
@@ -253,11 +272,8 @@
         CFDictionarySetValue(myDictionary, kCGPDFContextAllowsCopying, kCFBooleanFalse);
     }
 
-    if (!allowPrint){
-        CFDictionarySetValue(myDictionary, kCGPDFContextAllowsPrinting, kCFBooleanFalse);
-    }
     
-    CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:protectedFile];
+    CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:outputFile];
     NSInteger numberOfPages1 = CGPDFDocumentGetNumberOfPages(pdf);
 
     // Create the output context
@@ -288,21 +304,25 @@
     CGContextRelease(writeContext);
     
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                  protectedFile,@"to",
-                                  sourceFile,@"from",
+                                  outputFile,@"to",
+                                  inputFile,@"from",
                                   nil];
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:protectedFile]){
+    if(![[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
         [event setObject:NUMBOOL(NO) forKey:@"success"];
         [event setObject:@"Failed writing protected file"
                   forKey:@"message"];
     }else{
         [event setObject:NUMBOOL(YES) forKey:@"success"];
         if(deleteSource){
-            NSLog(@"[DEBUG] Removing source file");
-            NSError *error;
-            BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:protectedFile error:&error];
-            if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+             if(![[NSFileManager defaultManager] isDeletableFileAtPath:inputFile]){
+                  NSLog(@"[ERROR] Unable to remove input file");
+             }else{
+                 NSLog(@"[DEBUG] Removing source file");
+                 NSError *error;
+                 BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:inputFile error:&error];
+                 if (!deleted) NSLog(@"Error: %@", [error localizedDescription]);
+             }
         }
     }
 
