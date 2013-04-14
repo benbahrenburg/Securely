@@ -89,10 +89,10 @@ static NSString * const kModeKey = @"mode";
             if(writeError != nil) {
                 success = NO;
             }
-            *error = writeError;
+            if (error != NULL) *error = writeError;
         }else{
             success = NO;
-            *error = [NSError errorWithDomain:@"bencoding.securely"
+            if (error != NULL) *error = [NSError errorWithDomain:@"bencoding.securely"
                                          code:100
                                      userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"unable to decrypt file, check if password is correct  at %@", inputFilePath]  forKey:NSLocalizedDescriptionKey]];
             

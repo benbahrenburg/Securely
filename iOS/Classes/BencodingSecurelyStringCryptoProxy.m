@@ -9,6 +9,7 @@
 #import "NSData+Base64.h"
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
+#import <CommonCrypto/CommonKeyDerivation.h>
 
 @implementation BencodingSecurelyStringCryptoProxy
 
@@ -26,6 +27,33 @@
     return encryptedString;
 }
 
+- (NSData*)generateSalt256 {
+    unsigned char salt[32];
+    for (int i=0; i<32; i++) {
+        salt[i] = (unsigned char)arc4random();
+    }
+    return [NSData dataWithBytes:salt length:32];
+}
+
+
+-(NSString *)generateAESKey:(id)args
+{
+    ENSURE_ARG_COUNT(args,1);
+    NSString* seed = [TiUtils stringValue:[args objectAtIndex:0]];
+    NSData* myPassData = [seed dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* salt = [self generateSalt256];
+
+    // How many rounds to use so that it takes 0.1s ?
+    int rounds = CCCalibratePBKDF(kCCPBKDF2, myPassData.length, salt.length, kCCPRFHmacAlgSHA256, 32, 100);
+                          
+    // Open CommonKeyDerivation.h for help
+    unsigned char key[32];
+    CCKeyDerivationPBKDF(kCCPBKDF2, myPassData.bytes, myPassData.length, salt.bytes, salt.length, kCCPRFHmacAlgSHA256, rounds, key, 32);
+    NSData* keyData = [NSData dataWithBytes:key length:32];
+    NSString* newStr = [NSString stringWithUTF8String:[keyData bytes]];
+    return newStr;
+                          
+}
 -(NSString *)AESDecrypt:(id)args
 {
     ENSURE_ARG_COUNT(args,2);

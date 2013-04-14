@@ -30,6 +30,18 @@ public class StringCryptoProxy  extends KrollProxy {
 		super.handleCreationDict(options);
 	}
 	@Kroll.method
+	public String generateAESKey(String seed) {
+		try {			
+			String genKey = AESCrypto.getRawKey(seed.getBytes()).toString();
+			return genKey;
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogHelpers.Log(e);
+			return null;			
+		}		
+	}
+	
+	@Kroll.method
 	public String AESEncrypt(String key, String value) {
 		try {			
 			String EncryptedText = AESCrypto.encrypt(key, value);

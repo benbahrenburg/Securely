@@ -29,7 +29,7 @@ public class AESCrypto {
         return new String(result);
 	}
 
-	private static byte[] getRawKey(byte[] seed) throws Exception {
+	public static byte[] getRawKey(byte[] seed) throws Exception {
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
 		sr.setSeed(seed);
@@ -48,16 +48,6 @@ public class AESCrypto {
 		byte[] raw = skey.getEncoded();
 		return raw;
 	}
-//	private byte[] getRawKey(byte[] seed) throws Exception {
-//	    KeyGenerator kgen = KeyGenerator.getInstance("AES");
-//	    SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-//	    sr.setSeed(seed);
-//	    kgen.init(_aesBytes, sr); // 192 and 256 bits may not be available
-//	    SecretKey skey = kgen.generateKey();
-//	    byte[] raw = skey.getEncoded();
-//	    return raw;
-//	}
-
 
 	private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
 	    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
