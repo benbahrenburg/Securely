@@ -26,8 +26,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 {
 	private String _secret = "";
 	private Properties appProperties;
-	private AESCrypto crypto = null;
-	static int _aesBytes = 256;
+
 	private String buildName(String name){
 		return SecurelyModule.SECURELY_MODULE_FULL_NAME + "_" + name;
 	};
@@ -38,12 +37,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		_secret = TiApplication.getInstance().getAppGUID();
 	}
 
-	private AESCrypto getCrypto(){
-		if(crypto==null){
-			crypto = new AESCrypto(_aesBytes);
-		}
-		return crypto;
-	}
+
 	private String ComposeSecret(String key){
 		String Seed = _secret + "_" + key;
 		String composed =  SHA.sha256(Seed);
@@ -51,7 +45,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	};
 	private String EncryptContent(String PassKey, String value){
 		try {
-			String EncryptedText =  getCrypto().encrypt(PassKey, value);
+			String EncryptedText =  AESCrypto.encrypt(PassKey, value);
 			return EncryptedText;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,7 +55,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	}
 	private String DecryptContent(String PassKey, String value){
 		try {
-			String ClearText =  getCrypto().decrypt(PassKey, value);
+			String ClearText =  AESCrypto.decrypt(PassKey, value);
 			return ClearText;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,10 +75,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
 			LogHelpers.Level2Log("Setting secret to : " + _secret);		
-		}
-		if (options.containsKey("AESBytes")) {
-			_aesBytes= TiConvert.toInt("AESBytes");			
-		}		
+		}	
 	}
 	
 	@Kroll.method

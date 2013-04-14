@@ -10,25 +10,15 @@ package bencoding.securely;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.titanium.util.TiConvert;
-
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
 public class StringCryptoProxy  extends KrollProxy {
 
-	static int _aesBytes = 256;
-	private AESCrypto crypto = null;
 	public StringCryptoProxy()
 	{
 		super();		
 	}
 
-	private AESCrypto getCrypto(){
-		if(crypto==null){
-			crypto = new AESCrypto(_aesBytes);
-		}
-		return crypto;
-	}
 	@Kroll.method
 	public static String sha256(String data) {
 		return SHA.sha256(data);
@@ -38,14 +28,11 @@ public class StringCryptoProxy  extends KrollProxy {
 	public void handleCreationDict(KrollDict options)
 	{
 		super.handleCreationDict(options);
-		if (options.containsKey("AESBytes")) {
-			_aesBytes= TiConvert.toInt("AESBytes");			
-		}
 	}
 	@Kroll.method
 	public String AESEncrypt(String key, String value) {
 		try {			
-			String EncryptedText = getCrypto().encrypt(key, value);
+			String EncryptedText = AESCrypto.encrypt(key, value);
 			return EncryptedText;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,7 +43,7 @@ public class StringCryptoProxy  extends KrollProxy {
 	@Kroll.method
 	public String AESDecrypt(String key, String value) {		
 		try {
-			String ClearText =  getCrypto().decrypt(key, value);
+			String ClearText =  AESCrypto.decrypt(key, value);
 			return ClearText;
 		} catch (Exception e) {
 			e.printStackTrace();
