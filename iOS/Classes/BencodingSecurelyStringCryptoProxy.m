@@ -13,6 +13,8 @@
 
 @implementation BencodingSecurelyStringCryptoProxy
 
+NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 -(NSString *)AESEncrypt:(id)args
 {
     ENSURE_ARG_COUNT(args,2);
@@ -36,7 +38,20 @@
 }
 
 
--(NSString *)generateAESKey:(id)args
+-(NSString *) generateRandomKey: (id)arg
+{
+    
+    int len = ([arg count] > 0) ? [TiUtils intValue:[arg objectAtIndex:0]] : 1;
+    
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+    }
+    
+    return [self generateDerivedKey:randomString];
+}
+
+-(NSString *)generateDerivedKey:(id)args
 {
     ENSURE_ARG_COUNT(args,1);
     NSString* seed = [TiUtils stringValue:[args objectAtIndex:0]];
