@@ -26,14 +26,15 @@ public class LogHelpers {
 	public static void Level2Log(String message){
 		if(_writeIfSecure){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
-		}
-		
+		}	
 	}	
+	public static void info(String message){
+		Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
+	}
 	public static void  Log(String message){
 		if(_writeToLog){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 		}
-		
 	}
 	public static void  Log(Exception e){
 		if(_writeToLog){

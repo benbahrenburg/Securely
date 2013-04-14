@@ -25,19 +25,36 @@ import android.app.Activity;
 public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent 
 {
 	private String _secret = "";
-	private Properties appProperties;
-
+	private Properties _appProperties;
+	private static Boolean _encryptFieldNames = false;
+	
 	private String buildName(String name){
 		return SecurelyModule.SECURELY_MODULE_FULL_NAME + "_" + name;
 	};
 	public PropertiesProxy()
 	{
 		super();		
-		appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(TiApplication.getInstance().getAppInfo().getId()),false);
+		_appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(TiApplication.getInstance().getAppInfo().getId()),false);
 		_secret = TiApplication.getInstance().getAppGUID();
 	}
 
+	private String keyEncrypt(String key){
+		if(_encryptFieldNames){
+			String composed =  SHA.sha256(key);
+			return ((composed == null)? key : composed);			
+		}else{
+			return key;
+		}
 
+	};
+	private boolean keyExists(String key){
+		if(_encryptFieldNames){
+			return _appProperties.hasProperty(keyEncrypt(key));
+		}else{
+			return _appProperties.hasProperty(key);
+		}		
+	}
+	
 	private String ComposeSecret(String key){
 		String Seed = _secret + "_" + key;
 		String composed =  SHA.sha256(Seed);
@@ -69,13 +86,17 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		super.handleCreationDict(options);
 		if (options.containsKey("identifier")) {
 			String identifier = TiConvert.toString(options.get("identifier"));
-			appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(identifier),false);
+			_appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),buildName(identifier),false);
 			LogHelpers.Level2Log("Setting identifer to : " + identifier);			
 		}
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
 			LogHelpers.Level2Log("Setting secret to : " + _secret);		
 		}	
+		if (options.containsKey("encryptFieldNames")) {
+			_encryptFieldNames = TiConvert.toBoolean(options.get("encryptFieldNames"));
+			LogHelpers.Level2Log("Setting encrypt Fields to : " + _encryptFieldNames.toString());		
+		}			
 	}
 	
 	@Kroll.method
@@ -86,20 +107,19 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	
 	@Kroll.method
 	public void setIdentifier(String key){
-		appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),key,false);
+		_appProperties = new Properties(TiApplication.getInstance().getApplicationContext(),key,false);
 		LogHelpers.Level2Log("Setting identifer to : " + key);		
 	}
 	@Kroll.method
 	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
 		Boolean ifMissingValue = false;
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toBoolean(defaultValue);
 			}
 			return ifMissingValue;
 		}
-
 		String DecryptedStored = getString(key,ifMissingValue);
 		return Converters.StringToBoolean(DecryptedStored);
 	}
@@ -108,7 +128,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public double getDouble(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
 		double ifMissingValue = 0D;
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toDouble(defaultValue);
 			}		
@@ -123,7 +143,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public int getInt(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
 		int ifMissingValue = 0;
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toInt(defaultValue);
 			}			
@@ -137,20 +157,31 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public boolean hasProperty(String key)
 	{
-		return appProperties.hasProperty(key);
+		return keyExists(key);
+	}
+	
+	@Kroll.method
+	public boolean hasFieldsEncrypted()
+	{
+		return _encryptFieldNames;
 	}
 
 	@Kroll.method
 	public String[] listProperties()
 	{
-		return appProperties.listProperties();
+		if(_encryptFieldNames){
+			LogHelpers.info("Field names are encrypted and will not be returned");
+			return null;
+		}else{
+			return _appProperties.listProperties();
+		}
 	}
 
 	@Kroll.method
 	public void removeProperty(String key)
 	{
-		if (appProperties.hasProperty(key)) {
-			appProperties.removeProperty(key);
+		if (keyExists(key)) {
+			_appProperties.removeProperty(keyEncrypt(key));
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
@@ -158,18 +189,18 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	//Convenience method for pulling raw values
 	public Object getPreferenceValue(String key)
 	{
-		return appProperties.getPreference().getAll().get(key);
+		return _appProperties.getPreference().getAll().get(key);
 	}
 
 	@Kroll.method
 	public void setBool(String key, boolean value)
 	{
-		Object boolValue = getPreferenceValue(key);
+		Object boolValue = getPreferenceValue(keyEncrypt(key));
 		if (boolValue == null || !boolValue.equals(value)) {
 			String ValueAsString = Converters.BooleanToString(value);
 			String tempS = ComposeSecret(key);
-			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
-			appProperties.setString(key, EncryptedValue);
+			String EncryptedValue = EncryptContent(tempS,ValueAsString);
+			_appProperties.setString(keyEncrypt(key), EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
@@ -177,14 +208,14 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public void setDouble(String key, double value)
 	{
-		Object doubleValue = getPreferenceValue(key);
+		Object doubleValue = getPreferenceValue(keyEncrypt(key));
 		//Since there is no double type in SharedPreferences, we store doubles as strings, i.e "10.0"
 		//so we need to convert before comparing.
 		if (doubleValue == null || !doubleValue.equals(String.valueOf(value))) {
 			String ValueAsString = Converters.DoubleToString(value);
 			String tempS = ComposeSecret(key);
 			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
-			appProperties.setString(key, EncryptedValue);
+			_appProperties.setString(keyEncrypt(key), EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 	}
@@ -192,12 +223,12 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public void setInt(String key, int value)
 	{
-		Object intValue = getPreferenceValue(key);
+		Object intValue = getPreferenceValue(keyEncrypt(key));
 		if (intValue == null || !intValue.equals(value)) {
 			String ValueAsString = Converters.IntToString(value);
 			String tempS = ComposeSecret(key);
 			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
-			appProperties.setString(key, EncryptedValue);
+			_appProperties.setString(keyEncrypt(key), EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}
 
@@ -206,7 +237,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public void setString(String key, String value)
 	{
-		Object stringValue = getPreferenceValue(key);
+		Object stringValue = getPreferenceValue(keyEncrypt(key));
 		if (stringValue == null || !stringValue.equals(value)) {
 			String ValueAsString = TiConvert.toString(value);
 			LogHelpers.Level2Log("setString key:" + key + " value:" + ValueAsString);
@@ -217,7 +248,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			String EncryptedValue = EncryptContent(PassKey,ValueAsString);	
 			LogHelpers.Level2Log("setString EncryptedValue:" + EncryptedValue);
 
-			appProperties.setString(key, EncryptedValue);
+			_appProperties.setString(keyEncrypt(key), EncryptedValue);
 			fireEvent(TiC.EVENT_CHANGE, null);
 		}else{
 			LogHelpers.Level2Log("setString not value to update. Key:" + key + " value:" + value);
@@ -228,14 +259,14 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
 		String ifMissingValue = null;
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toString(defaultValue);
 			}	
 			
 			return ifMissingValue;
 		}
-		String StoredValue = appProperties.getString(key, ifMissingValue);
+		String StoredValue = _appProperties.getString(keyEncrypt(key), ifMissingValue);
 		LogHelpers.Level2Log("getString key:" + key + " value:" + StoredValue);
 		String PassKey = ComposeSecret(key);
 		LogHelpers.Level2Log("getString PassKey:" + PassKey);
@@ -264,7 +295,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public HashMap getObject(String key, @Kroll.argument(optional=true) HashMap defaultValue)
 	{	
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			LogHelpers.DebugLog("getObject no properties found returning default");	
 			return defaultValue;
 		}else{
@@ -313,7 +344,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public Object[] getList(String key, @Kroll.argument(optional=true) Object defaultValue)
 	{
-		if(!appProperties.hasProperty(key)){
+		if(!keyExists(key)){
 			if(defaultValue==null){
 				LogHelpers.DebugLog("getList null value returned");	
 				return null;
@@ -349,13 +380,13 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	}
 	@Kroll.method
 	public void removeAllProperties(){
-		appProperties.getPreference().edit().clear().commit();
+		_appProperties.getPreference().edit().clear().commit();
 	}
 	@Override
 	public void onDestroy(Activity arg0) {
-		if(appProperties!=null){
-			appProperties.getPreference().edit().commit();
-			appProperties = null;
+		if(_appProperties!=null){
+			_appProperties.getPreference().edit().commit();
+			_appProperties = null;
 		}	
 	}
 	@Override

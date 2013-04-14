@@ -18,7 +18,7 @@
     NSString *identifier = [properties objectForKey:@"identifier"];
     if (identifier != nil)
     {
-        DebugLog(@"Created with a provieded identifier %@",identifier);
+        DebugLog(@"Created with a provided identifier %@",identifier);
        [[BCPDKeychainBindings sharedKeychainBindings] setServiceName:identifier];
     }
     
@@ -57,6 +57,11 @@
 
 #pragma Public APIs
 
+-(NSNumber*)hasFieldsEncrypted: (id) unused;
+{
+    NSLog(@"[DEBUG] hasFieldsEncrypted is not used on iOS this value will always be false");
+    return NUMBOOL(NO);
+}
 -(BOOL)propertyExists: (NSString *) key;
 {
 	if (![key isKindOfClass:[NSString class]]) return NO;
