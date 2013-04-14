@@ -10,10 +10,9 @@
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
 #import <CommonCrypto/CommonKeyDerivation.h>
+#import "BCCryptoUtilities.h"
 
 @implementation BencodingSecurelyStringCryptoProxy
-
-NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 -(NSString *)AESEncrypt:(id)args
 {
@@ -29,46 +28,45 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     return encryptedString;
 }
 
-- (NSData*)generateSalt256 {
-    unsigned char salt[32];
-    for (int i=0; i<32; i++) {
-        salt[i] = (unsigned char)arc4random();
-    }
-    return [NSData dataWithBytes:salt length:32];
+
+-(NSString *)generateRandomKey:(id)args
+{
+    int len = ([args count] > 0) ? [TiUtils intValue:[args objectAtIndex:0]] : 32;
+    NSString* seed = [BCCryptoUtilities randomString:len];
+    //NSLog(@"[ERROR] seed: %@", seed);
+    NSString* output =  [self makeDerivedKey:seed];
+    //NSLog(@"[ERROR] output: %@", output);
+    return output;
 }
 
 
--(NSString *) generateRandomKey: (id)arg
+-(NSString *) makeDerivedKey:(NSString *)seed
 {
+    int keySize = 32;
+    NSData* myPassData = [seed dataUsingEncoding:NSUTF8StringEncoding];
     
-    int len = ([arg count] > 0) ? [TiUtils intValue:[arg objectAtIndex:0]] : 1;
+    //Create Random SALT
+    NSData* salt = [BCCryptoUtilities randomByLength:keySize];
     
-    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
-    for (int i=0; i<len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
-    }
+    // How many rounds to use so that it takes 0.1s ?
+    int rounds = CCCalibratePBKDF(kCCPBKDF2, myPassData.length, salt.length, kCCPRFHmacAlgSHA256, 32, 100);
     
-    return [self generateDerivedKey:randomString];
+    // Open CommonKeyDerivation.h for help
+    unsigned char key[keySize];
+    CCKeyDerivationPBKDF(kCCPBKDF2, myPassData.bytes, myPassData.length, salt.bytes, salt.length, kCCPRFHmacAlgSHA256, rounds, key, 32);
+    NSData* keyData = [NSData dataWithBytes:key length:keySize];
+    NSString *stringEncoded = [BCCryptoUtilities encodeDataPBKtoString:keyData ofLength:keySize];
+    return stringEncoded;
 }
 
 -(NSString *)generateDerivedKey:(id)args
 {
     ENSURE_ARG_COUNT(args,1);
+    int keySize = 32;
     NSString* seed = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSData* myPassData = [seed dataUsingEncoding:NSUTF8StringEncoding];
-    NSData* salt = [self generateSalt256];
-
-    // How many rounds to use so that it takes 0.1s ?
-    int rounds = CCCalibratePBKDF(kCCPBKDF2, myPassData.length, salt.length, kCCPRFHmacAlgSHA256, 32, 100);
-                          
-    // Open CommonKeyDerivation.h for help
-    unsigned char key[32];
-    CCKeyDerivationPBKDF(kCCPBKDF2, myPassData.bytes, myPassData.length, salt.bytes, salt.length, kCCPRFHmacAlgSHA256, rounds, key, 32);
-    NSData* keyData = [NSData dataWithBytes:key length:32];
-    NSString* newStr = [NSString stringWithUTF8String:[keyData bytes]];
-    return newStr;
-                          
+    return [self makeDerivedKey:seed];
 }
+
 -(NSString *)AESDecrypt:(id)args
 {
     ENSURE_ARG_COUNT(args,2);
