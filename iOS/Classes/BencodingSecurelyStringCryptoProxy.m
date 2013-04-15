@@ -9,34 +9,47 @@
 #import "NSData+Base64.h"
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
+#import "BCCryptoUtilities.h"
 
 @implementation BencodingSecurelyStringCryptoProxy
 
 -(NSString *)AESEncrypt:(id)args
 {
-    ENSURE_ARG_COUNT(args,2);
-    NSString* password = [TiUtils stringValue:[args objectAtIndex:0]];
+    enum Args {
+		kArgPassword = 0,
+        kArgPlainText = 1,
+        kArgCount,
+        kArgUseHex = kArgCount        // Optional
+	};
+    
+    ENSURE_ARG_COUNT(args, kArgCount);
+    
+    NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
     //DebugLog(@"password: %@", password);
-    NSString* plainText = [TiUtils stringValue:[args objectAtIndex:1]];
+    NSString* plainText = [TiUtils stringValue:[args objectAtIndex:kArgPlainText]];
     //DebugLog(@"plainText: %@", plainText);
+
+    BOOL useHex = ([args count] > kArgUseHex) ? [TiUtils boolValue:[args objectAtIndex:kArgUseHex]] : YES;
     
     NSData *encryptedData = [[plainText dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
-    NSString *encryptedString = [NSString base64StringFromData:encryptedData length:[encryptedData length]];
+    NSString *encryptedString = [NSString base64StringFromData:encryptedData
+                                                         length:[encryptedData length]];
     
-    return encryptedString;
+    if(useHex){
+        NSString *hexEncrypted = [BCCryptoUtilities stringToHex:encryptedString];
+        return hexEncrypted;
+    }else{
+        return encryptedString;
+    }
 }
 
 
--(NSString *)AESDecrypt:(id)args
+-(NSString *)AESDecryptWithOptions:(NSString *)password
+                 withEncryptedText:(NSString*) encryptedText withUseHex:(BOOL)useHex
 {
-    ENSURE_ARG_COUNT(args,2);
-
-    NSString* password = [TiUtils stringValue:[args objectAtIndex:0]];
-    //DebugLog(@"password: %@", password);
-    NSString* encryptedText = [TiUtils stringValue:[args objectAtIndex:1]];
-    //DebugLog(@"encryptedText: %@", encryptedText);
-        
-    NSData *encryptedData = [NSData base64DataFromString:encryptedText];
+    
+    NSString* inputString = (useHex)? [BCCryptoUtilities hexStringtoString:encryptedText] : encryptedText;
+    NSData *encryptedData = [NSData base64DataFromString:inputString];
     
     NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
     
@@ -44,6 +57,28 @@
     
     return plainText;
     
+}
+
+-(NSString *)AESDecrypt:(id)args
+{
+    enum Args {
+		kArgPassword = 0,
+        kArgEncryptedText = 1,
+        kArgCount,
+        kArgUseHex = kArgCount        // Optional
+	};
+    
+    ENSURE_ARG_COUNT(args, kArgCount);
+
+    NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
+    //DebugLog(@"password: %@", password);
+    
+    NSString* encryptedText = [TiUtils stringValue:[args objectAtIndex:kArgEncryptedText]];
+    //DebugLog(@"encryptedText: %@", encryptedText);
+    
+    BOOL useHex = ([args count] > kArgUseHex) ? [TiUtils boolValue:[args objectAtIndex:kArgUseHex]] : YES;
+    
+    return [self AESDecryptWithOptions:password withEncryptedText:encryptedText withUseHex:useHex];
 }
 
 -(NSString *)DESEncrypt:(id)args
@@ -92,19 +127,8 @@
 {
     ENSURE_ARG_COUNT(args,1);
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSUInteger len = [plainText length];
-    unichar *chars = malloc(len * sizeof(unichar));
-    [plainText getCharacters:chars];
-    
-    NSMutableString *hexString = [[NSMutableString alloc] init];
-    
-    for(NSUInteger i = 0; i < len; i++ )
-    {
-        [hexString appendFormat:@"%02x", chars[i]];
-    }
-    free(chars);
-    
-    return [hexString autorelease];
+    NSString *hexed = [BCCryptoUtilities stringToHex:plainText];    
+    return hexed;
 }
 
 -(NSString *) fromHex:(id)args

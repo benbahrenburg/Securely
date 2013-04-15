@@ -186,7 +186,7 @@ static BCPDKeychainBindingsController *sharedInstance = nil;
 		}
 	}
 	
-	return sharedInstance;   
+	return sharedInstance;
 }
 
 + (id)allocWithZone:(NSZone *)zone

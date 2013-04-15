@@ -10,6 +10,9 @@
 
 @interface BCCryptoUtilities : NSObject
 
++(NSString *) hexStringtoString:(NSString *)hexString;
++(NSString *) stringToHex:(NSString *)str;
++(NSData *)dataFromHexString:(NSString *)string;
 +(NSData *) randomByLength:(int)charLength;
 +(NSString *) randomString:(int)len;
 +(NSString *) encodeDataPBKtoString: (NSData *) data ofLength: (SInt32) len;

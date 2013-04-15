@@ -12,6 +12,60 @@
 
 NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
++(NSString *) hexStringtoString:(NSString *)hexString
+{
+    NSMutableString * newString = [[[NSMutableString alloc] init] autorelease];
+    int i = 0;
+    while (i < [hexString length])
+    {
+        NSString * hexChar = [hexString substringWithRange: NSMakeRange(i, 2)];
+        int value = 0;
+        sscanf([hexChar cStringUsingEncoding:NSASCIIStringEncoding], "%x", &value);
+        [newString appendFormat:@"%c", (char)value];
+        i+=2;
+    }
+    return newString;
+}
+
++(NSString *) stringToHex:(NSString *)str
+{
+    NSUInteger len = [str length];
+    unichar *chars = malloc(len * sizeof(unichar));
+    [str getCharacters:chars];
+    
+    NSMutableString *hexString = [[NSMutableString alloc] init];
+    
+    for(NSUInteger i = 0; i < len; i++ )
+    {
+        [hexString appendFormat:@"%02x", chars[i]]; 
+    }
+    free(chars);
+    
+    return [hexString autorelease];
+}
+
++(NSData *)dataFromHexString:(NSString *)string
+{
+    string = [string lowercaseString];
+    NSMutableData *data= [NSMutableData new];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i = 0;
+    int length = string.length;
+    while (i < length-1) {
+        char c = [string characterAtIndex:i++];
+        if (c < '0' || (c > '9' && c < 'a') || c > 'f')
+            continue;
+        byte_chars[0] = c;
+        byte_chars[1] = [string characterAtIndex:i++];
+        whole_byte = strtol(byte_chars, NULL, 16);
+        [data appendBytes:&whole_byte length:1];
+        
+    }
+    
+    return [data autorelease];
+}
+
 +(NSData *) randomByLength:(int)charLength
 {
     char data[charLength];
