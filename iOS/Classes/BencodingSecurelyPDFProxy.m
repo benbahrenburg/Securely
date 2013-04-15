@@ -7,22 +7,8 @@
 
 #import "BencodingSecurelyPDFProxy.h"
 #import "TiUtils.h"
+#import "BCCryptoUtilities.h"
 @implementation BencodingSecurelyPDFProxy
-
--(NSString*)getNormalizedPath:(NSString*)source
-{
-	// NOTE: File paths may contain URL prefix as of release 1.7 of the SDK
-	if ([source hasPrefix:@"file:/"]) {
-		NSURL* url = [NSURL URLWithString:source];
-		return [url path];
-	}
-    
-	// NOTE: Here is where you can perform any other processing needed to
-	// convert the source path. For example, if you need to handle
-	// tilde, then add the call to stringByExpandingTildeInPath
-    
-	return source;
-}
 
 
 -(void) unprotect:(id)args
@@ -40,7 +26,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* inputFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* inputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (inputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", inputFile]);
@@ -53,7 +39,7 @@
     }
     
     NSString* fileDecryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [self getNormalizedPath:fileDecryptedFile];
+	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileDecryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", outputFile]);
@@ -193,7 +179,7 @@
 	}
     
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* inputFile = [self getNormalizedPath:filePlainFile];
+	NSString* inputFile = [BCCryptoUtilities getNormalizedPath:filePlainFile];
     
     if (inputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFile]);
@@ -206,7 +192,7 @@
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", outputFile]);

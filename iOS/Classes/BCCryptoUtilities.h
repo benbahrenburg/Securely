@@ -10,6 +10,7 @@
 
 @interface BCCryptoUtilities : NSObject
 
++(NSString*)getNormalizedPath:(NSString*)source;
 +(NSString *) hexStringtoString:(NSString *)hexString;
 +(NSString *) stringToHex:(NSString *)str;
 +(NSData *)dataFromHexString:(NSString *)string;

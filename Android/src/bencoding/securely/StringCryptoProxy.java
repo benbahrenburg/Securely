@@ -7,9 +7,6 @@
  */
 package bencoding.securely;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -31,33 +28,6 @@ public class StringCryptoProxy  extends KrollProxy {
 	public void handleCreationDict(KrollDict options)
 	{
 		super.handleCreationDict(options);
-	}
-	@Kroll.method
-	public String generateRandomKey(@Kroll.argument(optional=true) Object seedLength) {
-		int randomSeed = 130;
-		if((seedLength!=null) && (seedLength instanceof Integer)){			
-			randomSeed=(Integer)seedLength;
-		}
-		try {			
-			SecureRandom random = new SecureRandom();
-			String seed = new BigInteger(randomSeed, random).toString(32);
-			return generateDerivedKey(seed);
-		} catch (Exception e) {
-			e.printStackTrace();
-			LogHelpers.Log(e);
-			return null;			
-		}		
-	}
-	@Kroll.method
-	public String generateDerivedKey(String seed) {
-		try {			
-			String genKey = AESCrypto.getRawKey(seed.getBytes()).toString();
-			return genKey;
-		} catch (Exception e) {
-			e.printStackTrace();
-			LogHelpers.Log(e);
-			return null;			
-		}		
 	}
 	
 	@Kroll.method

@@ -10,10 +10,35 @@ import org.appcelerator.titanium.io.TiBaseFile;
 import org.appcelerator.titanium.io.TiFileFactory;
 import org.appcelerator.titanium.util.TiFileHelper;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+
 public class Utils {
 
 	public static final String RESOURCE_ROOT_ASSETS = "file:///android_asset/";
-	public static final String TEMP_PREFIX = "bencodesecCache";
+	public static final String TEMP_PREFIX = "cachebcding";
+
+	public static void streamCopy(InputStream is, OutputStream os) throws IOException {
+	    int i;
+	    byte[] b = new byte[1024];
+	    while((i=is.read(b))!=-1) {
+	      os.write(b, 0, i);
+	    }
+	}
+	
+	public static ActivityInfo getMetaInfo(Context context, String componentName){
+		ActivityInfo info = null;
+		try {
+			info = context.getPackageManager().getReceiverInfo(new ComponentName(context, componentName), PackageManager.GET_META_DATA);			
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}		
+		
+		return info;
+	}
 	
 	public static boolean fileCanBeLoadedFromPath(String path){
 		
@@ -33,6 +58,7 @@ public class Utils {
 		TiBaseFile outFile = TiFileFactory.createTitaniumFile(path,false);					
         return outFile.getOutputStream(); 		
 	}
+	
 	public static File createTempFileFromFileAtPath(String path) throws IOException{	
 		TiFileHelper helper = new TiFileHelper(TiApplication.getInstance().getApplicationContext());
 		InputStream stream = helper.openInputStream(path, true);

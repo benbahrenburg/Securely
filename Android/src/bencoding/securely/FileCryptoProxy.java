@@ -23,15 +23,12 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiLifecycle;
-import org.appcelerator.titanium.util.TiConvert;
 
 import android.app.Activity;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
 public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent 
 {
-
-	static int _aesBytes = 128;
 
 	public FileCryptoProxy()
 	{
@@ -40,14 +37,6 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	}
 	
 	
-	private void copy(InputStream is, OutputStream os) throws IOException {
-	    int i;
-	    byte[] b = new byte[1024];
-	    while((i=is.read(b))!=-1) {
-	      os.write(b, 0, i);
-	    }
-	  }
-
 	private static byte[] getRawKey(byte[] seed) throws Exception {
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
@@ -111,7 +100,7 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 				cipher.init(Cipher.DECRYPT_MODE, skeySpec);					
 				CipherInputStream is = new CipherInputStream(_from,cipher);
 				
-				copy(is, _to);
+				Utils.streamCopy(is, _to);
 
 				is.close();
 				_to.close();
@@ -186,7 +175,7 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 				cipher.init(Cipher.ENCRYPT_MODE, skeySpec);				
 				CipherOutputStream os = new CipherOutputStream(_to, cipher);
 
-				copy(_from, os);
+				Utils.streamCopy(_from, os);
 				os.close();
 				doCallback(_callback, buildResult(true));	
 				
@@ -222,10 +211,7 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{
-		super.handleCreationDict(options);
-		if (options.containsKey("AESBytes")) {
-			_aesBytes= TiConvert.toInt("AESBytes");			
-		}		
+		super.handleCreationDict(options);	
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Kroll.method

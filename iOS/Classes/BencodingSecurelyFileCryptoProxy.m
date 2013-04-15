@@ -6,33 +6,74 @@
  */
 
 #import "BencodingSecurelyFileCryptoProxy.h"
-#import "TiBase.h"
-#import "TiHost.h"
 #import "TiUtils.h"
-#import "TiFile.h"
-#import "TiBlob.h"
-#import "TiFilesystemFileProxy.h"
-#import "CPCryptController.h"
-#import <CommonCrypto/CommonCryptor.h>
+#import "RNCryptManager.h"
+#import "BCCryptoUtilities.h"
 @implementation BencodingSecurelyFileCryptoProxy
 
 
--(NSString*)getNormalizedPath:(NSString*)source
-{
-	// NOTE: File paths may contain URL prefix as of release 1.7 of the SDK
-	if ([source hasPrefix:@"file:/"]) {
-		NSURL* url = [NSURL URLWithString:source];
-		return [url path];
-	}
+
+- (BOOL)encryptDataWithPassword:(NSString *)inputFilePath withOutputFilePath:(NSString *)outputFilePath
+                     password:(NSString *)password error:(NSError **)error {
     
-	// NOTE: Here is where you can perform any other processing needed to
-	// convert the source path. For example, if you need to handle
-	// tilde, then add the call to stringByExpandingTildeInPath
+    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:inputFilePath];
+    [inputStream open];
     
-	return source;
+    NSOutputStream *outputStream = [NSOutputStream outputStreamToFileAtPath:outputFilePath
+                                                                     append:NO];
+    [outputStream open];
+    
+    BOOL result = [RNCryptManager encryptFromStream:inputStream
+                                           toStream:outputStream
+                                           password:password
+                                              error:error];
+    [inputStream close];
+    [outputStream close];
+    return result;
 }
 
-
+- (BOOL)decryptWithPassword:(NSString *)inputFilePath withOutputFilePath:(NSString *)outputFilePath
+                   password:(NSString *)password error:(NSError **)error
+{
+    NSInputStream *inStream = [NSInputStream inputStreamWithFileAtPath:inputFilePath];
+    [inStream open];
+    
+    NSOutputStream *outStream = [NSOutputStream outputStreamToMemory];
+    [outStream open];
+    
+    BOOL success = [RNCryptManager decryptFromStream:inStream toStream:outStream
+                                            password:password error:error];
+    
+    if (success) {
+        //NSLog(@"[DEBUG] RNCryptManager returned true");
+        NSData *data = [outStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+        if([data length]>0)
+        {
+            NSError *writeError = nil;
+            [data writeToFile:outputFilePath options:NSDataWritingFileProtectionComplete | NSDataWritingAtomic error:&writeError];
+            
+            //NSLog(@"[DEBUG] Error writing file");
+            
+            if(writeError != nil) {
+                success = NO;
+            }
+            if (error != NULL) *error = writeError;
+        }else{
+            success = NO;
+            if (error != NULL) *error = [NSError errorWithDomain:@"bencoding.securely"
+                                                            code:100
+                                                        userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"unable to decrypt file, check if password is correct  at %@", inputFilePath]  forKey:NSLocalizedDescriptionKey]];
+            
+        }
+    }else{
+        NSLog(@"[DEBUG] Encryption provider returned false");
+    }
+    
+    [inStream close];
+    [outStream close];
+    
+    return success;
+}
 
 -(void) AESDecrypt:(id)args
 {
@@ -46,7 +87,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* inputFilePath = [self getNormalizedPath:fileEncryptedFile];
+	NSString* inputFilePath = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (inputFilePath == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", inputFilePath]);
@@ -59,7 +100,7 @@
     }
     
     NSString* fileDecryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [self getNormalizedPath:fileDecryptedFile];
+	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileDecryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", outputFile]);
@@ -88,9 +129,9 @@
     
     NSError *error = nil;
     
-    if (![[CPCryptController sharedController]
-           decryptWithPassword:inputFilePath withOutputFilePath:outputFile
-           password:secret error:&error] ){
+    if (![self decryptWithPassword:inputFilePath
+                 withOutputFilePath:outputFile
+                 password:secret error:&error] ){
         
         [event setObject:NUMBOOL(NO) forKey:@"success"];
         
@@ -139,7 +180,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* inputFilePath = [self getNormalizedPath:filePlainFile];
+	NSString* inputFilePath = [BCCryptoUtilities getNormalizedPath:filePlainFile];
 
     if (inputFilePath == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFilePath]);
@@ -152,7 +193,7 @@
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [self getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
 
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", outputFile]);
@@ -179,9 +220,9 @@
                                   nil];
         
     NSError *error;
-    if (! [[CPCryptController sharedController]
-           encryptWithPassword:inputFilePath withOutputFilePath:outputFile
-                                               password:secret error:&error] )
+    if (![self encryptDataWithPassword:inputFilePath
+                   withOutputFilePath:outputFile
+                   password:secret error:&error] )
     {
         NSLog(@"[ERROR] Could not encrypt data: %@", error);
         [event setObject:NUMBOOL(NO) forKey:@"success"];

@@ -12,6 +12,17 @@
 
 NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
++(NSString*)getNormalizedPath:(NSString*)source
+{
+	// NOTE: File paths may contain URL prefix as of release 1.7 of the SDK
+	if ([source hasPrefix:@"file:/"]) {
+		NSURL* url = [NSURL URLWithString:source];
+		return [url path];
+	}
+    
+	return source;
+}
+
 +(NSString *) hexStringtoString:(NSString *)hexString
 {
     NSMutableString * newString = [[[NSMutableString alloc] init] autorelease];
