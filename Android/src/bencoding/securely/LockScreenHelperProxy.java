@@ -14,10 +14,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
-public class LockScreenHelpersProxy extends KrollProxy implements TiLifecycle.OnLifecycleEvent {
+public class LockScreenHelperProxy extends KrollProxy implements TiLifecycle.OnLifecycleEvent {
 	LockBroadcastReciever mLockedReciever = null;
 	UnlockBroadcastReciever mUnLockedReciever = null;
-	public LockScreenHelpersProxy(){
+	public LockScreenHelperProxy(){
 		super();	
 	}
 
@@ -42,6 +42,13 @@ public class LockScreenHelpersProxy extends KrollProxy implements TiLifecycle.On
 	    TiApplication.getInstance().getApplicationContext().registerReceiver(mUnLockedReciever, filter);	
 	}
 
+	@Kroll.method
+	public void resetMonitorForScreenOn(){
+		if(mUnLockedReciever!=null){
+			mUnLockedReciever.reset();
+		}
+	}
+	
 	@Kroll.method
 	public void stopMonitorForScreenOn(){
 		if(mUnLockedReciever!=null){
@@ -70,6 +77,17 @@ public class LockScreenHelpersProxy extends KrollProxy implements TiLifecycle.On
 		}
 	}
 
+	@Kroll.method
+	public void stopMonitoring(){
+		stopMonitorForScreenOff();
+		stopMonitorForScreenOn();
+	}
+	@Kroll.method
+	public void resetMonitorForScreenOff(){
+		if(mLockedReciever!=null){
+			mLockedReciever.reset();
+		}
+	}
 		@Kroll.method
 	public boolean isShowingLockScreen(){
 		KeyguardManager kgMgr = 
@@ -80,8 +98,7 @@ public class LockScreenHelpersProxy extends KrollProxy implements TiLifecycle.On
 
 		@Override
 		public void onDestroy(Activity arg0) {
-			stopMonitorForScreenOff();
-			stopMonitorForScreenOn();
+			stopMonitoring();
 		}
 
 		@Override
