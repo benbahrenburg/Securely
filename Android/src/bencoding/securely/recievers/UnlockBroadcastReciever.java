@@ -1,6 +1,5 @@
 package bencoding.securely.recievers;
 
-
 import java.util.Date;
 
 import org.appcelerator.kroll.KrollDict;
@@ -10,19 +9,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-
-public class LockBroadcastReciever extends BroadcastReceiver{
-	public static boolean wasLocked = false;
-	public static String EVENT_NAME = "BCX:SCREEN_OFF";
+public class UnlockBroadcastReciever extends BroadcastReceiver{
+	public static boolean wasUnlocked = true;
+	public static String EVENT_NAME = "BCX:SCREEN_ON";
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
-
-			wasLocked = true;
+		if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+			wasUnlocked = true;
 			
 			if(TiApplication.getInstance()!=null){
-
 				KrollDict event = new KrollDict();
 				Date now = new Date();
 				event.put("actionName", intent.getAction());
@@ -34,10 +30,9 @@ public class LockBroadcastReciever extends BroadcastReceiver{
 	
 	public Boolean status()
 	{
-		return wasLocked;
+		return wasUnlocked;
 	}
 	public void reset(){
-		wasLocked = false;
+		wasUnlocked = true;
 	}
-
 }

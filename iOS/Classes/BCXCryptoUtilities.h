@@ -1,14 +1,13 @@
-//
-//  BCCryptoUtilities.h
-//  Securely
-//
-//  Created by Ben on 4/14/13.
-//
-//
+/**
+ * Securely Titanium Security Project
+ * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Licensed under the terms of the Apache Public License
+ * Please see the LICENSE included with this distribution for details.
+ */
 
 #import <Foundation/Foundation.h>
 
-@interface BCCryptoUtilities : NSObject
+@interface BCXCryptoUtilities : NSObject
 
 +(NSString*)getNormalizedPath:(NSString*)source;
 +(NSString *) hexStringtoString:(NSString *)hexString;

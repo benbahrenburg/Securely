@@ -1,14 +1,13 @@
-//
-//  BCCryptoUtilities.m
-//  Securely
-//
-//  Created by Ben on 4/14/13.
-//
-//
+/**
+ * Securely Titanium Security Project
+ * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Licensed under the terms of the Apache Public License
+ * Please see the LICENSE included with this distribution for details.
+ */
 
-#import "BCCryptoUtilities.h"
+#import "BCXCryptoUtilities.h"
 
-@implementation BCCryptoUtilities
+@implementation BCXCryptoUtilities
 
 NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 

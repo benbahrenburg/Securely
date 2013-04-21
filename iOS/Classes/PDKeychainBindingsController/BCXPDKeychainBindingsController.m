@@ -15,12 +15,12 @@
 //   because it seemed reasonable
 
 
-#import "BCPDKeychainBindingsController.h"
+#import "BCXPDKeychainBindingsController.h"
 #import <Security/Security.h>
 
-static BCPDKeychainBindingsController *sharedInstance = nil;
+static BCXPDKeychainBindingsController *sharedInstance = nil;
 
-@implementation BCPDKeychainBindingsController
+@implementation BCXPDKeychainBindingsController
 
 #pragma mark -
 #pragma mark Keychain Access
@@ -178,7 +178,7 @@ static BCPDKeychainBindingsController *sharedInstance = nil;
 #pragma mark -
 #pragma mark Singleton Stuff
 
-+ (BCPDKeychainBindingsController *)sharedKeychainBindingsController
++ (BCXPDKeychainBindingsController *)sharedKeychainBindingsController
 {
 	@synchronized (self) {
 		if (sharedInstance == nil) {
@@ -237,9 +237,9 @@ static BCPDKeychainBindingsController *sharedInstance = nil;
 #pragma mark -
 #pragma mark Business Logic
 
-- (BCPDKeychainBindings *) keychainBindings {
+- (BCXPDKeychainBindings *) keychainBindings {
     if (_keychainBindings == nil) {
-        _keychainBindings = [[BCPDKeychainBindings alloc] init]; 
+        _keychainBindings = [[BCXPDKeychainBindings alloc] init];
     }
     if (_valueBuffer==nil) {
         _valueBuffer = [[NSMutableDictionary alloc] init];

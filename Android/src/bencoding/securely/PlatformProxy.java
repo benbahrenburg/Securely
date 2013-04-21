@@ -12,6 +12,7 @@ public class PlatformProxy extends KrollProxy {
 		super();
 	}
 
+	@Kroll.method
 	public boolean lockPatternEnabled(){
 		try {
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(), Settings.Secure.LOCK_PATTERN_ENABLED);
@@ -22,7 +23,7 @@ public class PlatformProxy extends KrollProxy {
 		}
 		
 	}
-
+	@Kroll.method
 	public boolean lockPatternVisible(){
 		try {
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(), Settings.Secure.LOCK_PATTERN_VISIBLE);
@@ -33,7 +34,7 @@ public class PlatformProxy extends KrollProxy {
 		}
 		
 	}
-	
+	@Kroll.method
 	public boolean deviceProvisioned(){
 		try{
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(),Settings.Secure.DEVICE_PROVISIONED);
@@ -43,7 +44,7 @@ public class PlatformProxy extends KrollProxy {
 			return true;
 		}		
 	}
-
+	@Kroll.method
 	public boolean allowSideLoading(){
 		try{
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(),Settings.Secure.INSTALL_NON_MARKET_APPS);

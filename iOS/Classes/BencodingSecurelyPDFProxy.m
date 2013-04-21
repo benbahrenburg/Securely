@@ -7,7 +7,7 @@
 
 #import "BencodingSecurelyPDFProxy.h"
 #import "TiUtils.h"
-#import "BCCryptoUtilities.h"
+#import "BCXCryptoUtilities.h"
 @implementation BencodingSecurelyPDFProxy
 
 
@@ -26,7 +26,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* inputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
+	NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (inputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", inputFile]);
@@ -39,7 +39,7 @@
     }
     
     NSString* fileDecryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileDecryptedFile];
+	NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:fileDecryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected pdf file path provided [%@]", outputFile]);
@@ -179,7 +179,7 @@
 	}
     
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* inputFile = [BCCryptoUtilities getNormalizedPath:filePlainFile];
+	NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:filePlainFile];
     
     if (inputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFile]);
@@ -192,7 +192,7 @@
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid protected file path provided [%@]", outputFile]);

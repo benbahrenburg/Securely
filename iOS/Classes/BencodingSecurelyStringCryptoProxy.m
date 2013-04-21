@@ -9,7 +9,7 @@
 #import "NSData+Base64.h"
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
-#import "BCCryptoUtilities.h"
+#import "BCXCryptoUtilities.h"
 
 @implementation BencodingSecurelyStringCryptoProxy
 
@@ -36,7 +36,7 @@
                                                          length:[encryptedData length]];
     
     if(useHex){
-        NSString *hexEncrypted = [BCCryptoUtilities stringToHex:encryptedString];
+        NSString *hexEncrypted = [BCXCryptoUtilities stringToHex:encryptedString];
         return hexEncrypted;
     }else{
         return encryptedString;
@@ -48,7 +48,7 @@
                  withEncryptedText:(NSString*) encryptedText withUseHex:(BOOL)useHex
 {
     
-    NSString* inputString = (useHex)? [BCCryptoUtilities hexStringtoString:encryptedText] : encryptedText;
+    NSString* inputString = (useHex)? [BCXCryptoUtilities hexStringtoString:encryptedText] : encryptedText;
     NSData *encryptedData = [NSData base64DataFromString:inputString];
     
     NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
@@ -127,7 +127,7 @@
 {
     ENSURE_ARG_COUNT(args,1);
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSString *hexed = [BCCryptoUtilities stringToHex:plainText];    
+    NSString *hexed = [BCXCryptoUtilities stringToHex:plainText];    
     return hexed;
 }
 

@@ -8,7 +8,7 @@
 #import "BencodingSecurelyFileCryptoProxy.h"
 #import "TiUtils.h"
 #import "RNCryptManager.h"
-#import "BCCryptoUtilities.h"
+#import "BCXCryptoUtilities.h"
 @implementation BencodingSecurelyFileCryptoProxy
 
 
@@ -87,7 +87,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* fileEncryptedFile = [args objectForKey:@"from"];
-	NSString* inputFilePath = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
+	NSString* inputFilePath = [BCXCryptoUtilities getNormalizedPath:fileEncryptedFile];
     
     if (inputFilePath == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encrypted file path provided [%@]", inputFilePath]);
@@ -100,7 +100,7 @@
     }
     
     NSString* fileDecryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileDecryptedFile];
+	NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:fileDecryptedFile];
     
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid decrypt file path provided [%@]", outputFile]);
@@ -180,7 +180,7 @@
     NSString* secret = [args objectForKey:@"password"];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     NSString* filePlainFile = [args objectForKey:@"from"];
-	NSString* inputFilePath = [BCCryptoUtilities getNormalizedPath:filePlainFile];
+	NSString* inputFilePath = [BCXCryptoUtilities getNormalizedPath:filePlainFile];
 
     if (inputFilePath == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid source file path provided [%@]", inputFilePath]);
@@ -193,7 +193,7 @@
     }
     
     NSString* fileEncryptedFile = [args objectForKey:@"to"];
-	NSString* outputFile = [BCCryptoUtilities getNormalizedPath:fileEncryptedFile];
+	NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:fileEncryptedFile];
 
     if (outputFile == nil) {
 		NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]", outputFile]);

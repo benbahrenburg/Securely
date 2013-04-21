@@ -6,7 +6,7 @@
  */
 
 #import "BencodingSecurelyPropertiesProxy.h"
-#import "BCPDKeychainBindings.h"
+#import "BCXPDKeychainBindings.h"
 #import "JSONKit.h"
 #import "TiUtils.h"
 @implementation BencodingSecurelyPropertiesProxy
@@ -19,7 +19,7 @@
     if (identifier != nil)
     {
         DebugLog(@"Created with a provided identifier %@",identifier);
-       [[BCPDKeychainBindings sharedKeychainBindings] setServiceName:identifier];
+       [[BCXPDKeychainBindings sharedKeychainBindings] setServiceName:identifier];
     }
     
     NSString *accessGroup = [properties objectForKey:@"accessGroup"];
@@ -33,7 +33,7 @@
     if(accessGroup !=nil)
     {
         DebugLog(@"Created with a provieded accessGroup %@",accessGroup);
-        [[BCPDKeychainBindings sharedKeychainBindings] setAccessGroup:accessGroup];
+        [[BCXPDKeychainBindings sharedKeychainBindings] setAccessGroup:accessGroup];
     }
 #endif
 }
@@ -65,7 +65,7 @@
 -(BOOL)propertyExists: (NSString *) key;
 {
 	if (![key isKindOfClass:[NSString class]]) return NO;
-	return ([[BCPDKeychainBindings sharedKeychainBindings] objectForKey:key] != nil);
+	return ([[BCXPDKeychainBindings sharedKeychainBindings] objectForKey:key] != nil);
 }
 
 #define GETSPROP \
@@ -77,25 +77,25 @@ if (![self propertyExists:key]) return defaultValue; \
 -(id)getBool:(id)args
 {
 	GETSPROP
-	return [NSNumber numberWithBool:[[BCPDKeychainBindings sharedKeychainBindings] boolForKey:key]];
+	return [NSNumber numberWithBool:[[BCXPDKeychainBindings sharedKeychainBindings] boolForKey:key]];
 }
 
 -(id)getDouble:(id)args
 {
 	GETSPROP
-	return [NSNumber numberWithDouble:[[BCPDKeychainBindings sharedKeychainBindings] doubleForKey:key]];
+	return [NSNumber numberWithDouble:[[BCXPDKeychainBindings sharedKeychainBindings] doubleForKey:key]];
 }
 
 -(id)getInt:(id)args
 {
 	GETSPROP
-	return [NSNumber numberWithInt:[[BCPDKeychainBindings sharedKeychainBindings] integerForKey:key]];
+	return [NSNumber numberWithInt:[[BCXPDKeychainBindings sharedKeychainBindings] integerForKey:key]];
 }
 
 -(NSString *)getString:(id)args
 {
     GETSPROP
-    id result = [[BCPDKeychainBindings sharedKeychainBindings] stringForKey:key];
+    id result = [[BCXPDKeychainBindings sharedKeychainBindings] stringForKey:key];
     return ((result ==nil) ? [NSNull null] : result);
     
 }
@@ -103,7 +103,7 @@ if (![self propertyExists:key]) return defaultValue; \
 -(id)getList:(id)args
 {
 	GETSPROP
-	NSString *jsonValue = [[BCPDKeychainBindings sharedKeychainBindings] stringForKey:key];
+	NSString *jsonValue = [[BCXPDKeychainBindings sharedKeychainBindings] stringForKey:key];
     return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
     
 }
@@ -111,7 +111,7 @@ if (![self propertyExists:key]) return defaultValue; \
 -(id)getObject:(id)args
 {
     GETSPROP
-	NSString *jsonValue = [[BCPDKeychainBindings sharedKeychainBindings] stringForKey:key];
+	NSString *jsonValue = [[BCXPDKeychainBindings sharedKeychainBindings] stringForKey:key];
     return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
 }
 
@@ -120,10 +120,10 @@ ENSURE_TYPE(args,NSArray);\
 NSString *key = [args objectAtIndex:0];\
 id value = [args count] > 1 ? [args objectAtIndex:1] : nil;\
 if (value==nil || value==[NSNull null]) {\
-[[BCPDKeychainBindings sharedKeychainBindings] removeObjectForKey:key];\
+[[BCXPDKeychainBindings sharedKeychainBindings] removeObjectForKey:key];\
 return;\
 }\
-if ([self propertyExists:key] && [ [[BCPDKeychainBindings sharedKeychainBindings] objectForKey:key] isEqual:value]) {\
+if ([self propertyExists:key] && [ [[BCXPDKeychainBindings sharedKeychainBindings] objectForKey:key] isEqual:value]) {\
 return;\
 }\
 
@@ -131,7 +131,7 @@ return;\
 -(void)setBool:(id)args
 {
 	SETSPROP
-	[[BCPDKeychainBindings sharedKeychainBindings]
+	[[BCXPDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%d",[TiUtils boolValue:value]] forKey:key];
     [self triggerEvent:key actionType:@"modify"];
 }
@@ -139,7 +139,7 @@ return;\
 -(void)setDouble:(id)args
 {
 	SETSPROP
-	[[BCPDKeychainBindings sharedKeychainBindings]
+	[[BCXPDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%f",[TiUtils doubleValue:value]] forKey:key];
     [self triggerEvent:key actionType:@"modify"];
 }
@@ -147,7 +147,7 @@ return;\
 -(void)setInt:(id)args
 {
 	SETSPROP
-	[[BCPDKeychainBindings sharedKeychainBindings]
+	[[BCXPDKeychainBindings sharedKeychainBindings]
      setObject:[NSString stringWithFormat:@"%i",[TiUtils intValue:value]] forKey:key];
     [self triggerEvent:key actionType:@"modify"];
 }
@@ -155,7 +155,7 @@ return;\
 -(void)setString:(id)args
 {    
 	SETSPROP
-	[[BCPDKeychainBindings sharedKeychainBindings] setObject:[TiUtils stringValue:value] forKey:key];
+	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:[TiUtils stringValue:value] forKey:key];
     [self triggerEvent:key actionType:@"modify"];
 }
 
@@ -163,7 +163,7 @@ return;\
 {
 	SETSPROP    
     NSString *jsonValue = [value JSONString];
-	[[BCPDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
+	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
     //DebugLog(@"list JSON value  %@",jsonValue);
     [self triggerEvent:key actionType:@"modify"];
 }
@@ -172,7 +172,7 @@ return;\
 {
     SETSPROP
     NSString *jsonValue = [value JSONString];
-	[[BCPDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
+	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:jsonValue forKey:key];
     //DebugLog(@"list JSON value  %@",jsonValue);
     [self triggerEvent:key actionType:@"modify"];
 }
@@ -185,7 +185,7 @@ return;\
 -(void)removeProperty:(id)args
 {
 	ENSURE_SINGLE_ARG(args,NSString);
-	[[BCPDKeychainBindings sharedKeychainBindings] removeObjectForKey:[TiUtils stringValue:args]];
+	[[BCXPDKeychainBindings sharedKeychainBindings] removeObjectForKey:[TiUtils stringValue:args]];
     [self triggerEvent:[TiUtils stringValue:args] actionType:@"remove"];
 }
 
@@ -193,7 +193,7 @@ return;\
 -(void)setIdentifier:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSString);
-    [[BCPDKeychainBindings sharedKeychainBindings] setServiceName:[TiUtils stringValue:args]];
+    [[BCXPDKeychainBindings sharedKeychainBindings] setServiceName:[TiUtils stringValue:args]];
     [self triggerEvent:@"indentifier" actionType:@"modify"];
 }
 
@@ -204,7 +204,7 @@ return;\
     DebugLog(@"Cannot set access group in simulator");
 #else
     ENSURE_SINGLE_ARG(args,NSString);
-    [[BCPDKeychainBindings sharedKeychainBindings] setAccessGroup:[TiUtils stringValue:args]];
+    [[BCXPDKeychainBindings sharedKeychainBindings] setAccessGroup:[TiUtils stringValue:args]];
     [self triggerEvent:@"AccountGroup" actionType:@"modify"];
 #endif
     
@@ -212,13 +212,13 @@ return;\
 
 -(void)removeAllProperties:(id)args
 {
-    [[BCPDKeychainBindings sharedKeychainBindings] removeAllItems];
+    [[BCXPDKeychainBindings sharedKeychainBindings] removeAllItems];
     [self triggerEvent:@"NA" actionType:@"removeall"];
 }
 
 -(id)listProperties:(id)args
 {
-    id results = [[BCPDKeychainBindings sharedKeychainBindings] allKeys];
+    id results = [[BCXPDKeychainBindings sharedKeychainBindings] allKeys];
     return ((results ==nil) ? [NSNull null] : results);
 }
 

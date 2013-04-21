@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BCPDKeychainBindings : NSObject {
+@interface BCXPDKeychainBindings : NSObject {
 @private
     
 }
 
-+ (BCPDKeychainBindings *)sharedKeychainBindings;
++ (BCXPDKeychainBindings *)sharedKeychainBindings;
 
 - (void) setServiceName:(NSString*)newValue;
 - (void) setAccessGroup:(NSString*)newValue;

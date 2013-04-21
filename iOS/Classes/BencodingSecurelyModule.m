@@ -9,7 +9,7 @@
 #import "TiHost.h"
 #import "TiUtils.h"
 #import <CommonCrypto/CommonKeyDerivation.h>
-#import "BCCryptoUtilities.h"
+#import "BCXCryptoUtilities.h"
 @implementation BencodingSecurelyModule
 
 #pragma mark Internal
@@ -63,7 +63,7 @@
 -(NSString *)generateRandomKey:(id)args
 {
     int len = ([args count] > 0) ? [TiUtils intValue:[args objectAtIndex:0]] : 32;
-    NSString* seed = [BCCryptoUtilities randomString:len];
+    NSString* seed = [BCXCryptoUtilities randomString:len];
     //NSLog(@"[ERROR] seed: %@", seed);
     NSString* output =  [self makeDerivedKey:seed];
     //NSLog(@"[ERROR] output: %@", output);
@@ -77,7 +77,7 @@
     NSData* myPassData = [seed dataUsingEncoding:NSUTF8StringEncoding];
     
     //Create Random SALT
-    NSData* salt = [BCCryptoUtilities randomByLength:keySize];
+    NSData* salt = [BCXCryptoUtilities randomByLength:keySize];
     
     // How many rounds to use so that it takes 0.1s ?
     int rounds = CCCalibratePBKDF(kCCPBKDF2, myPassData.length, salt.length, kCCPRFHmacAlgSHA256, 32, 100);
@@ -86,7 +86,7 @@
     unsigned char key[keySize];
     CCKeyDerivationPBKDF(kCCPBKDF2, myPassData.bytes, myPassData.length, salt.bytes, salt.length, kCCPRFHmacAlgSHA256, rounds, key, 32);
     NSData* keyData = [NSData dataWithBytes:key length:keySize];
-    NSString *stringEncoded = [BCCryptoUtilities encodeDataPBKtoString:keyData ofLength:keySize];
+    NSString *stringEncoded = [BCXCryptoUtilities encodeDataPBKtoString:keyData ofLength:keySize];
     return stringEncoded;
 }
 
