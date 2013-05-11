@@ -32,24 +32,32 @@
 		NSLog(@"[ERROR] completed callback required");
 		return;
 	}
+ 
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
-    NSString* plainText = [args objectForKey:@"value"];
+    id inputValue = [args objectForKey:@"value"];
+    NSData *data;
+    if([inputValue isKindOfClass:[TiBlob class]]){
+        ENSURE_TYPE(inputValue,TiBlob);
+        data = [(TiBlob *)inputValue data];
+    }else{
+        data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
+    }
+    
     NSString* resultType =[TiUtils stringValue:@"resultType" properties:args def:@"hex"];
     
     BOOL useHex = [resultType caseInsensitiveCompare:@"hex"];
     BOOL useBlob = [resultType caseInsensitiveCompare:@"blob"];
-    
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
-	ENSURE_TYPE(callback,KrollCallback);
-    
+        
     NSError *error = nil;
     BOOL success = NO;
     NSString *msg = @"invalid data returned";
-    NSData *encryptedData = [[RNEncryptor encryptData:[plainText dataUsingEncoding:NSUTF8StringEncoding]
+    NSData *encryptedData = [RNEncryptor encryptData:data
                                          withSettings:kRNCryptorAES256Settings
                                              password:password
-                                                error:&error] autorelease];
+                                                error:&error];
     if(error!=nil){
         msg =[error localizedDescription];
     }else{
@@ -73,7 +81,7 @@
             [event setObject:result forKey:@"result"];
         }else{
             if(useHex){
-                NSString *hexEncrypted = [[BCXCryptoUtilities base64forData:encryptedData]autorelease];
+                NSString *hexEncrypted = [BCXCryptoUtilities base64forData:encryptedData];
                 [event setObject:hexEncrypted forKey:@"result"];
             }else{
                 [event setObject:[NSString stringWithUTF8String:[encryptedData bytes]] forKey:@"result"];
@@ -122,8 +130,8 @@
     BOOL success = NO;
     NSString *msg = @"invalid data returned";
     
-    NSData *decryptedData = [[RNDecryptor decryptData:[encryptedText dataUsingEncoding:NSUTF8StringEncoding]
-                                        withPassword:password error:&error] autorelease];
+    NSData *decryptedData = [RNDecryptor decryptData:[encryptedText dataUsingEncoding:NSUTF8StringEncoding]
+                                        withPassword:password error:&error];
 
     if(error!=nil){
         msg =[error localizedDescription];
