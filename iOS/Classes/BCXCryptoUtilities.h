@@ -9,6 +9,7 @@
 
 @interface BCXCryptoUtilities : NSObject
 
++(NSString*)base64forData:(NSData*)theData;
 +(NSString*)getNormalizedPath:(NSString*)source;
 +(NSString *) hexStringtoString:(NSString *)hexString;
 +(NSString *) stringToHex:(NSString *)str;

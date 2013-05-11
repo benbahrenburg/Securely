@@ -10,8 +10,155 @@
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
 #import "BCXCryptoUtilities.h"
+#import "RNEncryptor.h"
+#import "RNDecryptor.h"
 
 @implementation BencodingSecurelyStringCryptoProxy
+
+-(NSString *)encrypt:(id)args
+{
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    ENSURE_TYPE(args,NSDictionary);
+    
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] password is required");
+		return;
+	}
+    if (![args objectForKey:@"value"]) {
+		NSLog(@"[ERROR] value required");
+		return;
+	}
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback required");
+		return;
+	}
+    
+    NSString* password = [args objectForKey:@"password"];
+    NSString* plainText = [args objectForKey:@"value"];
+    NSString* resultType =[TiUtils stringValue:@"resultType" properties:args def:@"hex"];
+    
+    BOOL useHex = [resultType caseInsensitiveCompare:@"hex"];
+    BOOL useBlob = [resultType caseInsensitiveCompare:@"blob"];
+    
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
+    
+    NSError *error = nil;
+    BOOL success = NO;
+    NSString *msg = @"invalid data returned";
+    NSData *encryptedData = [[RNEncryptor encryptData:[plainText dataUsingEncoding:NSUTF8StringEncoding]
+                                         withSettings:kRNCryptorAES256Settings
+                                             password:password
+                                                error:&error] autorelease];
+    if(error!=nil){
+        msg =[error localizedDescription];
+    }else{
+        if(encryptedData!=nil){
+            if([encryptedData length]>0){
+                success=YES;
+            }else{
+                msg = @"data length of zero returned";
+            }
+        }
+    }
+    
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                  NUMBOOL(success),@"success",
+                                  nil];
+    
+    if(success){
+        if(useBlob){
+            TiBlob *result = [[[TiBlob alloc] initWithData:encryptedData
+                                                  mimetype:@"application/octet-stream"] autorelease];
+            [event setObject:result forKey:@"result"];
+        }else{
+            if(useHex){
+                NSString *hexEncrypted = [[BCXCryptoUtilities base64forData:encryptedData]autorelease];
+                [event setObject:hexEncrypted forKey:@"result"];
+            }else{
+                [event setObject:[NSString stringWithUTF8String:[encryptedData bytes]] forKey:@"result"];
+            }
+        }
+    }else{
+        [event setObject:msg forKey:@"message"];
+    }
+    
+    if(callback != nil ){
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
+}
+
+-(NSString *)decrypt:(id)args
+{
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    ENSURE_TYPE(args,NSDictionary);
+    
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] password is required");
+		return;
+	}
+    if (![args objectForKey:@"value"]) {
+		NSLog(@"[ERROR] value required");
+		return;
+	}
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback required");
+		return;
+	}
+    
+    NSString* password = [args objectForKey:@"password"];
+    NSString* resultType =[TiUtils stringValue:@"resultType" properties:args def:@"hex"];    
+    BOOL useHex = [resultType caseInsensitiveCompare:@"hex"];
+    BOOL useBlob = [resultType caseInsensitiveCompare:@"blob"];
+    NSString* inputString = [args objectForKey:@"value"];
+    NSString* encryptedText = (useHex)? [BCXCryptoUtilities hexStringtoString:inputString] : inputString;
+
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
+    
+    NSError *error = nil;
+    BOOL success = NO;
+    NSString *msg = @"invalid data returned";
+    
+    NSData *decryptedData = [[RNDecryptor decryptData:[encryptedText dataUsingEncoding:NSUTF8StringEncoding]
+                                        withPassword:password error:&error] autorelease];
+
+    if(error!=nil){
+        msg =[error localizedDescription];
+    }else{
+        if(decryptedData!=nil){
+            if([decryptedData length]>0){
+                success=YES;
+            }else{
+                msg = @"data length of zero returned";
+            }
+        }
+    }
+    
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                  NUMBOOL(success),@"success",
+                                  nil];
+    
+    if(success){
+        if(useBlob){
+            TiBlob *result = [[[TiBlob alloc] initWithData:decryptedData
+                                                  mimetype:@"application/octet-stream"] autorelease];
+            [event setObject:result forKey:@"result"];
+        }else{
+            [event setObject:[NSString stringWithUTF8String:[decryptedData bytes]] forKey:@"result"];
+        }
+    }else{
+        [event setObject:msg forKey:@"message"];
+    }
+    
+    if(callback != nil ){
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
+}
 
 -(NSString *)AESEncrypt:(id)args
 {

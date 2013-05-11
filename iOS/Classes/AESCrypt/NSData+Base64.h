@@ -12,6 +12,7 @@
 
 @interface NSData (Base64Additions)
 
+
 + (NSData *)base64DataFromString:(NSString *)string;
 
 @end

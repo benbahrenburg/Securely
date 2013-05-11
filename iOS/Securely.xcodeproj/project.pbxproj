@@ -31,6 +31,16 @@
 		430F1AF8171C70C500A3E288 /* RNCryptManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 430F1AF4171C70C500A3E288 /* RNCryptManager.m */; };
 		431FC215171B4654007C8298 /* BCXCryptoUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 431FC213171B4654007C8298 /* BCXCryptoUtilities.h */; };
 		431FC216171B4654007C8298 /* BCXCryptoUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FC214171B4654007C8298 /* BCXCryptoUtilities.m */; };
+		4321ECE6173E0E8D00BBA672 /* RNCryptor-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECDC173E0E8D00BBA672 /* RNCryptor-Prefix.pch */; };
+		4321ECE7173E0E8D00BBA672 /* RNCryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECDD173E0E8D00BBA672 /* RNCryptor.h */; };
+		4321ECE8173E0E8D00BBA672 /* RNCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 4321ECDE173E0E8D00BBA672 /* RNCryptor.m */; };
+		4321ECE9173E0E8D00BBA672 /* RNCryptor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECDF173E0E8D00BBA672 /* RNCryptor+Private.h */; };
+		4321ECEA173E0E8D00BBA672 /* RNCryptorEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECE0173E0E8D00BBA672 /* RNCryptorEngine.h */; };
+		4321ECEB173E0E8D00BBA672 /* RNCryptorEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 4321ECE1173E0E8D00BBA672 /* RNCryptorEngine.m */; };
+		4321ECEC173E0E8D00BBA672 /* RNDecryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECE2173E0E8D00BBA672 /* RNDecryptor.h */; };
+		4321ECED173E0E8D00BBA672 /* RNDecryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 4321ECE3173E0E8D00BBA672 /* RNDecryptor.m */; };
+		4321ECEE173E0E8D00BBA672 /* RNEncryptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 4321ECE4173E0E8D00BBA672 /* RNEncryptor.h */; };
+		4321ECEF173E0E8D00BBA672 /* RNEncryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 4321ECE5173E0E8D00BBA672 /* RNEncryptor.m */; };
 		435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D316D41B680093B1BD /* NSData+Base64.h */; };
 		435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D416D41B680093B1BD /* NSData+Base64.m */; };
 		435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */; };
@@ -77,6 +87,16 @@
 		430F1AF4171C70C500A3E288 /* RNCryptManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptManager.m; sourceTree = "<group>"; };
 		431FC213171B4654007C8298 /* BCXCryptoUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCXCryptoUtilities.h; path = Classes/BCXCryptoUtilities.h; sourceTree = "<group>"; };
 		431FC214171B4654007C8298 /* BCXCryptoUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCXCryptoUtilities.m; path = Classes/BCXCryptoUtilities.m; sourceTree = "<group>"; };
+		4321ECDC173E0E8D00BBA672 /* RNCryptor-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor-Prefix.pch"; sourceTree = "<group>"; };
+		4321ECDD173E0E8D00BBA672 /* RNCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptor.h; sourceTree = "<group>"; };
+		4321ECDE173E0E8D00BBA672 /* RNCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptor.m; sourceTree = "<group>"; };
+		4321ECDF173E0E8D00BBA672 /* RNCryptor+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCryptor+Private.h"; sourceTree = "<group>"; };
+		4321ECE0173E0E8D00BBA672 /* RNCryptorEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCryptorEngine.h; sourceTree = "<group>"; };
+		4321ECE1173E0E8D00BBA672 /* RNCryptorEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptorEngine.m; sourceTree = "<group>"; };
+		4321ECE2173E0E8D00BBA672 /* RNDecryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNDecryptor.h; sourceTree = "<group>"; };
+		4321ECE3173E0E8D00BBA672 /* RNDecryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNDecryptor.m; sourceTree = "<group>"; };
+		4321ECE4173E0E8D00BBA672 /* RNEncryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNEncryptor.h; sourceTree = "<group>"; };
+		4321ECE5173E0E8D00BBA672 /* RNEncryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEncryptor.m; sourceTree = "<group>"; };
 		435D89D316D41B680093B1BD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "Classes/AESCrypt/NSData+Base64.h"; sourceTree = "<group>"; };
 		435D89D416D41B680093B1BD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "Classes/AESCrypt/NSData+Base64.m"; sourceTree = "<group>"; };
 		435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+CommonCrypto.h"; path = "Classes/AESCrypt/NSData+CommonCrypto.h"; sourceTree = "<group>"; };
@@ -216,6 +236,16 @@
 		43A5CACF171366070073BEC8 /* RNCryptor */ = {
 			isa = PBXGroup;
 			children = (
+				4321ECDC173E0E8D00BBA672 /* RNCryptor-Prefix.pch */,
+				4321ECDD173E0E8D00BBA672 /* RNCryptor.h */,
+				4321ECDE173E0E8D00BBA672 /* RNCryptor.m */,
+				4321ECDF173E0E8D00BBA672 /* RNCryptor+Private.h */,
+				4321ECE0173E0E8D00BBA672 /* RNCryptorEngine.h */,
+				4321ECE1173E0E8D00BBA672 /* RNCryptorEngine.m */,
+				4321ECE2173E0E8D00BBA672 /* RNDecryptor.h */,
+				4321ECE3173E0E8D00BBA672 /* RNDecryptor.m */,
+				4321ECE4173E0E8D00BBA672 /* RNEncryptor.h */,
+				4321ECE5173E0E8D00BBA672 /* RNEncryptor.m */,
 				430F1AF3171C70C500A3E288 /* RNCryptManager.h */,
 				430F1AF4171C70C500A3E288 /* RNCryptManager.m */,
 			);
@@ -246,6 +276,12 @@
 				431FC215171B4654007C8298 /* BCXCryptoUtilities.h in Headers */,
 				430F1AF7171C70C500A3E288 /* RNCryptManager.h in Headers */,
 				43050911171F147E0089BF67 /* BCXNamespaceManager.h in Headers */,
+				4321ECE6173E0E8D00BBA672 /* RNCryptor-Prefix.pch in Headers */,
+				4321ECE7173E0E8D00BBA672 /* RNCryptor.h in Headers */,
+				4321ECE9173E0E8D00BBA672 /* RNCryptor+Private.h in Headers */,
+				4321ECEA173E0E8D00BBA672 /* RNCryptorEngine.h in Headers */,
+				4321ECEC173E0E8D00BBA672 /* RNDecryptor.h in Headers */,
+				4321ECEE173E0E8D00BBA672 /* RNEncryptor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,6 +366,10 @@
 				43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */,
 				431FC216171B4654007C8298 /* BCXCryptoUtilities.m in Sources */,
 				430F1AF8171C70C500A3E288 /* RNCryptManager.m in Sources */,
+				4321ECE8173E0E8D00BBA672 /* RNCryptor.m in Sources */,
+				4321ECEB173E0E8D00BBA672 /* RNCryptorEngine.m in Sources */,
+				4321ECED173E0E8D00BBA672 /* RNDecryptor.m in Sources */,
+				4321ECEF173E0E8D00BBA672 /* RNEncryptor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

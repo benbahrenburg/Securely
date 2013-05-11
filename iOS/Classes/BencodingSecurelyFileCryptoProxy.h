@@ -6,8 +6,6 @@
  */
 #import "TiProxy.h"
 @interface BencodingSecurelyFileCryptoProxy : TiProxy {
-
-
 }
 
 @end
