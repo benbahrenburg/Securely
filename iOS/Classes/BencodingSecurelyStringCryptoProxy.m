@@ -10,8 +10,6 @@
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
 #import "BCXCryptoUtilities.h"
-#import "RNEncryptor.h"
-#import "RNDecryptor.h"
 
 @implementation BencodingSecurelyStringCryptoProxy
 
@@ -46,18 +44,25 @@
         data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
     }
     
-    NSString* resultType =[TiUtils stringValue:@"resultType" properties:args def:@"hex"];
+    NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"hex"] lowercaseString];
+    BOOL useHex = YES;
+    BOOL useBlob = NO;
     
-    BOOL useHex = [resultType caseInsensitiveCompare:@"hex"];
-    BOOL useBlob = [resultType caseInsensitiveCompare:@"blob"];
-        
+    if([resultType isEqualToString:@"blob"]){
+        useHex = NO;
+        useBlob = YES;
+    }else{
+        if([resultType isEqualToString:@"text"]){
+           useHex = NO;
+        }
+    }
+    
     NSError *error = nil;
     BOOL success = NO;
     NSString *msg = @"invalid data returned";
-    NSData *encryptedData = [RNEncryptor encryptData:data
-                                         withSettings:kRNCryptorAES256Settings
-                                             password:password
-                                                error:&error];
+
+    NSData *encryptedData = [data AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:&error];
+    
     if(error!=nil){
         msg =[error localizedDescription];
     }else{
@@ -69,28 +74,33 @@
             }
         }
     }
-    
+        
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   NUMBOOL(success),@"success",
                                   nil];
-    
+ 
     if(success){
         if(useBlob){
             TiBlob *result = [[[TiBlob alloc] initWithData:encryptedData
                                                   mimetype:@"application/octet-stream"] autorelease];
+            [event setObject:@"blob" forKey:@"resultType"];
             [event setObject:result forKey:@"result"];
         }else{
+            NSString *encryptedString = [NSString base64StringFromData:encryptedData
+                                                                length:[encryptedData length]];
             if(useHex){
-                NSString *hexEncrypted = [BCXCryptoUtilities base64forData:encryptedData];
+                NSString *hexEncrypted = [BCXCryptoUtilities stringToHex:encryptedString];
+                [event setObject:@"hex" forKey:@"resultType"];
                 [event setObject:hexEncrypted forKey:@"result"];
             }else{
-                [event setObject:[NSString stringWithUTF8String:[encryptedData bytes]] forKey:@"result"];
+                [event setObject:@"text" forKey:@"resultType"];
+                [event setObject:encryptedString forKey:@"result"];
             }
         }
     }else{
         [event setObject:msg forKey:@"message"];
     }
-    
+
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
@@ -115,24 +125,41 @@
 		NSLog(@"[ERROR] completed callback required");
 		return;
 	}
-    
-    NSString* password = [args objectForKey:@"password"];
-    NSString* resultType =[TiUtils stringValue:@"resultType" properties:args def:@"hex"];    
-    BOOL useHex = [resultType caseInsensitiveCompare:@"hex"];
-    BOOL useBlob = [resultType caseInsensitiveCompare:@"blob"];
-    NSString* inputString = [args objectForKey:@"value"];
-    NSString* encryptedText = (useHex)? [BCXCryptoUtilities hexStringtoString:inputString] : inputString;
 
+    BOOL useHex = YES;
+    BOOL useBlob = NO;
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
+    
+    NSString* password = [args objectForKey:@"password"];
+    NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"hex"] lowercaseString];
+    
+    if([resultType isEqualToString:@"blob"]){
+        useHex = NO;
+        useBlob = YES;
+    }else{
+        if([resultType isEqualToString:@"text"]){
+            useHex = NO;
+        }
+    }
+    
+    id inputValue = [args objectForKey:@"value"];
+    NSData *data;
+    if([inputValue isKindOfClass:[TiBlob class]]){
+        ENSURE_TYPE(inputValue,TiBlob);
+        data = [(TiBlob *)inputValue data];
+    }else{
+        NSString* inputString = (useHex)? [BCXCryptoUtilities hexStringtoString:(NSString *)inputValue] : (NSString *)inputValue;
+        data = [NSData base64DataFromString:inputString];
+    }
+      
     
     NSError *error = nil;
     BOOL success = NO;
     NSString *msg = @"invalid data returned";
     
-    NSData *decryptedData = [RNDecryptor decryptData:[encryptedText dataUsingEncoding:NSUTF8StringEncoding]
-                                        withPassword:password error:&error];
-
+    NSData *decryptedData = [data decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:&error];
+    
     if(error!=nil){
         msg =[error localizedDescription];
     }else{
@@ -153,9 +180,12 @@
         if(useBlob){
             TiBlob *result = [[[TiBlob alloc] initWithData:decryptedData
                                                   mimetype:@"application/octet-stream"] autorelease];
+            [event setObject:@"blob" forKey:@"resultType"];
             [event setObject:result forKey:@"result"];
         }else{
-            [event setObject:[NSString stringWithUTF8String:[decryptedData bytes]] forKey:@"result"];
+            NSString *plainText =  [[[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding] autorelease];
+            [event setObject:@"text" forKey:@"resultType"];
+            [event setObject:plainText forKey:@"result"];
         }
     }else{
         [event setObject:msg forKey:@"message"];
