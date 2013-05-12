@@ -7,6 +7,10 @@
 
 #import <Foundation/Foundation.h>
 
+#define BCXENCRYPT_ALGORITHM     kCCAlgorithmAES128
+#define BCXENCRYPT_BLOCK_SIZE    kCCBlockSizeAES128
+#define BCXENCRYPT_KEY_SIZE      kCCKeySizeAES256
+
 @interface BCXCryptoUtilities : NSObject
 
 +(NSString*)base64forData:(NSData*)theData;
@@ -17,5 +21,6 @@
 +(NSData *) randomByLength:(int)charLength;
 +(NSString *) randomString:(int)len;
 +(NSString *) encodeDataPBKtoString: (NSData *) data ofLength: (SInt32) len;
-
++ (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
++ (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 @end

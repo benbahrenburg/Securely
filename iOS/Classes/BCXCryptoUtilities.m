@@ -6,6 +6,7 @@
  */
 
 #import "BCXCryptoUtilities.h"
+#import <CommonCrypto/CommonCryptor.h>
 
 @implementation BCXCryptoUtilities
 
@@ -175,5 +176,94 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	}
     
 	return rs;
+}
+
+//METHODS MODIFIED FROM https://github.com/dev5tec/FBEncryptor
++ (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
+{
+    NSData* result = nil;
+    
+    // setup key
+    unsigned char cKey[BCXENCRYPT_KEY_SIZE];
+	bzero(cKey, sizeof(cKey));
+    [key getBytes:cKey length:BCXENCRYPT_KEY_SIZE];
+	
+    // setup iv
+    char cIv[BCXENCRYPT_BLOCK_SIZE];
+    bzero(cIv, BCXENCRYPT_BLOCK_SIZE);
+    if (iv) {
+        [iv getBytes:cIv length:BCXENCRYPT_BLOCK_SIZE];
+    }
+    
+    // setup output buffer
+	size_t bufferSize = [data length] + BCXENCRYPT_BLOCK_SIZE;
+	void *buffer = malloc(bufferSize);
+    
+    // do encrypt
+	size_t encryptedSize = 0;
+	CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt,
+                                          BCXENCRYPT_ALGORITHM,
+                                          kCCOptionPKCS7Padding,
+                                          cKey,
+                                          BCXENCRYPT_KEY_SIZE,
+                                          cIv,
+                                          [data bytes],
+                                          [data length],
+                                          buffer,
+                                          bufferSize,
+										  &encryptedSize);
+	if (cryptStatus == kCCSuccess) {
+		result = [NSData dataWithBytesNoCopy:buffer length:encryptedSize];
+	} else {
+        free(buffer);
+        NSLog(@"[ERROR] failed to encrypt|CCCryptoStatus: %d", cryptStatus);
+    }
+	
+	return result;
+}
+
+//METHODS MODIFIED FROM https://github.com/dev5tec/FBEncryptor
++ (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
+{
+    NSData* result = nil;
+    
+    // setup key
+    unsigned char cKey[BCXENCRYPT_KEY_SIZE];
+	bzero(cKey, sizeof(cKey));
+    [key getBytes:cKey length:BCXENCRYPT_KEY_SIZE];
+    
+    // setup iv
+    char cIv[BCXENCRYPT_BLOCK_SIZE];
+    bzero(cIv, BCXENCRYPT_BLOCK_SIZE);
+    if (iv) {
+        [iv getBytes:cIv length:BCXENCRYPT_BLOCK_SIZE];
+    }
+    
+    // setup output buffer
+	size_t bufferSize = [data length] + BCXENCRYPT_BLOCK_SIZE;
+	void *buffer = malloc(bufferSize);
+	
+    // do decrypt
+	size_t decryptedSize = 0;
+	CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,
+                                          BCXENCRYPT_ALGORITHM,
+                                          kCCOptionPKCS7Padding,
+										  cKey,
+                                          BCXENCRYPT_KEY_SIZE,
+                                          cIv,
+                                          [data bytes],
+                                          [data length],
+                                          buffer,
+                                          bufferSize,
+                                          &decryptedSize);
+	
+	if (cryptStatus == kCCSuccess) {
+		result = [NSData dataWithBytesNoCopy:buffer length:decryptedSize];
+	} else {
+        free(buffer);
+        NSLog(@"[ERROR] failed to decrypt| CCCryptoStatus: %d", cryptStatus);
+    }
+    
+	return result;
 }
 @end

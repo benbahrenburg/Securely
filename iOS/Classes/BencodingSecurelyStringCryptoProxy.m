@@ -30,13 +30,20 @@
 		NSLog(@"[ERROR] completed callback required");
 		return;
 	}
- 
+
+    BOOL useHex = YES;
+    BOOL useBlob = NO;
+    BOOL success = NO;
+    NSString *statusMsg = @"invalid data returned";
+    NSData *iv = nil;
+    NSData *data;
+    
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
     id inputValue = [args objectForKey:@"value"];
-    NSData *data;
+    
     if([inputValue isKindOfClass:[TiBlob class]]){
         ENSURE_TYPE(inputValue,TiBlob);
         data = [(TiBlob *)inputValue data];
@@ -45,8 +52,6 @@
     }
     
     NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"hex"] lowercaseString];
-    BOOL useHex = YES;
-    BOOL useBlob = NO;
     
     if([resultType isEqualToString:@"blob"]){
         useHex = NO;
@@ -57,23 +62,30 @@
         }
     }
     
-    NSError *error = nil;
-    BOOL success = NO;
-    NSString *msg = @"invalid data returned";
-
-    NSData *encryptedData = [data AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:&error];
+    if (![args objectForKey:@"iv"]) {
+        NSString* ivString = [args objectForKey:@"iv"];
+        iv = [ivString dataUsingEncoding:NSUTF8StringEncoding];
+	}
     
-    if(error!=nil){
-        msg =[error localizedDescription];
-    }else{
+    NSData* encryptedData;
+    @try {
+        encryptedData = [BCXCryptoUtilities encryptData:data
+                                            key:[password dataUsingEncoding:NSUTF8StringEncoding]
+                                            iv:iv];
+        
         if(encryptedData!=nil){
             if([encryptedData length]>0){
                 success=YES;
             }else{
-                msg = @"data length of zero returned";
+                statusMsg = @"data length of zero returned";
             }
         }
     }
+    @catch (NSException *exception) {
+        success=NO;
+        statusMsg = [exception reason];
+    }
+
         
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   NUMBOOL(success),@"success",
@@ -98,7 +110,7 @@
             }
         }
     }else{
-        [event setObject:msg forKey:@"message"];
+        [event setObject:statusMsg forKey:@"message"];
     }
 
     if(callback != nil ){
@@ -128,6 +140,11 @@
 
     BOOL useHex = YES;
     BOOL useBlob = NO;
+    NSData *data;
+    BOOL success = NO;
+    NSString *statusMsg = @"invalid data returned";
+    NSData *iv = nil;
+    
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
     
@@ -144,7 +161,6 @@
     }
     
     id inputValue = [args objectForKey:@"value"];
-    NSData *data;
     if([inputValue isKindOfClass:[TiBlob class]]){
         ENSURE_TYPE(inputValue,TiBlob);
         data = [(TiBlob *)inputValue data];
@@ -152,24 +168,28 @@
         NSString* inputString = (useHex)? [BCXCryptoUtilities hexStringtoString:(NSString *)inputValue] : (NSString *)inputValue;
         data = [NSData base64DataFromString:inputString];
     }
-      
+          
+    if (![args objectForKey:@"iv"]) {
+        NSString* ivString = [args objectForKey:@"iv"];
+        iv = [ivString dataUsingEncoding:NSUTF8StringEncoding];
+	}
     
-    NSError *error = nil;
-    BOOL success = NO;
-    NSString *msg = @"invalid data returned";
-    
-    NSData *decryptedData = [data decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:&error];
-    
-    if(error!=nil){
-        msg =[error localizedDescription];
-    }else{
+    NSData* decryptedData;
+    @try {
+        decryptedData = [BCXCryptoUtilities decryptData:data
+                                            key:[password dataUsingEncoding:NSUTF8StringEncoding]
+                                            iv:iv];
         if(decryptedData!=nil){
             if([decryptedData length]>0){
                 success=YES;
             }else{
-                msg = @"data length of zero returned";
+                statusMsg = @"data length of zero returned";
             }
         }
+    }
+    @catch (NSException *exception) {
+        success=NO;
+        statusMsg = [exception reason];
     }
     
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -188,7 +208,7 @@
             [event setObject:plainText forKey:@"result"];
         }
     }else{
-        [event setObject:msg forKey:@"message"];
+        [event setObject:statusMsg forKey:@"message"];
     }
     
     if(callback != nil ){
