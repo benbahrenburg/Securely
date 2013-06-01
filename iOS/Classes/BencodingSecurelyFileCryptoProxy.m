@@ -11,8 +11,6 @@
 #import "BCXCryptoUtilities.h"
 @implementation BencodingSecurelyFileCryptoProxy
 
-
-
 - (BOOL)encryptDataWithPassword:(NSString *)inputFilePath withOutputFilePath:(NSString *)outputFilePath
                      password:(NSString *)password error:(NSError **)error {
     

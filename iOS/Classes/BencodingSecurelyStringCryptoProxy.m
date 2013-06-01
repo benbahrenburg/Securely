@@ -20,7 +20,7 @@
     
     if (![args objectForKey:@"password"]) {
 		NSLog(@"[ERROR] password is required");
-		return;
+        return;
 	}
     if (![args objectForKey:@"value"]) {
 		NSLog(@"[ERROR] value required");
@@ -233,19 +233,20 @@
     //DebugLog(@"password: %@", password);
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:kArgPlainText]];
     //DebugLog(@"plainText: %@", plainText);
-
+        
     BOOL useHex = ([args count] > kArgUseHex) ? [TiUtils boolValue:[args objectAtIndex:kArgUseHex]] : YES;
-    
+        
     NSData *encryptedData = [[plainText dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
     NSString *encryptedString = [NSString base64StringFromData:encryptedData
-                                                         length:[encryptedData length]];
-    
+                                                            length:[encryptedData length]];
+        
     if(useHex){
         NSString *hexEncrypted = [BCXCryptoUtilities stringToHex:encryptedString];
         return hexEncrypted;
     }else{
         return encryptedString;
     }
+    
 }
 
 
