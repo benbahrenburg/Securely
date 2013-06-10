@@ -39,7 +39,7 @@ Import the project into Eclipse:
 var securely = require('bencoding.securely');
 </code></pre>
 
-<h2>Creating the Properties Object</h2>
+<h2>Creating the Securely Module Object</h2>
 
 Requiring the module into your project
 
