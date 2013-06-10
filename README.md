@@ -19,7 +19,15 @@ Download the platform you wish to use:
 <h2>Building from source?</h2>
 
 If you are building from source you will need to do the following:
+
+Import the project into Xcode:
+
 * Modify the titanium.xcconfig file with the path to your Titanium installation
+
+Import the project into Eclipse:
+
+* Update the .classpath
+* Update the build properties
 
 <h2>Setup</h2>
 
