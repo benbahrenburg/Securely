@@ -1,8 +1,8 @@
-[<- back to the Securely main page](https://github.com/benbahrenburg/Securely)
+[<< back to the Securely main page](https://github.com/benbahrenburg/Securely)
 
 BenCoding.Securely.Properties
 
-The Securely Properties moduel is used to store values in the KeyChain using the same API as Titanium.App.Properties.  
+The Securely Properties module is used to store values in the KeyChain using the same API as Titanium.App.Properties.  
 
 <h2>Getting Started</h2>
 * First you need to download and install the module as discussed [here.](https://github.com/benbahrenburg/Securely)
