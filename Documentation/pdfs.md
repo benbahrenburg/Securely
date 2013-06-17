@@ -1,5 +1,4 @@
-
-z[<< back to the Securely main page](https://github.com/benbahrenburg/Securely)
+[<< back to the Securely main page](https://github.com/benbahrenburg/Securely)
 
 BenCoding.Securely.PDF
 
