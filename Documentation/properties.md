@@ -12,15 +12,45 @@ The Securely Properties module is used to store values in the KeyChain using the
 var securely = require('bencoding.securely');
 </code></pre>
 
-<h2>Creating the Properties Object</h2>
+<h2>Requiring Securely into your project</h2>
 
 Requiring the module into your project
 
 <pre><code>
 //Require the securely module into your project
 var securely = require('bencoding.securely');
-//Create a new properties object
-var properties = securely.createProperties();
+
+</code></pre>
+
+
+<h2>Creating the Properties Object</h2>
+
+<b>Parameters</b>
+
+<b>identifier</b> : String
+
+This parameter is optional. If no value is provided, the bundle name on iOS or the PackageName on Android is used. identifier allows you to segment each property with an identifier, if needed.
+
+<b>accessGroup</b> : String
+
+This parameter is an optional value used on the iOS platform. Access groups can be used to share keychain items among two or more applications. If no access group is provided, the keychain values will only be accessible within the app saving the values.
+
+<b>secret</b> : String
+
+This is a required parameter. secret is the password used to encrypt and decrypt all property values. The same secret used to encrypt must be used during the decryption process or a null value will be returned.
+
+<b>encryptFieldNames</b> : String
+
+This parameter is an optional value only used on the Android platform. When set to true, Securely will create an MD5 hash using the provided secret for all property names.
+
+<pre><code>
+var properties = securely.createProperties({
+  	secret:"sshh_dont_tell",
+	identifier:"myPropertyIdentifier",
+  	accessGroup:"myAccessGroup",
+	encryptFieldNames:false
+});
+
 </code></pre>
 
 <h2>Methods</h2>
@@ -193,6 +223,8 @@ Titanium.API.info('String Property '+ ((exists)? " Exists" : " Doesn't Exist"));
 
 <b>listProperties</b>( ) : Object[]
 Returns an array of KeyChain Property names.
+
+If field name encryption is enabled ( android only ) null will always be returned.
 
 <b>Returns</b>
 Object[]
@@ -386,6 +418,28 @@ var array = [
 	
 //Use the properties variable shown in the require section
 properties.setObject('MyObject',array);
+</code></pre>
+
+----
+
+<b>hasFieldsEncrypted</b>( ) : Boolean
+Returns true if field name encryption is enabled or false if not.
+
+Please note to enable this feature you must create a new property object using the encryptFieldNames set to true.
+
+<b>Parameters</b>
+property : String
+Name of property.
+default : Number (optional)
+Default value to return if KeyChain Property does not exist.
+
+<b>Returns</b>
+Number
+
+<b>Example</b>
+<pre><code>
+//Use the properties variable shown in the require section
+Titanium.API.debug('int: ' +  properties.getInt('whatever',1));
 </code></pre>
 
 ----
