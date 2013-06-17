@@ -2,7 +2,7 @@
 
 BenCoding.Securely.PDF
 
-The Securely Properties module is used to store values in the KeyChain using the same API as Titanium.App.Properties.  
+The Securely PDF module is used to lock and unlock PDF files.  Please note this is an iOS specific module.  
 
 <h2>Getting Started</h2>
 * First you need to download and install the module as discussed [here.](https://github.com/benbahrenburg/Securely)
