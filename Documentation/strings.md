@@ -28,7 +28,7 @@ var securely = require('bencoding.securely');
 The following demonstrates how to create a new instance of the Securely StringCrypto component.
 
 <pre><code>
-var pdf = securely.createStringCrypto();
+var stringCrypto = securely.createStringCrypto();
 </code></pre>
 
 <h2>Methods</h2>
@@ -51,6 +51,12 @@ The AESEncrypt method takes the following arguments ( order is important ).
 <b>Example</b>
 <pre><code>
 
+var plainTextString = "this is a clear text example string";
+var usingGUID = securely.generateDerivedKey(Ti.Platform.createUUID());  
+Ti.API.info("Derived key using GUID = " + usingGUID);
+var aesEncryptedString = stringCrypto.AESEncrypt(usingGUID,plainTextString);
+Ti.API.info("aesEncryptedString =" + aesEncryptedString);
+
 </code></pre>
 
 ----
@@ -71,6 +77,10 @@ The AESDecrypt method takes the following arguments ( order is important ).
 
 <b>Example</b>
 <pre><code>
+
+Ti.API.info("Demonstrate using AES Decryption");
+var aesDecryptedString = stringCrypto.AESDecrypt(usingGUID,aesEncryptedString);
+Ti.API.info('aesDecryptedString=' + aesDecryptedString);
 
 </code></pre>
 
@@ -93,6 +103,13 @@ The DESEncrypt method takes the following arguments ( order is important ).
 <b>Example</b>
 <pre><code>
 
+var plainTextString = "this is a clear text example string";
+var usingGUID = securely.generateDerivedKey(Ti.Platform.createUUID());  
+
+Ti.API.info("Demonstrate using DES Encryption");
+var desEncryptedString = stringCrypto.DESEncrypt(usingGUID,plainTextString);
+Ti.API.info("desEncryptedString =" + desEncryptedString);
+
 </code></pre>
 
 ----
@@ -114,6 +131,10 @@ The DESDecrypt method takes the following arguments ( order is important ).
 <b>Example</b>
 <pre><code>
 
+Ti.API.info("Demonstrate using DES Decryption");
+var desDecryptedString = stringCrypto.DESDecrypt(usingGUID,desEncryptedString);
+Ti.API.info('desDecryptedString=' + desDecryptedString);
+
 </code></pre>
 
 ----
@@ -128,10 +149,6 @@ The sha256 method takes the following argument.
 
 <b>text</b> - (required) The text you wish to hash.
 
-<b>Example</b>
-<pre><code>
-
-</code></pre>
 
 ----
 
@@ -145,11 +162,6 @@ The toHex method takes the following argument.
 
 <b>text</b> - (required) The text you wish to hash.
 
-<b>Example</b>
-<pre><code>
-
-</code></pre>
-
 ----
 
 <h3>fromHex</h3> return string 
@@ -162,9 +174,5 @@ The fromHex method takes the following argument.
 
 <b>text</b> - (required) The hash code you wish converted to a string
 
-<b>Example</b>
-<pre><code>
-
-</code></pre>
 
 ----
