@@ -54,6 +54,14 @@ The Securely Properties module is used to store values in the KeyChain using the
 
 To learn more about this part of the module, please view the documentation [here](https://github.com/benbahrenburg/Securely/blob/master/Documentation/properties.md).
 
+----
+
+<h2>Key Generators</h2>
+
+Securely provides the ability to generator random and derived keys.  These key generators allow you to generate strong passwords for your encryption functions.
+
+To learn more about this part of the module, please view the documentation [here](https://github.com/benbahrenburg/Securely/blob/master/Documentation/keymakers.md).
+
 
 ----
 
