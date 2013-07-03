@@ -26,7 +26,7 @@ btnEncrypt.addEventListener('click',function(x){
 		Ti.API.info(JSON.stringify(e));
 	};
 	
-	var plainTextFile = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, 'TextFile.txt'),
+	var plainTextFile = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, 'anne11.txt'),
 		futureEncrypted = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'encryptedFile.txt');
 				
 	fileCrypto.AESEncrypt({
