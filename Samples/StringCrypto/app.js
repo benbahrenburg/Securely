@@ -13,6 +13,7 @@ var stringCrypto = securely.createStringCrypto();
 
 var password = "helloworld";
 
+Ti.API.info("AES Encryption Demo");
 var testString = "Some string you want to protect from anyone being able to see";
 var encryptedText = stringCrypto.AESEncrypt(password,testString);
 Ti.API.info("Encrypted Test Passed? " + (encryptedText!=testString));
@@ -21,6 +22,16 @@ Ti.API.info("Encrypted value " + encryptedText);
 var decryptedText = stringCrypto.AESDecrypt(password,encryptedText);	
 Ti.API.info("Decrypted Test Passed? " + (decryptedText==testString));
 Ti.API.info("Decrypted value " + decryptedText);	
+
+Ti.API.info("DES Encryption Demo");
+testString = "Some string you want to protect from anyone being able to see";
+encryptedText = stringCrypto.DESEncrypt(password,testString);
+Ti.API.info("Encrypted Test Passed? " + (encryptedText!=testString));
+Ti.API.info("Encrypted value " + encryptedText);
+
+decryptedText = stringCrypto.AESDecrypt(password,encryptedText);	
+Ti.API.info("Decrypted Test Passed? " + (decryptedText==testString));
+Ti.API.info("Decrypted value " + decryptedText);
 
 function onDecrypt(e){	
 	Ti.API.info(JSON.stringify(e));
@@ -65,6 +76,8 @@ stringCrypto.encrypt({
 	resultType:'text',
 	completed:onEncrypt
 });
+
+
 
 win.open();
 
