@@ -25,8 +25,6 @@ btnLock.addEventListener('click',function(x){
 	    //Print full statement to the console
 	    Ti.API.info(JSON.stringify(e));
 	};
-	
-
 		
 	var inputFile = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, '2012pit.pdf');				
 	var outputFile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'locked.pdf');
