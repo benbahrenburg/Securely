@@ -39,7 +39,7 @@ This parameter is an optional value used on the iOS platform. Access groups can 
 
 This is a required parameter. secret is the password used to encrypt and decrypt all property values. The same secret used to encrypt must be used during the decryption process or a null value will be returned.
 
-<b>encryptFieldNames</b> : String
+<b>encryptFieldNames</b> : Boolean
 
 This parameter is an optional value only used on the Android platform. When set to true, Securely will create an MD5 hash using the provided secret for all property names.
 
