@@ -20,7 +20,7 @@ public class SecurelyModule extends KrollModule
 {
 
 	public static final String SECURELY_MODULE_FULL_NAME = "becoding.securely";
-	
+	public static boolean DEBUG = false;
 	public SecurelyModule()
 	{
 		super();
@@ -41,16 +41,23 @@ public class SecurelyModule extends KrollModule
 	{
 		LogHelpers.UpdateSecureWrite(true);
 	}
+
+
+	@Kroll.method
+	public void setDebug(boolean value)
+	{
+		DEBUG = value;
+	}
 	
 	@Kroll.method
 	public void disableLogging()
 	{
-		LogHelpers.UpdateWriteStatus(false);
+		DEBUG = false;
 	}
 	@Kroll.method
 	public void enableLogging()
 	{
-		LogHelpers.UpdateWriteStatus(true);
+		DEBUG = true;
 	}
 	@Kroll.method
 	public String generateRandomKey(@Kroll.argument(optional=true) Object seedLength) {

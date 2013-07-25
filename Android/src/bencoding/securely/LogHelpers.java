@@ -10,16 +10,12 @@ import org.appcelerator.kroll.common.Log;
 
 public class LogHelpers {
 	
-	private static boolean _writeToLog = true;
 	private static boolean _writeIfSecure = false;
 	public LogHelpers()
 	{
 		super();
 	}
 	
-	public static void UpdateWriteStatus(boolean value){
-		_writeToLog = value;
-	}
 	public static void UpdateSecureWrite(boolean value){
 		_writeIfSecure = value;
 	}	
@@ -32,18 +28,18 @@ public class LogHelpers {
 		Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 	}
 	public static void  Log(String message){
-		if(_writeToLog){
+		if(SecurelyModule.DEBUG){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 		}
 	}
 	public static void  Log(Exception e){
-		if(_writeToLog){
+		if(SecurelyModule.DEBUG){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, e.toString());
 		}
 		
 	}	
 	public static void DebugLog(String message){
-		if(_writeToLog){
+		if(SecurelyModule.DEBUG){
 			Log.d(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 		}
 	}
