@@ -42,7 +42,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 
-NSString * const kCommonCryptoErrorDomain = @"CommonCryptoErrorDomain";
+NSString * const kBBCommonCryptoErrorDomain = @"CommonCryptoErrorDomain";
 
 @implementation NSError (CommonCryptoErrorDomain)
 
@@ -97,7 +97,7 @@ NSString * const kCommonCryptoErrorDomain = @"CommonCryptoErrorDomain";
 	if ( reason != nil )
 		[userInfo setObject: reason forKey: NSLocalizedFailureReasonErrorKey];
 	
-	NSError * result = [NSError errorWithDomain: kCommonCryptoErrorDomain code: status userInfo: userInfo];
+	NSError * result = [NSError errorWithDomain: kBBCommonCryptoErrorDomain code: status userInfo: userInfo];
     #if !__has_feature(objc_arc)
         [userInfo release];
     #endif

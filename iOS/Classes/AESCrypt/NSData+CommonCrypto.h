@@ -41,7 +41,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 
-extern NSString * const kCommonCryptoErrorDomain;
+extern NSString * const kBBCommonCryptoErrorDomain;
 
 @interface NSError (CommonCryptoErrorDomain)
 + (NSError *) errorWithCCCryptorStatus: (CCCryptorStatus) status;
