@@ -11,7 +11,7 @@
 #import "NSData+AES256.h"
 @implementation BencodingSecurelyCommonStringCryptoProxy
 
--(NSString *)encrypt:(id)args
+-(NSString *)encrypto:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
@@ -93,7 +93,7 @@
     }
 }
 
--(NSString *)decrypt:(id)args
+-(NSString *)decrypto:(id)args
 {
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
@@ -171,6 +171,52 @@
                           listener:callback thisObject:nil];
         [callback autorelease];
     }
+}
+
+
+-(NSString *)encrypt:(id)args
+{
+    enum Args {
+		kArgPassword = 0,
+        kArgPlainText = 1,
+        kArgCount
+	};
+    
+    ENSURE_ARG_COUNT(args, kArgCount);
+    
+    NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
+    //DebugLog(@"password: %@", password);
+    NSString* plainText = [TiUtils stringValue:[args objectAtIndex:kArgPlainText]];
+    //DebugLog(@"plainText: %@", plainText);
+    NSData* data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* encryptedData = [data AES256EncryptWithKey:password];
+    NSString *encryptedString = [encryptedData base64Encoding];
+    return encryptedString;
+}
+
+
+-(NSString *)decrypt:(id)args
+{
+    enum Args {
+		kArgPassword = 0,
+        kArgEncryptedText = 1,
+        kArgCount
+	};
+    
+    ENSURE_ARG_COUNT(args, kArgCount);
+    
+    NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
+    NSLog(@"password: %@", password);
+    
+    NSString* encryptedText = [TiUtils stringValue:[args objectAtIndex:kArgEncryptedText]];
+    NSLog(@"encryptedText: %@", encryptedText);
+    
+    NSData *data = [BCXCryptoUtilities base64DataFromString:encryptedText];
+    NSData *decryptedData = [data AES256DecryptWithKey:password];
+    NSString *plainText = [[NSString alloc] initWithData:decryptedData
+                                                encoding:NSUTF8StringEncoding];
+    NSLog(@"plainText: %@", plainText);
+    return plainText;
 }
 
 @end
