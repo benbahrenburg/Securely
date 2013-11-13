@@ -224,7 +224,7 @@
     }
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
-        NSLog(@"[ERROR] inputFile does not exist");
+        NSLog(@"[ERROR] readPath does not exist");
         return;
     }
     
