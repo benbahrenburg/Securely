@@ -119,7 +119,7 @@
 	}
  
 
-    NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"toPath"]];
+    NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"outputPath"]];
     
     if (outputFile == nil) {
         NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]",
