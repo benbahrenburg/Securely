@@ -11,10 +11,15 @@
 #import "NSData+AES256.h"
 @implementation BencodingSecurelyCommonStringCryptoProxy
 
--(NSString *)encrypto:(id)args
+-(void)encrypto:(id)args
 {
+    
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
+    
+    BOOL success = NO;
+    BOOL isBlob = NO;
+    NSString *statusMsg = @"invalid data returned";
     
     if (![args objectForKey:@"password"]) {
 		NSLog(@"[ERROR] password is required");
@@ -29,12 +34,9 @@
 		return;
 	}
     
-    BOOL success = NO;
-    NSString *statusMsg = @"invalid data returned";
-    NSData *data;
-    
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
+    NSData *data;
     
     NSString* password = [args objectForKey:@"password"];
     id inputValue = [args objectForKey:@"value"];
@@ -42,12 +44,11 @@
     if([inputValue isKindOfClass:[TiBlob class]]){
         ENSURE_TYPE(inputValue,TiBlob);
         data = [(TiBlob *)inputValue data];
+        isBlob = YES;
     }else{
         data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
     }
     
-    NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"text"] lowercaseString];
-    BOOL useBlob = [resultType isEqualToString:@"blob"];
     NSData* encryptedData = nil;
     
     @try {
@@ -72,16 +73,198 @@
                                   nil];
     
     if(success){
-        if(useBlob){
+        if(isBlob){
             TiBlob *result = [[[TiBlob alloc] initWithData:encryptedData
                                                   mimetype:@"application/octet-stream"] autorelease];
-            [event setObject:@"blob" forKey:@"resultType"];
             [event setObject:result forKey:@"result"];
         }else{
             NSString *encryptedString = [encryptedData base64Encoding];
-            [event setObject:@"text" forKey:@"resultType"];
             [event setObject:encryptedString forKey:@"result"];
         }
+    }else{
+        [event setObject:statusMsg forKey:@"message"];
+    }
+    
+    if(callback != nil ){
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
+}
+
+-(void)writeEncrypt:(id)args
+{
+    
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    ENSURE_TYPE(args,NSDictionary);
+    
+    BOOL success = NO;
+    NSString *statusMsg = @"invalid data returned";
+    
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] password is required");
+        return;
+	}
+    if (![args objectForKey:@"inputValue"]) {
+		NSLog(@"[ERROR] inputValue required");
+		return;
+	}
+    if (![args objectForKey:@"outputPath"]) {
+		NSLog(@"[ERROR] outputPath required");
+		return;
+	}
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback required");
+		return;
+	}
+ 
+
+    NSString* outputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"toPath"]];
+    
+    if (outputFile == nil) {
+        NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]",
+                             outputFile]);
+        return;
+    }
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
+        NSLog(@"[DEBUG] Output file already exists, removing");
+        NSError *errorD;
+        BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&errorD];
+        if (!deleted) NSLog(@"[ERROR] %@", [errorD localizedDescription]);
+    }
+    if (![args objectForKey:@"completed"]) {
+        NSLog(@"[ERROR] completed callback method is required");
+        return;
+    }
+    
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
+    NSData *data;
+    
+    NSString* password = [args objectForKey:@"password"];
+    id inputValue = [args objectForKey:@"fromValue"];
+    
+    if([inputValue isKindOfClass:[TiBlob class]]){
+        ENSURE_TYPE(inputValue,TiBlob);
+        data = [(TiBlob *)inputValue data];
+    }else if ([inputValue isKindOfClass:[TiFile class]]){
+        ENSURE_TYPE(inputValue,TiFile);
+        data = [[(TiFile *)inputValue blob] data];
+    }else{
+        data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
+    }
+    
+    
+    
+    @try {
+        NSData* encryptedData = [[data AES256EncryptWithKey:password] autorelease];
+        
+        if(encryptedData!=nil){
+            if([encryptedData length]>0){
+                NSError *error = nil;
+                [encryptedData writeToFile:outputFile options:NSDataWritingFileProtectionComplete error:&error];
+                if(error==nil){
+                    success=YES;
+                }else{
+                    statusMsg = [error localizedDescription];
+                    NSLog(@"Write returned error: %@", statusMsg);
+                }
+            }else{
+                statusMsg = @"data length of zero returned";
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        success=NO;
+        statusMsg = [exception reason];
+    }
+    
+    
+    if(callback != nil ){
+        NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      NUMBOOL(success),@"success",
+                                      outputFile,@"result",
+                                      nil];
+        [self _fireEventToListener:@"completed" withObject:event
+                          listener:callback thisObject:nil];
+        [callback autorelease];
+    }
+}
+
+-(void)readEncrypt:(id)args
+{
+    
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    ENSURE_TYPE(args,NSDictionary);
+    
+    BOOL success = NO;
+    NSString *statusMsg = @"invalid data returned";
+    
+    if (![args objectForKey:@"password"]) {
+		NSLog(@"[ERROR] password is required");
+        return;
+	}
+    if (![args objectForKey:@"readPath"]) {
+		NSLog(@"[ERROR] readPath required");
+		return;
+	}
+    if (![args objectForKey:@"completed"]) {
+		NSLog(@"[ERROR] completed callback required");
+		return;
+	}
+    
+    
+    NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"readPath"]];
+    
+    if (inputFile == nil) {
+        NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]",
+                             inputFile]);
+        return;
+    }
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
+        NSLog(@"[ERROR] inputFile does not exist");
+        return;
+    }
+    
+    if (![args objectForKey:@"completed"]) {
+        NSLog(@"[ERROR] completed callback method is required");
+        return;
+    }
+    
+    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+	ENSURE_TYPE(callback,KrollCallback);
+    NSData *data;
+    
+    NSString* password = [args objectForKey:@"password"];
+    NSData *decryptedData = nil;
+    
+    @try {
+        NSData *data = [[[NSFileManager defaultManager] contentsAtPath:inputFile] autorelease];
+        decryptedData = [data AES256DecryptWithKey:password];
+        if(decryptedData!=nil){
+            if([decryptedData length]>0){
+                success=YES;
+            }else{
+                statusMsg = @"data length of zero returned";
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        success=NO;
+        statusMsg = [exception reason];
+    }
+    
+    
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                  NUMBOOL(success),@"success",
+                                  nil];
+    
+    if(success){
+        TiBlob *result = [[[TiBlob alloc] initWithData:decryptedData
+                                              mimetype:@"application/octet-stream"] autorelease];
+        [event setObject:result forKey:@"result"];
     }else{
         [event setObject:statusMsg forKey:@"message"];
     }
@@ -213,8 +396,8 @@
     
     NSData *data = [BCXCryptoUtilities base64DataFromString:encryptedText];
     NSData *decryptedData = [data AES256DecryptWithKey:password];
-    NSString *plainText = [[NSString alloc] initWithData:decryptedData
-                                                encoding:NSUTF8StringEncoding];
+    NSString *plainText = [[[NSString alloc] initWithData:decryptedData
+                                                encoding:NSUTF8StringEncoding] autorelease];
     NSLog(@"plainText: %@", plainText);
     return plainText;
 }

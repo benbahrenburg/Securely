@@ -151,7 +151,7 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 #if TARGET_IPHONE_SIMULATOR
            
 #else
-        if (_accessGroup == nil)
+        if (_accessGroup != nil)
 		{
             [query setObject:_accessGroup forKey:kSecAttrAccessGroup];
         }
