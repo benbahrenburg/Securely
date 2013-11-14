@@ -128,11 +128,15 @@
     }
     
     if([[NSFileManager defaultManager] fileExistsAtPath:outputFile]){
-        NSLog(@"[DEBUG] Output file already exists, removing");
+        NSLog(@"[DEBUG] Output file already exists, removing so a new one can be created");
         NSError *errorD;
         BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:outputFile error:&errorD];
-        if (!deleted) NSLog(@"[ERROR] %@", [errorD localizedDescription]);
+        if (!deleted){
+            NSLog(@"[ERROR] %@", [errorD localizedDescription]);
+            return;
+        }
     }
+    
     if (![args objectForKey:@"completed"]) {
         NSLog(@"[ERROR] completed callback method is required");
         return;
@@ -155,9 +159,8 @@
         data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
     }
     
-    
-    
     @try {
+    
         NSData* encryptedData = [[data AES256EncryptWithKey:password] autorelease];
         
         if(encryptedData!=nil){
