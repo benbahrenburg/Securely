@@ -185,10 +185,15 @@
     
     
     if(callback != nil ){
+        
         NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       NUMBOOL(success),@"success",
-                                      outputFile,@"result",
                                       nil];
+        if(success){
+            [event setObject:outputFile forKey:@"result"];
+        }else{
+             [event setObject:statusMsg forKey:@"message"];
+        }
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
         [callback autorelease];

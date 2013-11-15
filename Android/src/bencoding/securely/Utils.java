@@ -66,6 +66,11 @@ public class Utils {
         return outFile.getOutputStream(); 		
 	}
 	
+	public static File createTempFile() throws IOException{
+		File outputDir = TiApplication.getInstance().getApplicationContext().getCacheDir(); // context being the Activity pointer
+		File outputFile = File.createTempFile(TEMP_PREFIX, ".bx", outputDir);
+		return outputFile;
+	}
 	public static File createTempFileFromFileAtPath(String path) throws IOException{	
 		TiFileHelper helper = new TiFileHelper(TiApplication.getInstance().getApplicationContext());
 		InputStream stream = helper.openInputStream(path, true);
