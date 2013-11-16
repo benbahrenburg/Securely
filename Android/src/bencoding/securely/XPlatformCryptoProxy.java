@@ -27,9 +27,9 @@ import org.appcelerator.titanium.util.TiFileHelper;
 import android.util.Base64;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
-public class CommonStringCryptoProxy  extends KrollProxy {
+public class XPlatformCryptoProxy  extends KrollProxy {
 
-	public CommonStringCryptoProxy()
+	public XPlatformCryptoProxy()
 	{
 		super();		
 	}

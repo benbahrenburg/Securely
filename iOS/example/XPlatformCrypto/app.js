@@ -1,8 +1,8 @@
 var mod = require('bencoding.securely'),
-	crypto = mod.createCommonStringCrypto(),
+	crypto = mod.createXPlatformCrypto(),
 	password = "foo123456789",
-	plainText = "marry had a little lamb, little lamb, little lamb",
-	iOSOutput = "eqh9NzzqApXbAv2NALC60K3orjdLIIJ4UQD9AHxjjkfSs57zs8X5eqP7lXiNocd9FXSqM0izPg1+EOvHVlgsUg==";
+	plainText = "mary had a little lamb, little lamb, little lamb",
+	iOSOutput = "duSnwv3AGC5ICbn//3sjiL2L6kUNEMPjq+hniRdL9ow+QjGcM+2pBCw+3h19LAc3ugdEB5/ftwNVAO9sStSoNQ==";
 
 var encyptedText = crypto.encrypt(password,plainText);
 Ti.API.info('encyptedText = ' + encyptedText);
