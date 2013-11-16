@@ -16,6 +16,7 @@
 +(NSString*)base64forData:(NSData*)theData;
 +(NSData *)base64DataFromString: (NSString *)string;
 +(NSString*)getNormalizedPath:(NSString*)source;
++(BOOL)fileIsValid:(NSString*)path;
 +(NSString *) hexStringtoString:(NSString *)hexString;
 +(NSString *) stringToHex:(NSString *)str;
 +(NSData *)dataFromHexString:(NSString *)string;

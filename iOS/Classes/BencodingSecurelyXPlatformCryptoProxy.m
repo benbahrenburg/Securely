@@ -17,7 +17,7 @@
     ENSURE_SINGLE_ARG(args,NSDictionary);
     ENSURE_TYPE(args,NSDictionary);
     BOOL success = NO;
-    NSData *data;
+    NSData *data = nil;
     NSString *statusMsg = @"invalid data returned";
     
     if (![args objectForKey:@"password"]) {
@@ -80,7 +80,26 @@
         ENSURE_TYPE(inputValue,TiFile);
         data = [[(TiFile *)inputValue blob] data];
     }else{
-        data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
+        //
+        NSString *valueTest = (NSString *)inputValue;
+        //Determine if filePath or just a string value
+        if([BCXCryptoUtilities fileIsValid:valueTest]){
+            //We think this is a file so try to read it
+            data = [NSData dataWithContentsOfFile:[BCXCryptoUtilities getNormalizedPath:valueTest]];
+        }else{
+            data = [((NSString *)inputValue) dataUsingEncoding:NSUTF8StringEncoding];
+        }
+    }
+    
+    //Validate we are able to read all of the source file data
+    if(data==nil){
+        NSLog(@"[ERROR] unable to read data from inputValue, try using a TiFile type");
+        return;
+    }
+    
+    if([data length]==0){
+        NSLog(@"[ERROR] zero bytes found in inputValue, try using a TiFile type");
+        return;
     }
     
     @try {
@@ -88,13 +107,13 @@
         NSData* encryptedData = [[data AES256EncryptWithKey:password] autorelease];
         
         if(encryptedData==nil){
-            statusMsg = @"[DEBUG] invalid data in encryption process";
-            NSLog(@"[DEBUG] %@", statusMsg);
+            statusMsg = @"Invalid data in encryption process";
+            NSLog(@"[ERROR] %@", statusMsg);
             success = NO;
         }else{
             if([encryptedData length]==0){
-                statusMsg = @"data length of zero returned";
-                NSLog(@"[DEBUG] %@", statusMsg);
+                statusMsg = @"Data length of zero returned";
+                NSLog(@"[ERROR] %@", statusMsg);
                 success = NO;
             }else{
                 NSError *error = nil;
@@ -107,8 +126,8 @@
                     success=YES;
                 }else{
                     success=NO;
-                    NSLog(@"[DEBUG] encryptedData has error");
                     statusMsg = [error localizedDescription];
+                    NSLog(@"[ERROR] write error: %@", statusMsg);
                 }
             }
         }
@@ -116,7 +135,7 @@
     @catch (NSException *exception) {
         success=NO;
         statusMsg = [exception reason];
-        NSLog(@"[DEBUG] %@", statusMsg);
+        NSLog(@"[ERROR] %@", statusMsg);
     }
     
     
@@ -157,47 +176,75 @@
 		NSLog(@"[ERROR] completed callback required");
 		return;
 	}
-    
-    
-    NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"readPath"]];
-    
-    if (inputFile == nil) {
-        NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]",
-                             inputFile]);
-        return;
-    }
-    
-    if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
-        NSLog(@"[ERROR] readPath does not exist");
-        return;
-    }
-    
-    if (![args objectForKey:@"completed"]) {
-        NSLog(@"[ERROR] completed callback method is required");
-        return;
-    }
-    
+
     KrollCallback *callback = [[args objectForKey:@"completed"] retain];
 	ENSURE_TYPE(callback,KrollCallback);
-    NSData *data;
-    NSData *decryptedData = nil;
+    
+    BOOL debug =[TiUtils boolValue:@"debug" def:NO];
+    id inputValue = [args objectForKey:@"readPath"];
     NSString *returnType = [TiUtils stringValue:@"returnType" properties:args def:@"blob"];
     NSString* password = [args objectForKey:@"password"];
-    BOOL debug =[TiUtils boolValue:@"debug" def:NO];
     
+    if(debug){
+        NSLog(@"[DEBUG] Is of type: %@", [inputValue class]);
+    }
+ 
+    NSData *data =nil;
+    
+    if([inputValue isKindOfClass:[TiBlob class]]){
+        ENSURE_TYPE(inputValue,TiBlob);
+        data = [(TiBlob *)inputValue data];
+    }else if ([inputValue isKindOfClass:[TiFile class]]){
+        ENSURE_TYPE(inputValue,TiFile);
+        data = [[(TiFile *)inputValue blob] data];
+    }else{
+        
+        NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:[args objectForKey:@"readPath"]];
+        
+        if (inputFile == nil) {
+            NSLog(@"[ERROR] %@",[NSString stringWithFormat:@"Invalid encryption file path provided [%@]",
+                                 inputFile]);
+            return;
+        }
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
+            NSLog(@"[ERROR] readPath does not exist");
+            return;
+        }
+        
+        if (![args objectForKey:@"completed"]) {
+            NSLog(@"[ERROR] completed callback method is required");
+            return;
+        }
+        
+        data = [[[NSFileManager defaultManager] contentsAtPath:inputFile] autorelease];
+    }
+
+    //Validate we are able to read all of the source file data
+    if(data==nil){
+        NSLog(@"[ERROR] unable to read data from readPath, try using a TiFile type");
+        return;
+    }
+    
+    if([data length]==0){
+        NSLog(@"[ERROR] zero bytes found in readPath, try using a TiFile type");
+        return;
+    }
+    
+    NSData *decryptedData = nil;
     
     @try {
-        NSData *data = [[[NSFileManager defaultManager] contentsAtPath:inputFile] autorelease];
+        
         decryptedData = [data AES256DecryptWithKey:password];
         if(decryptedData==nil){
             success = NO;
             statusMsg = @"Invalid decryption action, null returned";
-            NSLog(@"[DEBUG] %@", statusMsg);
+            NSLog(@"[ERROR] %@", statusMsg);
         }else{
             if([decryptedData length]==0){
                 success = NO;
-                statusMsg = @"data length of zero returned";
-                NSLog(@"[DEBUG] %@", statusMsg);
+                statusMsg = @"Data length of zero returned";
+                NSLog(@"[ERROR] %@", statusMsg);
             }else{
                 success=YES;
             }
@@ -206,7 +253,7 @@
     @catch (NSException *exception) {
         success = NO;
         statusMsg = [exception reason];
-        NSLog(@"[DEBUG] %@", statusMsg);
+        NSLog(@"[ERROR] %@", statusMsg);
     }
     
     

@@ -44,6 +44,28 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     return [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
 }
 
++(BOOL)fileIsValid:(NSString*)path
+{
+    
+    @try {
+        
+        NSString* inputFile = [BCXCryptoUtilities getNormalizedPath:path];
+        
+        if (inputFile == nil) {
+            return NO;
+        }
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:inputFile]){
+            return NO;
+        }
+        
+        return YES;
+    }
+    @catch (NSException *exception) {
+        return NO;
+    }
+}
+
 +(NSString*)getNormalizedPath:(NSString*)source
 {
 	// NOTE: File paths may contain URL prefix as of release 1.7 of the SDK
