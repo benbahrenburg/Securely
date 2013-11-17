@@ -1,7 +1,7 @@
 package bencoding.securely;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -18,11 +18,13 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.TiC;
+import org.appcelerator.titanium.io.TiBaseFile;
+import org.appcelerator.titanium.io.TiFile;
 import org.appcelerator.titanium.io.TiFileFactory;
-import org.appcelerator.titanium.util.TiFileHelper;
+
+import ti.modules.titanium.filesystem.FileProxy;
 
 import android.util.Base64;
 
@@ -50,7 +52,7 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 		}
 		
 		String password = args.getString("password");	
-		String readPath = args.getString("readPath");	
+		Object readPath = args.get("readPath");	
 		
 		KrollFunction callback = null;
 	
@@ -59,10 +61,34 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 			callback = (KrollFunction)object;
 		}
 	    try {
-	    	FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(readPath));
-	    	
-	        SecretKey key = getKey(password);
+	    	LogHelpers.info("Opening File");
+	    	TiBaseFile inputFile = null;
+	    	if(readPath instanceof TiFile){	    		
+	    		inputFile = TiFileFactory.createTitaniumFile(((TiFile)readPath).getFile().getAbsolutePath(), false);
+	    	}else{
+	    		if(readPath instanceof FileProxy){
+	    			inputFile = ((FileProxy)readPath).getBaseFile();
+	    		}else{
+		    		if(readPath instanceof TiBaseFile){
+		    			inputFile = (TiBaseFile) readPath;
+		    		}else{
+		    			//Assume path provided
+		    			inputFile = TiFileFactory.createTitaniumFile(readPath.toString(),false);
+		    		}	    			
+	    		}
+	    	}
+	    	if(inputFile==null){
+		    	LogHelpers.error("Unable to load input file");
+		    	return;	    		
+	    	}
+		    if (!inputFile.exists()){
+		    	LogHelpers.error("Input file does not exist");
+		    	return;
+		    }
 
+	    	InputStream fis = inputFile.getInputStream();
+	        SecretKey key = getKey(password);
+	        
 	        //IMPORTANT TO GET SAME RESULTS ON iOS and ANDROID
 	        final byte[] iv = new byte[16];
 	        Arrays.fill(iv, (byte) 0x00);
@@ -78,12 +104,14 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	        while ((ch = is.read()) >= 0) {
 	            bOut.write(ch);
 	        }
+	        
 	        byte[] decryptedBytes = bOut.toByteArray();
 	        
 			is.close();
 			fis.close();	
+			
 			TiBlob result = TiBlob.blobFromData(decryptedBytes);
-		
+
 			if(callback!=null){
 				HashMap<String, Object> event = new HashMap<String, Object>();
 				event.put(TiC.PROPERTY_SUCCESS, true);	
@@ -92,7 +120,7 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 			}	
 
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	        LogHelpers.error(e);
 			HashMap<String, Object> errEvent = new HashMap<String, Object>();
 			errEvent.put(TiC.PROPERTY_SUCCESS, false);	
 			errEvent.put("message",e.getMessage());			
@@ -119,7 +147,7 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 		}		
 		String password = args.getString("password");	
 		String outputPath = args.getString("outputPath");	
-		String inputValue = args.getString("inputValue");
+		Object inputValue = args.get("inputValue");
 		
 		KrollFunction callback = null;
 		
@@ -132,10 +160,35 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 			callback = (KrollFunction)object;
 		}	
 	    try {
-			FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(inputValue));				
-	        OutputStream fos = Utils.createOutputStreamFromPath(outputPath); 
-	        
-	    	SecretKeySpec skeySpec = getKey(password);
+	    
+	    	TiBaseFile inputFile = null;
+	    	if(inputValue instanceof TiFile){	    		
+	    		inputFile = TiFileFactory.createTitaniumFile(((TiFile)inputValue).getFile().getAbsolutePath(), false);
+	    	}else{
+	    		if(inputValue instanceof FileProxy){
+	    			inputFile = ((FileProxy)inputValue).getBaseFile();
+	    		}else{
+		    		if(inputValue instanceof TiBaseFile){
+		    			inputFile = (TiBaseFile) inputValue;
+		    		}else{
+		    			//Assume path provided
+		    			inputFile = TiFileFactory.createTitaniumFile(inputValue.toString(),false);
+		    		}	    			
+	    		}
+	    	}
+	    	if(inputFile==null){
+		    	LogHelpers.error("Unable to load input file");
+		    	return;	    		
+	    	}
+		    if (!inputFile.exists()){
+		    	LogHelpers.error("Input file does not exist");
+		    	return;
+		    }
+		    
+			InputStream fis = inputFile.getInputStream();
+			OutputStream fos = TiFileFactory.createTitaniumFile(outputPath,false).getOutputStream();
+	    	
+			SecretKeySpec skeySpec = getKey(password);
 
 	        //IMPORTANT TO GET SAME RESULTS ON iOS and ANDROID
 	        final byte[] iv = new byte[16];
@@ -147,6 +200,7 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivParameterSpec);
 	        
 			CipherOutputStream os = new CipherOutputStream(fos, cipher);
+			
 			Utils.streamCopy(fis, os);
 			os.close();			
 			
@@ -158,7 +212,7 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 			}	
 
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	    	LogHelpers.error(e);
 			HashMap<String, Object> errEvent = new HashMap<String, Object>();
 			errEvent.put(TiC.PROPERTY_SUCCESS, false);	
 			errEvent.put("message",e.getMessage());			

@@ -32,6 +32,12 @@ public class LogHelpers {
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 		}
 	}
+	public static void error(String message){
+		Log.e(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
+	}
+	public static void error(Exception e){
+		Log.e(SecurelyModule.SECURELY_MODULE_FULL_NAME, e.toString());
+	}	
 	public static void  Log(Exception e){
 		if(SecurelyModule.DEBUG){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, e.toString());
