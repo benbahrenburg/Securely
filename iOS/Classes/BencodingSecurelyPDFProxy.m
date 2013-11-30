@@ -58,10 +58,10 @@
 		return;
 	}
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:inputFile];
+    CFURLRef url = (CFURLRef)CFBridgingRetain([[NSURL alloc] initFileURLWithPath:inputFile]);
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
  
@@ -91,7 +91,7 @@
         CFDictionarySetValue(myDictionary, kCGPDFContextAllowsCopying, kCFBooleanTrue);
         CFDictionarySetValue(myDictionary, kCGPDFContextAllowsPrinting, kCFBooleanTrue);
         
-        CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:outputFile];
+        CFURLRef pdfURLOutput = (CFURLRef)CFBridgingRetain([[NSURL alloc] initFileURLWithPath:outputFile]);
         NSInteger numberOfPages1 = CGPDFDocumentGetNumberOfPages(pdf);
         
         // Create the output context
@@ -153,7 +153,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
     
 }
@@ -215,10 +214,10 @@
     //BOOL allowPrint = [TiUtils boolValue:[args objectForKey:@"allowPrint"] def:YES];
     BOOL deleteSource = [TiUtils boolValue:[args objectForKey:@"deleteSource"] def:NO];
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
 
-    CFURLRef url = (CFURLRef)[[NSURL alloc] initFileURLWithPath:inputFile];
+    CFURLRef url = (CFURLRef)CFBridgingRetain([[NSURL alloc] initFileURLWithPath:inputFile]);
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL(url);
     BOOL encrypted = CGPDFDocumentIsEncrypted(pdf);
     
@@ -234,7 +233,6 @@
             if(callback != nil ){
                 [self _fireEventToListener:@"completed" withObject:event
                                 listener:callback thisObject:nil];
-            [callback autorelease];
         }
         
         return;
@@ -259,7 +257,7 @@
     }
 
     
-    CFURLRef pdfURLOutput = (CFURLRef)[[NSURL alloc] initFileURLWithPath:outputFile];
+    CFURLRef pdfURLOutput = (CFURLRef)CFBridgingRetain([[NSURL alloc] initFileURLWithPath:outputFile]);
     NSInteger numberOfPages1 = CGPDFDocumentGetNumberOfPages(pdf);
 
     // Create the output context
@@ -315,7 +313,6 @@
      if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 

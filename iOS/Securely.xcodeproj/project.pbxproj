@@ -49,7 +49,7 @@
 		43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */; };
 		43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */; };
 		43857BF1169FA0A3004D600C /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BEF169FA0A3004D600C /* JSONKit.h */; };
-		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; };
+		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */; };
 		43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */; };
 		43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */; };
@@ -142,6 +142,7 @@
 			);
 			name = Securely;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -375,6 +376,7 @@
 					armv7,
 				);
 				"ARCHS[sdk=iphonesimulator*]" = i386;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DSTROOT = /tmp/BencodingSecurely.dst;
@@ -423,6 +425,7 @@
 					armv7,
 				);
 				"ARCHS[sdk=iphonesimulator*]" = i386;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/BencodingSecurely.dst;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_MODEL_TUNING = G5;

@@ -38,7 +38,7 @@
     NSData *iv = nil;
     NSData *data;
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
@@ -93,8 +93,8 @@
  
     if(success){
         if(useBlob){
-            TiBlob *result = [[[TiBlob alloc] initWithData:encryptedData
-                                                  mimetype:@"application/octet-stream"] autorelease];
+            TiBlob *result = [[TiBlob alloc] initWithData:encryptedData
+                                                  mimetype:@"application/octet-stream"];
             [event setObject:@"blob" forKey:@"resultType"];
             [event setObject:result forKey:@"result"];
         }else{
@@ -116,7 +116,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 
@@ -145,7 +144,7 @@
     NSString *statusMsg = @"invalid data returned";
     NSData *iv = nil;
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
@@ -198,12 +197,12 @@
     
     if(success){
         if(useBlob){
-            TiBlob *result = [[[TiBlob alloc] initWithData:decryptedData
-                                                  mimetype:@"application/octet-stream"] autorelease];
+            TiBlob *result = [[TiBlob alloc] initWithData:decryptedData
+                                                  mimetype:@"application/octet-stream"];
             [event setObject:@"blob" forKey:@"resultType"];
             [event setObject:result forKey:@"result"];
         }else{
-            NSString *plainText =  [[[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding] autorelease];
+            NSString *plainText =  [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
             [event setObject:@"text" forKey:@"resultType"];
             [event setObject:plainText forKey:@"result"];
         }
@@ -214,7 +213,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 
@@ -259,7 +257,7 @@
     
     NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
     
-    NSString *plainText =  [[[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *plainText =  [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
     
     return plainText;
     
@@ -315,7 +313,7 @@
     
     NSData *decryptedData = [encryptedData decryptedDESDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
     
-    NSString *plainText =  [[[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding]autorelease];
+    NSString *plainText =  [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
     
     return plainText;
     
@@ -325,7 +323,7 @@
     ENSURE_ARG_COUNT(args,1);
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:0]];
     NSData* data = [[plainText dataUsingEncoding:NSUTF8StringEncoding]SHA256Hash];
-    NSString *hashText = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSString *hashText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     return hashText;
 }
 
@@ -341,7 +339,7 @@
 {
     ENSURE_ARG_COUNT(args,1);
     NSString* text = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSMutableData *stringData = [[[NSMutableData alloc] init] autorelease];
+    NSMutableData *stringData = [[NSMutableData alloc] init];
     unsigned char whole_byte;
     char byte_chars[3] = {'\0','\0','\0'};
     int i;
@@ -352,7 +350,7 @@
         [stringData appendBytes:&whole_byte length:1];
     }
     
-    return [[[NSString alloc] initWithData:stringData encoding:NSASCIIStringEncoding] autorelease];
+    return [[NSString alloc] initWithData:stringData encoding:NSASCIIStringEncoding];
 }
 
 @end

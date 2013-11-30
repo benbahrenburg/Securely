@@ -46,8 +46,6 @@
 -(void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
-	[super dealloc];
 }
 
 #pragma mark Internal Memory Management

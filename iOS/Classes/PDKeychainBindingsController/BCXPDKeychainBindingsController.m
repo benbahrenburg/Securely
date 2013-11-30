@@ -45,14 +45,14 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 
 -(NSMutableDictionary *)_queryForService:(NSString *)service account:(NSString *)account {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:3];
-	[dictionary setObject:(id)kSecClassGenericPassword forKey:(id)kSecClass];
+	[dictionary setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id)kSecClass];
     
     if (service) {
-		[dictionary setObject:service forKey:(id)kSecAttrService];
+		[dictionary setObject:service forKey:(__bridge id)kSecAttrService];
 	}
     
     if (account) {
-		[dictionary setObject:account forKey:(id)kSecAttrAccount];
+		[dictionary setObject:account forKey:(__bridge id)kSecAttrAccount];
 	}
     
     return dictionary;
@@ -64,18 +64,18 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
     OSStatus status = -1001;
     NSMutableDictionary *query = [self _queryForService:service account:nil];
     
-    [query setObject:(id)kCFBooleanTrue forKey:(id)kSecReturnAttributes];
-    [query setObject:(id)kSecMatchLimitAll forKey:(id)kSecMatchLimit];
+    [query setObject:(id)kCFBooleanTrue forKey:(__bridge id)kSecReturnAttributes];
+    [query setObject:(__bridge id)kSecMatchLimitAll forKey:(__bridge id)kSecMatchLimit];
     
 	CFTypeRef result = NULL;
     
-	status = SecItemCopyMatching((CFDictionaryRef)query, &result);
+	status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
     if (status != noErr && error != NULL) {
 		*error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier] code:status userInfo:nil];
 		return nil;
 	}
-	NSMutableArray * accountKeys = [[[NSMutableArray alloc] init] autorelease];
-    NSArray * accounts = [(NSArray *)result autorelease];
+	NSMutableArray * accountKeys = [[NSMutableArray alloc] init];
+    NSArray * accounts = (__bridge NSArray *)result;
     
     for (id account in accounts) {
         //NSLog(@"account = %@", account);
@@ -98,7 +98,7 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 -(void) removeAllItems {
 
     NSMutableDictionary *query = [self _queryForService:[self serviceName] account:nil];
-    SecItemDelete((CFDictionaryRef)query);
+    SecItemDelete((__bridge CFDictionaryRef)query);
     //OSStatus status = SecItemDelete((CFDictionaryRef)query);
 //    BOOL results = (status == errSecSuccess || status == errSecItemNotFound);
 //    if(results)
@@ -117,7 +117,7 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
                            nil];
 	
     CFDataRef stringData = NULL;
-    status = SecItemCopyMatching((CFDictionaryRef)query, (CFTypeRef*)&stringData);
+    status = SecItemCopyMatching((__bridge CFDictionaryRef)query, (CFTypeRef*)&stringData);
 #else //OSX
     //SecKeychainItemRef item = NULL;
     UInt32 stringLength;
@@ -129,7 +129,7 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 	if(status) return nil;
 	
 #if TARGET_OS_IPHONE
-    NSString *string = [[[NSString alloc] initWithData:(id)stringData encoding:NSUTF8StringEncoding] autorelease];
+    NSString *string = [[NSString alloc] initWithData:(__bridge id)stringData encoding:NSUTF8StringEncoding];
     CFRelease(stringData);
 #else //OSX
     NSString *string = [[[NSString alloc] initWithBytes:stringBuffer length:stringLength encoding:NSUTF8StringEncoding] autorelease];
@@ -141,9 +141,9 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 - (BOOL)storeString:(NSString*)string forKey:(NSString*)key {
     
     NSMutableDictionary *query = [NSMutableDictionary dictionaryWithCapacity:((_accessGroup == nil)?3 :4)];
-    [query setObject:(id)kSecClassGenericPassword forKey:kSecClass];
-    [query setObject:key forKey:kSecAttrAccount];
-    [query setObject:[self serviceName] forKey:kSecAttrService];
+    [query setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id<NSCopying>)(kSecClass)];
+    [query setObject:key forKey:(__bridge id<NSCopying>)(kSecAttrAccount)];
+    [query setObject:[self serviceName] forKey:(__bridge id<NSCopying>)(kSecAttrService)];
     
 	if (!string)  {
 		//Need to delete the Key 
@@ -153,24 +153,24 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 #else
         if (_accessGroup != nil)
 		{
-            [query setObject:_accessGroup forKey:kSecAttrAccessGroup];
+            [query setObject:_accessGroup forKey:(__bridge id<NSCopying>)(kSecAttrAccessGroup)];
         }
         
 #endif
-        return !SecItemDelete((CFDictionaryRef)query);
+        return !SecItemDelete((__bridge CFDictionaryRef)query);
 		
     } else {
         NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
         
         if(!string) {
-            return !SecItemDelete((CFDictionaryRef)query);
+            return !SecItemDelete((__bridge CFDictionaryRef)query);
         }else if([self stringForKey:key]) {
-            NSDictionary *update = [NSDictionary dictionaryWithObject:stringData forKey:(id)kSecValueData];
-            return !SecItemUpdate((CFDictionaryRef)query, (CFDictionaryRef)update);
+            NSDictionary *update = [NSDictionary dictionaryWithObject:stringData forKey:(__bridge id)kSecValueData];
+            return !SecItemUpdate((__bridge CFDictionaryRef)query, (__bridge CFDictionaryRef)update);
         }else{
             NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:query];
-            [data setObject:stringData forKey:(id)kSecValueData];
-            return !SecItemAdd((CFDictionaryRef)data, NULL);
+            [data setObject:stringData forKey:(__bridge id)kSecValueData];
+            return !SecItemAdd((__bridge CFDictionaryRef)data, NULL);
         }
     }
 }
@@ -205,26 +205,26 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 {
     return self;
 }
-
-- (id)retain
-{
-    return self;
-}
-
-- (oneway void)release
-{
-    //do nothing
-}
-
-- (id)autorelease
-{
-    return self;
-}
-
-- (NSUInteger)retainCount
-{
-    return NSUIntegerMax;  // This is sooo not zero
-}
+//
+//- (id)retain
+//{
+//    return self;
+//}
+//
+//- (oneway void)release
+//{
+//    //do nothing
+//}
+//
+//- (id)autorelease
+//{
+//    return self;
+//}
+//
+//- (NSUInteger)retainCount
+//{
+//    return NSUIntegerMax;  // This is sooo not zero
+//}
 
 - (id)init
 {

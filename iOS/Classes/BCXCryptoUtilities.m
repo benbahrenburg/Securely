@@ -41,7 +41,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
     }
     
-    return [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
+    return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
 
 +(BOOL)fileIsValid:(NSString*)path
@@ -79,7 +79,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 +(NSString *) hexStringtoString:(NSString *)hexString
 {
-    NSMutableString * newString = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString * newString = [[NSMutableString alloc] init];
     int i = 0;
     while (i < [hexString length])
     {
@@ -106,7 +106,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     }
     free(chars);
     
-    return [hexString autorelease];
+    return hexString;
 }
 
 +(NSData *)dataFromHexString:(NSString *)string
@@ -128,7 +128,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         
     }
     
-    return [data autorelease];
+    return data;
 }
 
 +(NSData *) randomByLength:(int)charLength
@@ -292,7 +292,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 + (NSData *)base64DataFromString: (NSString *)string
 {
     unsigned long ixtext, lentext;
-    unsigned char ch, inbuf[4], outbuf[3];
+    unsigned char ch, inbuf[4] = {}, outbuf[3];
     short i, ixinbuf;
     Boolean flignore, flendtext = false;
     const unsigned char *tempcstring;

@@ -61,7 +61,7 @@
         return;
     }
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
 
     BOOL debug =[TiUtils boolValue:@"debug" def:NO];
@@ -104,7 +104,7 @@
     
     @try {
        
-        NSData* encryptedData = [[data AES256EncryptWithKey:password] autorelease];
+        NSData* encryptedData = [data AES256EncryptWithKey:password];
         
         if(encryptedData==nil){
             statusMsg = @"Invalid data in encryption process";
@@ -151,7 +151,6 @@
         
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 
@@ -177,7 +176,7 @@
 		return;
 	}
 
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
     
     BOOL debug =[TiUtils boolValue:@"debug" def:NO];
@@ -217,7 +216,7 @@
             return;
         }
         
-        data = [[[NSFileManager defaultManager] contentsAtPath:inputFile] autorelease];
+        data = [[NSFileManager defaultManager] contentsAtPath:inputFile];
     }
 
     //Validate we are able to read all of the source file data
@@ -263,12 +262,12 @@
     
     if(success){
         if([returnType isEqual:@"string"]){
-            NSString *plainText = [[[NSString alloc] initWithData:decryptedData
-                                                         encoding:NSUTF8StringEncoding] autorelease];
+            NSString *plainText = [[NSString alloc] initWithData:decryptedData
+                                                         encoding:NSUTF8StringEncoding];
             [event setObject:plainText forKey:@"result"];
         }else{
-            TiBlob *result = [[[TiBlob alloc] initWithData:decryptedData
-                                                  mimetype:@"application/octet-stream"] autorelease];
+            TiBlob *result = [[TiBlob alloc] initWithData:decryptedData
+                                                  mimetype:@"application/octet-stream"];
             [event setObject:result forKey:@"result"];
         }
     }else{
@@ -278,7 +277,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 
@@ -328,8 +326,8 @@
     
     NSData *data = [BCXCryptoUtilities base64DataFromString:encryptedText];
     NSData *decryptedData = [data AES256DecryptWithKey:password];
-    NSString *plainText = [[[NSString alloc] initWithData:decryptedData
-                                                encoding:NSUTF8StringEncoding] autorelease];
+    NSString *plainText = [[NSString alloc] initWithData:decryptedData
+                                                encoding:NSUTF8StringEncoding];
     //NSLog(@"plainText: %@", plainText);
     return plainText;
 }

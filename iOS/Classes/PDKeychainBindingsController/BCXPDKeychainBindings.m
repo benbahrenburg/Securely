@@ -29,10 +29,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
 
 -(void) removeAllItems{
     [[BCXPDKeychainBindingsController sharedKeychainBindingsController] removeAllItems];

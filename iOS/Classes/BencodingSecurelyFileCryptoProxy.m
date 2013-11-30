@@ -117,7 +117,7 @@
 		return;
 	}
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
 
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -162,7 +162,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
     
 }
@@ -209,7 +208,7 @@
 		return;
 	}
     
-    KrollCallback *callback = [[args objectForKey:@"completed"] retain];
+    KrollCallback *callback = [args objectForKey:@"completed"];
 	ENSURE_TYPE(callback,KrollCallback);
  
     NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -245,7 +244,6 @@
     if(callback != nil ){
         [self _fireEventToListener:@"completed" withObject:event
                           listener:callback thisObject:nil];
-        [callback autorelease];
     }
 }
 
