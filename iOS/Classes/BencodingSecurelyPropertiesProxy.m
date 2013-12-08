@@ -46,6 +46,7 @@
     {
         NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:
                                eventName,@"source",
+                               eventName,@"propertyName",
                                actionType,@"actionType",
                                nil
                                ];

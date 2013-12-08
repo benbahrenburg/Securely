@@ -9,24 +9,27 @@ package bencoding.securely;
 
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.KrollDict;
+import org.appcelerator.kroll.KrollPropertyChange;
 import org.appcelerator.kroll.KrollProxy;
+import org.appcelerator.kroll.KrollProxyListener;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiLifecycle;
 import org.appcelerator.titanium.util.TiConvert;
-import org.appcelerator.titanium.TiC;
 
 import android.app.Activity;
 
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
-public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent 
+public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent, KrollProxyListener 
 {
 	private String _secret = "";
 	private Properties _appProperties;
 	private static Boolean _encryptFieldNames = false;
+	private static String _changedEventName = "changed";
 	
 	private String buildName(String name){
 		return SecurelyModule.SECURELY_MODULE_FULL_NAME + "_" + name;
@@ -80,6 +83,17 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			return null;
 		}
 	}	
+
+	private void fireChanged(String propertyName, String actionType){
+        if (hasListeners(_changedEventName)) {
+            HashMap<String, Object> event = new HashMap<String, Object>();
+            event.put("propertyName",propertyName);
+            event.put("actionType",actionType);	            
+            fireEvent(_changedEventName, event);
+        }else{
+        	LogHelpers.DebugLog("[DEBUG] no changed listener defined");
+        }
+	}
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{
@@ -182,7 +196,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	{
 		if (keyExists(key)) {
 			_appProperties.removeProperty(keyEncrypt(key));
-			fireEvent(TiC.EVENT_CHANGE, null);
+			fireChanged(key,"removed");
 		}
 	}
 
@@ -201,7 +215,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			String tempS = ComposeSecret(key);
 			String EncryptedValue = EncryptContent(tempS,ValueAsString);
 			_appProperties.setString(keyEncrypt(key), EncryptedValue);
-			fireEvent(TiC.EVENT_CHANGE, null);
+			fireChanged(key,"modify");
 		}
 	}
 
@@ -216,7 +230,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			String tempS = ComposeSecret(key);
 			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
 			_appProperties.setString(keyEncrypt(key), EncryptedValue);
-			fireEvent(TiC.EVENT_CHANGE, null);
+			fireChanged(key,"modify");
 		}
 	}
 
@@ -229,7 +243,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			String tempS = ComposeSecret(key);
 			String EncryptedValue = EncryptContent(tempS,ValueAsString);					
 			_appProperties.setString(keyEncrypt(key), EncryptedValue);
-			fireEvent(TiC.EVENT_CHANGE, null);
+			fireChanged(key,"modify");
 		}
 
 	}
@@ -249,7 +263,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			LogHelpers.Level2Log("setString EncryptedValue:" + EncryptedValue);
 
 			_appProperties.setString(keyEncrypt(key), EncryptedValue);
-			fireEvent(TiC.EVENT_CHANGE, null);
+			fireChanged(key,"modify");
 		}else{
 			LogHelpers.Level2Log("setString not value to update. Key:" + key + " value:" + value);
 		}
@@ -382,6 +396,8 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public void removeAllProperties(){
 		_appProperties.getPreference().edit().clear().commit();
 	}
+	
+    
 	@Override
 	public void onDestroy(Activity arg0) {
 		if(_appProperties!=null){
@@ -397,4 +413,15 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public void onStart(Activity arg0) {}
 	@Override
 	public void onStop(Activity arg0) {}
+	
+    @Override
+    public void listenerAdded(String type, int count, KrollProxy proxy) {}
+    @Override
+    public void listenerRemoved(String type, int count, KrollProxy proxy) {}
+    @Override
+	public void processProperties(KrollDict arg0) {}
+	@Override
+	public void propertiesChanged(List<KrollPropertyChange> arg0,KrollProxy arg1) {}
+	@Override
+	public void propertyChanged(String arg0, Object arg1, Object arg2,KrollProxy arg3) {}
 }

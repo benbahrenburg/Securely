@@ -14,8 +14,10 @@ var properties = securely.createProperties({
 });
 
 function onChange(e){
-	Ti.API.info("Property " + e.source + " had an action of type " + e.actionType);
+	Ti.API.info("Property " + e.propertyName + " had an action of type " + e.actionType);
 };
+//Add listener
+properties.addEventListener('changed',onChange);	
 
 
 function resultHelper(result, expected) {
