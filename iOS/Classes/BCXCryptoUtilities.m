@@ -5,6 +5,7 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
+#import "TiUtils.h"
 #import "BCXCryptoUtilities.h"
 #import <CommonCrypto/CommonCryptor.h>
 
