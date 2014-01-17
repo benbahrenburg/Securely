@@ -297,13 +297,15 @@
     NSData* data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
     NSData* encryptedData = [data AES256EncryptWithKey:password];
     
-    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+    // #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+    if ([TiUtils isIOS7OrGreater]) {
         NSString *encryptedString = [encryptedData base64EncodedStringWithOptions:0];
         return encryptedString;
-    #else
+	}	
+    else {
         NSString *encryptedString = [encryptedData base64Encoding];
         return encryptedString;
-    #endif
+	}	
 
 }
 
