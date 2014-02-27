@@ -222,7 +222,15 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	
 	@Kroll.method
 	public String encrypt(String key, String value) {
-		try {						
+		try {				
+			if(key.isEmpty()){
+				LogHelpers.error("empty key provided.");
+				return null;				
+			}
+			if(value.isEmpty()){
+				LogHelpers.error("empty value to encrypt provided.");
+				return null;
+			}			
 			String EncryptedText = doEncode(key,value);
 			return EncryptedText;
 		} catch (Exception e) {
@@ -235,6 +243,14 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	@Kroll.method
 	public String decrypt(String key, String value) {		
 		try {
+			if(key.isEmpty()){
+				LogHelpers.error("empty key provided.");
+				return null;				
+			}
+			if(value.isEmpty()){
+				LogHelpers.error("empty value to decrypt provided.");
+				return null;
+			}	
 			String ClearText =  doDecode(key, value);
 			return ClearText;
 		} catch (Exception e) {
