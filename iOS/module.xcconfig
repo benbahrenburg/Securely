@@ -1,1 +1,1 @@
-OTHER_LDFLAGS=$(inherited) -framework Security -CommonCrypto
+OTHER_LDFLAGS=$(inherited) -framework Security
