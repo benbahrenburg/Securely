@@ -152,5 +152,18 @@
         [self fireEvent:@"protectedDataWillBecomeUnavailable" withObject:notification];
     }
 }
-    
+
+
+int const kBCXKeyChain_Storage = 1;
+int const kBCXPLIST_Storage = 2;
+int const kBCXProperty_Security_Low = 1;
+int const kBCXProperty_Security_Med = 2;
+int const kBCXProperty_Security_High = 3;
+
+MAKE_SYSTEM_UINT(PROPERTY_TYPE_KEYCHAIN, kBCXKeyChain_Storage);
+MAKE_SYSTEM_UINT(PROPERTY_TYPE_PLIST, kBCXPLIST_Storage);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_LOW, kBCXProperty_Security_Low);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_MED, kBCXProperty_Security_Med);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_HIGH, kBCXProperty_Security_High);
+
 @end

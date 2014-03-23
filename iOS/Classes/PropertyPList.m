@@ -8,15 +8,16 @@
 #import "PropertyPList.h"
 #import "TiUtils.h"
 
-
 @implementation PropertyPList
 
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
                   withAccessGroup:(NSString*)accessGroup
-                 withEncryptedField:(BOOL)encryptFields
+               withEncryptedField:(BOOL)encryptFields
+              withEncryptedValues:(BOOL)encryptedValues
                        withSecret:(NSString*)secret
 {
     if (self = [super init]) {
+        _encryptedValues = encryptedValues;
         _encryptFields = encryptFields;
         _secret = secret;
         _defaultsObject = [NSUserDefaults standardUserDefaults];

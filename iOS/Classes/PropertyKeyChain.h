@@ -14,6 +14,7 @@
     NSString* _accessGroup;
     NSString *_secret;
     BOOL _encryptFields;
+    BOOL _encryptedValues;
 }
 
 @end

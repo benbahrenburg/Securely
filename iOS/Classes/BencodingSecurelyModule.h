@@ -11,4 +11,9 @@
 {
 }
 
+extern int const kBCXKeyChain_Storage;
+extern int const kBCXPLIST_Storage;
+extern int const kBCXProperty_Security_Low;
+extern int const kBCXProperty_Security_Med;
+extern int const kBCXProperty_Security_High;
 @end

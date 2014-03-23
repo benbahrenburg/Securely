@@ -6,6 +6,7 @@
  */
 
 #import "BencodingSecurelyPropertiesProxy.h"
+#import "BencodingSecurelyModule.h"
 #import "PropertyKeyChain.h"
 #import "PropertyPList.h"
 #import "TiUtils.h"
@@ -15,43 +16,60 @@
 
 -(void)_initWithProperties:(NSDictionary*)properties
 {
-    [super _initWithProperties:properties];
 
-    _encryptFieldNames = [TiUtils boolValue:@"encryptFieldNames" properties:properties def:NO];
+    _valuesEncrypted = NO;
+    _fieldsEncrypted = NO;
+
     NSString *identifier = [TiUtils stringValue:@"identifier" properties:properties];
     NSString *accessGroup = [TiUtils stringValue:@"accessGroup" properties:properties];
-    NSString *storageType = [TiUtils stringValue:@"storageType" properties:properties def:@"keychain"];
+
+    _storageType = [TiUtils intValue:@"storageType" properties:properties def:kBCXKeyChain_Storage];
+    _securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Low];
     _secret = [TiUtils stringValue:@"secret" properties:properties def:[[NSBundle mainBundle] bundleIdentifier]];
 
-    if(_encryptFieldNames == YES && _secret==nil){
-        NSLog(@"[ERROR] Secret value is required if encrypting");
+    if(_storageType==kBCXPLIST_Storage && _securityLevel == kBCXProperty_Security_Low){
+         NSLog(@"[ERROR] PLIST Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
+        _securityLevel = kBCXProperty_Security_Med;
+    }
+
+    if(_securityLevel == kBCXProperty_Security_Med ||
+       _securityLevel == kBCXProperty_Security_High ){
+        NSLog(@"[ERROR] A secret is required for MED and HIGH securityLevel");
         NSLog(@"[ERROR] Since no secret provided BUNDLE ID used");
     }
 
-    if(_secret==nil && [storageType caseInsensitiveCompare:@"PLIST"]==NSOrderedSame){
-        NSLog(@"[ERROR] Secret value is required if encrypting");
-        NSLog(@"[ERROR] Since no secret provided BUNDLE ID used");
+    if(_securityLevel == kBCXProperty_Security_Med ||
+       _securityLevel == kBCXProperty_Security_High ){
+        _valuesEncrypted = YES;
     }
 
-    if([storageType caseInsensitiveCompare:@"keychain"]==NSOrderedSame){
+    if(_securityLevel == kBCXProperty_Security_High ){
+        _fieldsEncrypted = YES;
+    }
+
+    if(_storageType == kBCXKeyChain_Storage){
         _provider = [[PropertyKeyChain alloc] initWithIdentifierAndOptions:identifier
                                                            withAccessGroup:accessGroup
-                                                        withEncryptedField:_encryptFieldNames
+                                                        withEncryptedField:_fieldsEncrypted
+                                                        withEncryptedValues:_valuesEncrypted
                                                                 withSecret:_secret];
     }
-    if([storageType caseInsensitiveCompare:@"PLIST"]==NSOrderedSame){
+    if(_storageType == kBCXPLIST_Storage){
         _provider = [[PropertyPList alloc] initWithIdentifierAndOptions:identifier
                                                            withAccessGroup:accessGroup
-                                                     withEncryptedField:_encryptFieldNames
+                                                     withEncryptedField:_fieldsEncrypted
+                                                    withEncryptedValues:_valuesEncrypted
                                                                 withSecret:_secret];
     }
+
+    [super _initWithProperties:properties];
 }
 
 #pragma Private methods
 
 -(NSString*)obtainKey:(NSString*)key
 {
-    if(_encryptFieldNames==YES){
+    if(_fieldsEncrypted){
         return [self composeSecret:key];
     }else{
         return key;
@@ -60,12 +78,17 @@
 
 -(NSString*)composeSecret:(NSString*)key
 {
-    NSString *seed = _secret;
-    [seed stringByAppendingString:@"_"];
-    [seed stringByAppendingString:key];
-    return [NSString stringWithUTF8String:[[[seed dataUsingEncoding:NSUTF8StringEncoding] SHA512Hash] bytes]];
+    if ([_keyCache objectForKey:key]){
+        return (NSString*)[_keyCache objectForKey:key];
+    }else{
+        NSString *seed = _secret;
+        [seed stringByAppendingString:@"_"];
+        [seed stringByAppendingString:key];
+        NSString* value = [NSString stringWithUTF8String:[[[seed dataUsingEncoding:NSUTF8StringEncoding] SHA512Hash] bytes]];
+        [_keyCache setValue:value forKey:key];
+        return value;
+    }
 }
-
 
 #pragma Event APIs
 
@@ -87,14 +110,29 @@
 
 #pragma Public APIs
 
+-(id)getStorageType:(id) unused;
+{
+    return [NSNumber numberWithInt:_storageType];
+}
+
+-(id)getSecurityLevel:(id) unused;
+{
+    return [NSNumber numberWithInt:_securityLevel];
+}
+
+-(NSNumber*)hasValuesEncrypted: (id) unused;
+{
+    return NUMBOOL(_valuesEncrypted);
+}
 -(NSNumber*)hasFieldsEncrypted: (id) unused;
 {
-    return NUMBOOL(_encryptFieldNames);
+    return NUMBOOL(_fieldsEncrypted);
 }
 -(BOOL)propertyExists: (NSString *) key;
 {
     return [_provider propertyExists:key];
 }
+
 
 #define GETSPROP \
 ENSURE_TYPE(args,NSArray);\
@@ -138,6 +176,19 @@ if (![self propertyExists:[self obtainKey:key]]) return defaultValue; \
     return[_provider getObject:[self obtainKey:key]];
 }
 
+-(BOOL)propertyDelta:(id)value withKey:(NSString*)key
+{
+    if([self propertyExists:[self obtainKey:key]]){
+        if(_valuesEncrypted){
+            return NO;
+        }else{
+            return [[_provider objectForKey:[self obtainKey:key]] isEqual:value];
+        }
+    }else{
+        return NO;
+    }
+}
+
 #define SETSPROP \
 ENSURE_TYPE(args,NSArray);\
 NSString *key = [args objectAtIndex:0];\
@@ -146,13 +197,13 @@ if (value==nil || value==[NSNull null]) {\
 [_provider removeProperty:key];\
 return;\
 }\
-if ([self propertyExists:[self obtainKey:key]] && [[_provider objectForKey:[self obtainKey:key]] isEqual:value]) {\
+if ([self propertyDelta:value withKey:[self obtainKey:key]]) {\
 return;\
 }\
 
-
 -(void)setBool:(id)args
 {
+
 	SETSPROP
     [_provider setBool:[TiUtils boolValue:args] withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];

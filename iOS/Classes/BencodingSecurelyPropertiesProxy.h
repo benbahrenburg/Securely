@@ -10,8 +10,12 @@
 @interface BencodingSecurelyPropertiesProxy : TiProxy {
 @private
     id<Property> _provider;
-    BOOL _encryptFieldNames;
+    BOOL _fieldsEncrypted;
+    BOOL _valuesEncrypted;
     NSString* _secret;
+    int _storageType;
+    int _securityLevel;
+    NSMutableDictionary* _keyCache;
 }
 
 @end
