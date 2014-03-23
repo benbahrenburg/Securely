@@ -5,9 +5,14 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-#import "TiProxy.h"
-#import "TiUtils.h"
-@interface BencodingSecurelyStringCryptoProxy : TiProxy {
+#import <Foundation/Foundation.h>
+#import "Property.h"
+
+@interface PropertyKeyChain :NSObject<Property>{
+@private
+    NSString* _identifier;
+    NSString* _accessGroup;
+    NSString *_secret;
 }
 
 @end

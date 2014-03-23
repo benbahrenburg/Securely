@@ -5,9 +5,13 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-#import "TiProxy.h"
-#import "TiUtils.h"
-@interface BencodingSecurelyStringCryptoProxy : TiProxy {
-}
+#import <Foundation/Foundation.h>
+#import "Property.h"
 
+@interface PropertyPList :NSObject<Property>{
+@private
+    NSUserDefaults* _defaultsObject;
+    NSData *_defaultsNull;
+    NSString* _secret;
+}
 @end

@@ -35,6 +35,10 @@
 		434F4104182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */; };
 		434F4107182E881D00BD6D9B /* NSData+AES256.h in Headers */ = {isa = PBXBuildFile; fileRef = 434F4105182E881D00BD6D9B /* NSData+AES256.h */; };
 		434F4108182E881D00BD6D9B /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 434F4106182E881D00BD6D9B /* NSData+AES256.m */; };
+		435888B818DE9D4C0043724F /* PropertyKeyChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 435888B618DE9D4C0043724F /* PropertyKeyChain.h */; };
+		435888B918DE9D4C0043724F /* PropertyKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 435888B718DE9D4C0043724F /* PropertyKeyChain.m */; };
+		435888BC18DEB0E60043724F /* PropertyPList.h in Headers */ = {isa = PBXBuildFile; fileRef = 435888BA18DEB0E60043724F /* PropertyPList.h */; };
+		435888BD18DEB0E60043724F /* PropertyPList.m in Sources */ = {isa = PBXBuildFile; fileRef = 435888BB18DEB0E60043724F /* PropertyPList.m */; };
 		435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D316D41B680093B1BD /* NSData+Base64.h */; };
 		435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D416D41B680093B1BD /* NSData+Base64.m */; };
 		435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */; };
@@ -85,6 +89,11 @@
 		434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyXPlatformCryptoProxy.m; path = Classes/BencodingSecurelyXPlatformCryptoProxy.m; sourceTree = "<group>"; };
 		434F4105182E881D00BD6D9B /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+AES256.h"; path = "Classes/NSData+AES256.h"; sourceTree = "<group>"; };
 		434F4106182E881D00BD6D9B /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+AES256.m"; path = "Classes/NSData+AES256.m"; sourceTree = "<group>"; };
+		435888B518DE9B5F0043724F /* Property.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Property.h; path = Classes/Property.h; sourceTree = "<group>"; };
+		435888B618DE9D4C0043724F /* PropertyKeyChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyKeyChain.h; path = Classes/PropertyKeyChain.h; sourceTree = "<group>"; };
+		435888B718DE9D4C0043724F /* PropertyKeyChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyKeyChain.m; path = Classes/PropertyKeyChain.m; sourceTree = "<group>"; };
+		435888BA18DEB0E60043724F /* PropertyPList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyPList.h; path = Classes/PropertyPList.h; sourceTree = "<group>"; };
+		435888BB18DEB0E60043724F /* PropertyPList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyPList.m; path = Classes/PropertyPList.m; sourceTree = "<group>"; };
 		435D89D316D41B680093B1BD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "Classes/AESCrypt/NSData+Base64.h"; sourceTree = "<group>"; };
 		435D89D416D41B680093B1BD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "Classes/AESCrypt/NSData+Base64.m"; sourceTree = "<group>"; };
 		435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+CommonCrypto.h"; path = "Classes/AESCrypt/NSData+CommonCrypto.h"; sourceTree = "<group>"; };
@@ -177,6 +186,11 @@
 				4305090F171F147E0089BF67 /* BCXNamespaceManager.h */,
 				434F4101182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h */,
 				434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */,
+				435888B518DE9B5F0043724F /* Property.h */,
+				435888B618DE9D4C0043724F /* PropertyKeyChain.h */,
+				435888B718DE9D4C0043724F /* PropertyKeyChain.m */,
+				435888BA18DEB0E60043724F /* PropertyPList.h */,
+				435888BB18DEB0E60043724F /* PropertyPList.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -249,12 +263,14 @@
 				24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */,
 				43857BD7169F7274004D600C /* BCXPDKeychainBindings.h in Headers */,
 				43857BD9169F7274004D600C /* BCXPDKeychainBindingsController.h in Headers */,
+				435888BC18DEB0E60043724F /* PropertyPList.h in Headers */,
 				43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */,
 				43857BF1169FA0A3004D600C /* JSONKit.h in Headers */,
 				43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */,
 				435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */,
 				435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */,
 				435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */,
+				435888B818DE9D4C0043724F /* PropertyKeyChain.h in Headers */,
 				434F4103182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h in Headers */,
 				43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */,
 				43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */,
@@ -343,10 +359,12 @@
 				43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */,
 				435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */,
 				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
+				435888B918DE9D4C0043724F /* PropertyKeyChain.m in Sources */,
 				435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */,
 				43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */,
 				43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */,
 				434F4104182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m in Sources */,
+				435888BD18DEB0E60043724F /* PropertyPList.m in Sources */,
 				431FC216171B4654007C8298 /* BCXCryptoUtilities.m in Sources */,
 				430F1AF8171C70C500A3E288 /* RNCryptManager.m in Sources */,
 			);
