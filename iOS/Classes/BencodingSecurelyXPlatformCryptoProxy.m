@@ -67,6 +67,10 @@
     BOOL debug =[TiUtils boolValue:@"debug" def:NO];
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     id inputValue = [args objectForKey:@"inputValue"];
     
     if(debug){
@@ -183,7 +187,10 @@
     id inputValue = [args objectForKey:@"readPath"];
     NSString *returnType = [TiUtils stringValue:@"returnType" properties:args def:@"blob"];
     NSString* password = [args objectForKey:@"password"];
-    
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     if(debug){
         NSLog(@"[DEBUG] Is of type: %@", [inputValue class]);
     }
@@ -292,7 +299,15 @@
     
     NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
     //DebugLog(@"password: %@", password);
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:kArgPlainText]];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:plainText]){
+        NSLog(@"[ERROR] text provided is empty or null");
+        return;
+    }
     //DebugLog(@"plainText: %@", plainText);
     NSData* data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
     NSData* encryptedData = [data AES256EncryptWithKey:password];

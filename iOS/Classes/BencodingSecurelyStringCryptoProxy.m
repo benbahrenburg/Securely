@@ -42,6 +42,10 @@
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     id inputValue = [args objectForKey:@"value"];
     
     if([inputValue isKindOfClass:[TiBlob class]]){
@@ -148,6 +152,10 @@
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"hex"] lowercaseString];
     
     if([resultType isEqualToString:@"blob"]){

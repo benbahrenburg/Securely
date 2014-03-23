@@ -374,4 +374,9 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     return theData;
 }
+
++(BOOL)stringIsNilOrEmpty:(NSString*)aString
+{
+    return !(aString && aString.length);
+}
 @end

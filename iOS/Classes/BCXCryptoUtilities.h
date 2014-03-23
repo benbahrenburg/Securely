@@ -25,4 +25,5 @@
 +(NSString *) encodeDataPBKtoString: (NSData *) data ofLength: (SInt32) len;
 + (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 + (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
++(BOOL)stringIsNilOrEmpty:(NSString*)aString;
 @end
