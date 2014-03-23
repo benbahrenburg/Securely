@@ -127,6 +127,7 @@
 {
 	return [NSNumber numberWithBool:[self propertyExists:key]];
 }
+
 -(void)removeProperty:(NSString*)key
 {
 	[[BCXPDKeychainBindings sharedKeychainBindings] removeObjectForKey:key];
@@ -158,8 +159,12 @@
 
 -(id)listProperties
 {
-    id results = [[BCXPDKeychainBindings sharedKeychainBindings] allKeys];
-    return ((results ==nil) ? [NSNull null] : results);
+    if(_encryptFields){
+        return nil;
+    }else{
+        id results = [[BCXPDKeychainBindings sharedKeychainBindings] allKeys];
+        return ((results ==nil) ? [NSNull null] : results);
+    }
 }
 
 @end

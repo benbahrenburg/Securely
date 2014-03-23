@@ -11,7 +11,6 @@
 
 @implementation PropertyPList
 
-
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
                   withAccessGroup:(NSString*)accessGroup
                  withEncryptedField:(BOOL)encryptFields
@@ -166,9 +165,14 @@
 
 -(id)listProperties
 {
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObjectsFromArray:[[_defaultsObject dictionaryRepresentation] allKeys]];
-    return array;
+    if(_encryptFields){
+        return nil;
+    }else{
+        NSMutableArray *array = [NSMutableArray array];
+        [array addObjectsFromArray:[[_defaultsObject dictionaryRepresentation] allKeys]];
+        return array;
+    }
+
 }
 
 @end
