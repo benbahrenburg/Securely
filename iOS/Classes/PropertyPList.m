@@ -7,6 +7,11 @@
 
 #import "PropertyPList.h"
 #import "TiUtils.h"
+#import "NSData+Base64.h"
+#import "NSString+Base64.h"
+#import "NSData+CommonCrypto.h"
+#import "PropertyCommon.h"
+#import "JSONKit.h"
 
 @implementation PropertyPList
 
@@ -17,17 +22,52 @@
                        withSecret:(NSString*)secret
 {
     if (self = [super init]) {
-        _encryptedValues = encryptedValues;
-        _encryptFields = encryptFields;
-        _secret = secret;
+
         _defaultsObject = [NSUserDefaults standardUserDefaults];
+        [_defaultsObject addSuiteNamed:identifier];
         _defaultsNull = [[NSData alloc] initWithBytes:"NULL" length:4];
-        if(accessGroup !=nil){
-            NSLog(@"[DEBUG] Access Group does not apply to PLIST Storage");
+
+        _encryptFields = encryptFields;
+
+        if(secret == nil){
+            NSLog(@"[ERROR] A secret is required when using PLIST Storage");
+            NSLog(@"[ERROR] Since no secret provided BUNDLE ID will be used");
+            secret = [[NSBundle mainBundle] bundleIdentifier];
         }
+        _secret = secret;
+
     }
 
     return self;
+}
+
+#pragma private methods
+
+-(NSString *)encrypt:(NSString*)plainTextValue withSecret:(NSString*)secret
+{
+    NSData *encryptedData = [[plainTextValue dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[secret dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
+
+    NSString *encryptedString = [NSString base64StringFromData:encryptedData
+                                                        length:[encryptedData length]];
+    return encryptedString;
+}
+
+-(NSString *)decrypt:(NSString *)encryptedTextValue withSecret:(NSString*)secret
+{
+    NSData *encryptedData = [NSData base64DataFromString:encryptedTextValue];
+    NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[secret dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
+    NSString *plainText =  [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
+    return plainText;
+}
+
+-(NSString*)decryptFromPList:(NSString*)key
+{
+    NSString* result =[_defaultsObject stringForKey:key];
+    if(result ==nil){
+        return nil;
+    }else{
+        return [self decrypt:result withSecret:_secret];
+    }
 }
 
 #pragma Public APIs
@@ -45,93 +85,64 @@
 
 -(id)getBool:(NSString*)key
 {
-	return [NSNumber numberWithBool:[_defaultsObject boolForKey:key]];
+    return [PropertyCommon decryptToBool:[self decryptFromPList:key]];
 }
 
 -(id)getDouble:(NSString*)key
 {
-	return [NSNumber numberWithDouble:[_defaultsObject doubleForKey:key]];
+    return [PropertyCommon decryptToDouble:[self decryptFromPList:key]];
 }
 
 -(id)getInt:(NSString*)key
 {
-	return [NSNumber numberWithInt:[_defaultsObject integerForKey:key]];
+    return [PropertyCommon decryptToInt:[self decryptFromPList:key]];
 }
 
 -(NSString *)getString:(NSString*)key
 {
-    return [_defaultsObject stringForKey:key];
+    return [self decryptFromPList:key];
 }
 
 -(id)getList:(NSString*)key
 {
-	NSArray *value = [_defaultsObject arrayForKey:key];
-	NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:[value count]];
-	[(NSArray *)value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		if ([obj isKindOfClass:[NSData class]] && [_defaultsNull isEqualToData:obj]) {
-			obj = [NSNull null];
-		}
-		[array addObject:obj];
-	}];
-	return array;
+    return [self getObject:key];
 }
 
 -(id)getObject:(NSString*)key
 {
-    id theObject = [_defaultsObject objectForKey:key];
-    if ([theObject isKindOfClass:[NSData class]]) {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:theObject];
-    }
-    else {
-        return theObject;
-    }
+    NSString *jsonValue = [self decryptFromPList:key];
+    return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
 }
 
 -(void)setBool:(BOOL)value withKey:(NSString*)key
 {
-	[_defaultsObject setBool:value forKey:key];
-	[_defaultsObject synchronize];
+    [self setString:[PropertyCommon boolToString:value] withKey:key];
 }
 
 -(void)setDouble:(double)value withKey:(NSString*)key
 {
-	[_defaultsObject setDouble:value forKey:key];
-	[_defaultsObject synchronize];
+    [self setString:[PropertyCommon doubleToString:value] withKey:key];
 }
 
 -(void)setInt:(int)value withKey:(NSString*)key
 {
-    [_defaultsObject setInteger:value forKey:key];
-	[_defaultsObject synchronize];
+    [self setString:[PropertyCommon intToString:value] withKey:key];
 }
 
 -(void)setString:(NSString*)value withKey:(NSString*)key
 {
-    [_defaultsObject setObject:value forKey:key];
+    [_defaultsObject setObject:[self encrypt:value withSecret:_secret] forKey:key];
 	[_defaultsObject synchronize];
 }
 
 -(void)setList:(id)value withKey:(NSString*)key
 {
-	if ([value isKindOfClass:[NSArray class]]) {
-		NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:[value count]];
-		[(NSArray *)value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			if ([obj isKindOfClass:[NSNull class]]) {
-				obj = _defaultsNull;
-			}
-			[array addObject:obj];
-		}];
-		value = array;
-	}
-	[_defaultsObject setObject:value forKey:key];
-	[_defaultsObject synchronize];
+    [self setObject:value withKey:key];
 }
 
 -(void)setObject:(id)value withKey:(NSString*)key
 {
-    NSData* encoded = [NSKeyedArchiver archivedDataWithRootObject:value];
-    [_defaultsObject setObject:encoded forKey:key];
-    [_defaultsObject synchronize];
+    [self setString:[value JSONString] withKey:key];
 }
 
 -(id)hasProperty:(NSString*)key
@@ -143,17 +154,6 @@
 {
     [_defaultsObject removeObjectForKey:key];
 	[_defaultsObject synchronize];
-}
-
-
--(void)setIdentifier:(NSString*)value
-{
-    NSLog(@"[DEBUG] Identifier does not apply to PLIST Storage");
-}
-
--(void)setAccessGroup:(NSString*)value
-{
-    NSLog(@"[DEBUG] Access Group does not apply to PLIST Storage");
 }
 
 -(void)removeAllProperties

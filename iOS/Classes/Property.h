@@ -30,8 +30,6 @@
 -(void)setObject:(id)value withKey:(NSString*)key;
 -(id)hasProperty:(NSString*)key;
 -(void)removeProperty:(NSString*)key;
--(void)setIdentifier:(NSString*)value;
--(void)setAccessGroup:(NSString*)value;
 -(void)removeAllProperties;
 -(id)listProperties;
 

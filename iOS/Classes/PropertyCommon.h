@@ -6,13 +6,15 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "Property.h"
 
-@interface PropertyPList :NSObject<Property>{
-@private
-    NSUserDefaults* _defaultsObject;
-    NSData *_defaultsNull;
-    NSString* _secret;
-    BOOL _encryptFields;
-}
+@interface PropertyCommon : NSObject
+
++(id)decryptToBool:(id)value;
++(NSString*)boolToString:(BOOL)value;
++(id)decryptToDouble:(id)value;
++(NSString*)doubleToString:(double)value;
++(id)decryptToInt:(id)value;
++(NSString*)intToString:(int)value;
+
+
 @end

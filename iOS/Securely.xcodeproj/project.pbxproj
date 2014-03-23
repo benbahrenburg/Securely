@@ -56,6 +56,8 @@
 		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */; };
 		43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */; };
+		43B36ED318DF67FA00CF71AF /* PropertyCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B36ED118DF67FA00CF71AF /* PropertyCommon.h */; };
+		43B36ED418DF67FA00CF71AF /* PropertyCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B36ED218DF67FA00CF71AF /* PropertyCommon.m */; };
 		43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */; };
 		43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */; };
 		43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */; };
@@ -111,6 +113,8 @@
 		43857BF0169FA0A3004D600C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyFileCryptoProxy.h; path = Classes/BencodingSecurelyFileCryptoProxy.h; sourceTree = "<group>"; };
 		43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyFileCryptoProxy.m; path = Classes/BencodingSecurelyFileCryptoProxy.m; sourceTree = "<group>"; };
+		43B36ED118DF67FA00CF71AF /* PropertyCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyCommon.h; path = Classes/PropertyCommon.h; sourceTree = "<group>"; };
+		43B36ED218DF67FA00CF71AF /* PropertyCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyCommon.m; path = Classes/PropertyCommon.m; sourceTree = "<group>"; };
 		43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPDFProxy.h; path = Classes/BencodingSecurelyPDFProxy.h; sourceTree = "<group>"; };
 		43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPDFProxy.m; path = Classes/BencodingSecurelyPDFProxy.m; sourceTree = "<group>"; };
 		43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyStringCryptoProxy.h; path = Classes/BencodingSecurelyStringCryptoProxy.h; sourceTree = "<group>"; };
@@ -191,6 +195,8 @@
 				435888B718DE9D4C0043724F /* PropertyKeyChain.m */,
 				435888BA18DEB0E60043724F /* PropertyPList.h */,
 				435888BB18DEB0E60043724F /* PropertyPList.m */,
+				43B36ED118DF67FA00CF71AF /* PropertyCommon.h */,
+				43B36ED218DF67FA00CF71AF /* PropertyCommon.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -275,6 +281,7 @@
 				43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */,
 				43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */,
 				431FC215171B4654007C8298 /* BCXCryptoUtilities.h in Headers */,
+				43B36ED318DF67FA00CF71AF /* PropertyCommon.h in Headers */,
 				430F1AF7171C70C500A3E288 /* RNCryptManager.h in Headers */,
 				43050911171F147E0089BF67 /* BCXNamespaceManager.h in Headers */,
 			);
@@ -356,6 +363,7 @@
 				43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */,
 				43857BF2169FA0A3004D600C /* JSONKit.m in Sources */,
 				434F4108182E881D00BD6D9B /* NSData+AES256.m in Sources */,
+				43B36ED418DF67FA00CF71AF /* PropertyCommon.m in Sources */,
 				43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */,
 				435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */,
 				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
