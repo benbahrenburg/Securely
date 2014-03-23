@@ -13,6 +13,7 @@
     NSString* _identifier;
     NSString* _accessGroup;
     NSString *_secret;
+    BOOL _encryptFields;
 }
 
 @end

@@ -36,11 +36,13 @@
     if([storageType caseInsensitiveCompare:@"keychain"]==NSOrderedSame){
         _provider = [[PropertyKeyChain alloc] initWithIdentifierAndOptions:identifier
                                                            withAccessGroup:accessGroup
+                                                        withEncryptedField:_encryptFieldNames
                                                                 withSecret:_secret];
     }
     if([storageType caseInsensitiveCompare:@"PLIST"]==NSOrderedSame){
         _provider = [[PropertyPList alloc] initWithIdentifierAndOptions:identifier
                                                            withAccessGroup:accessGroup
+                                                     withEncryptedField:_encryptFieldNames
                                                                 withSecret:_secret];
     }
 }

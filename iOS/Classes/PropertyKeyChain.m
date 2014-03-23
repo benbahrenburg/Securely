@@ -15,9 +15,11 @@
 
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
                   withAccessGroup:(NSString*)accessGroup
+                 withEncryptedField:(BOOL)encryptFields
                        withSecret:(NSString*)secret
 {
     if (self = [super init]) {
+        _encryptFields = encryptFields;
         _secret = secret;
         _identifier = identifier;
         _accessGroup = accessGroup;

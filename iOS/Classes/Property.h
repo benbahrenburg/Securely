@@ -11,6 +11,7 @@
 @required
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
                   withAccessGroup:(NSString*)accessGroup
+                 withEncryptedField:(BOOL)encryptFields
                        withSecret:(NSString*)secret;
 - (id)objectForKey:(NSString *)defaultName;
 -(BOOL)propertyExists: (NSString *) key;

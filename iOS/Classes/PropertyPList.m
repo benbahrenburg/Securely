@@ -14,9 +14,11 @@
 
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
                   withAccessGroup:(NSString*)accessGroup
+                 withEncryptedField:(BOOL)encryptFields
                        withSecret:(NSString*)secret
 {
     if (self = [super init]) {
+        _encryptFields = encryptFields;
         _secret = secret;
         _defaultsObject = [NSUserDefaults standardUserDefaults];
         _defaultsNull = [[NSData alloc] initWithBytes:"NULL" length:4];
