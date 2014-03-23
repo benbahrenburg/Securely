@@ -205,26 +205,6 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
 {
     return self;
 }
-//
-//- (id)retain
-//{
-//    return self;
-//}
-//
-//- (oneway void)release
-//{
-//    //do nothing
-//}
-//
-//- (id)autorelease
-//{
-//    return self;
-//}
-//
-//- (NSUInteger)retainCount
-//{
-//    return NSUIntegerMax;  // This is sooo not zero
-//}
 
 - (id)init
 {
