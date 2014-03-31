@@ -40,9 +40,10 @@ public class Converters {
         objectOutputStream.writeObject(object);
 
         objectOutputStream.flush();
+        objectOutputStream.close();
         gzipOutputStream.close();
         arrayOutputStream.close();
-        objectOutputStream.close();
+
         String objectString = new String(Base64.encodeToString(arrayOutputStream.toByteArray(), Base64.DEFAULT));
 
         return objectString;
