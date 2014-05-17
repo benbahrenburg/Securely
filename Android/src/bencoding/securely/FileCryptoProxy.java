@@ -7,6 +7,7 @@
  */
 package bencoding.securely;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -245,7 +246,7 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		}
 		String inputParam = args.getString("from");
 		String outputParam = args.getString("to");
-		  
+
 		try{
 			if(Utils.pathIsInResources(outputParam)){
 				throw new IllegalArgumentException("Output file cannot be in the Resources directory: " + outputParam);
@@ -255,7 +256,9 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 				throw new IllegalArgumentException("Input file cannot be loaded: " + inputParam);
 			}
 			
-			FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(inputParam));
+			File tempFile = Utils.createTempFileFromFileAtPath(inputParam);			
+			FileInputStream fis = new FileInputStream(tempFile);
+			tempFile.delete();
 			OutputStream fos = Utils.createOutputStreamFromPath(outputParam); 
 	        			
 			Thread clientThread = new Thread(new AESDecryptRunnable(secret,fis,fos, callback,inputParam,outputParam));
@@ -307,7 +310,9 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 				throw new IllegalArgumentException("Input file cannot be loaded: " + inputParam);
 			}
 			
-			FileInputStream fis = new FileInputStream(Utils.createTempFileFromFileAtPath(inputParam));				
+			File tempFile = Utils.createTempFileFromFileAtPath(inputParam);	
+			FileInputStream fis = new FileInputStream(tempFile);
+			tempFile.delete();
 	        OutputStream fos = Utils.createOutputStreamFromPath(outputParam); 
 	        			
 			Thread clientThread = new Thread(new AESEncryptRunnable(secret,fis,fos, callback,inputParam,outputParam));
