@@ -18,7 +18,7 @@
     ENSURE_TYPE(args,NSDictionary);
     BOOL success = NO;
     NSData *data = nil;
-    NSString *iv = nil;
+    NSData *iv = nil;
 
     NSString *statusMsg = @"invalid data returned";
     
@@ -109,7 +109,7 @@
     }
 
     if (![args objectForKey:@"iv"]) {
-         iv = (NSString *)[args objectForKey:@"iv"];
+         iv = [BCXCryptoUtilities base64DataFromString:(NSString *)[args objectForKey:@"iv"]];
     }
 
 
@@ -203,10 +203,10 @@
     }
  
     NSData *data =nil;
-    NSString *iv = nil;
+    NSData *iv = nil;
 
     if (![args objectForKey:@"iv"]) {
-        iv = (NSString *)[args objectForKey:@"iv"];
+        iv = [BCXCryptoUtilities base64DataFromString:(NSString *)[args objectForKey:@"iv"]];
     }
 
     if([inputValue isKindOfClass:[TiBlob class]]){
@@ -324,10 +324,10 @@
     }
     //DebugLog(@"plainText: %@", plainText);
     NSData* data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *iv = nil;
+    NSData *iv = nil;
 
     if ([args count] > kArgIV) {
-        iv = [TiUtils stringValue:[args objectAtIndex:kArgIV]];
+        iv = [BCXCryptoUtilities base64DataFromString:[TiUtils stringValue:[args objectAtIndex:kArgIV]]];
     }
 
     NSData* encryptedData = [data AES256EncryptWithKeyAndIV:password withIV:iv];
@@ -362,10 +362,10 @@
     //NSLog(@"encryptedText: %@", encryptedText);
     
     NSData *data = [BCXCryptoUtilities base64DataFromString:encryptedText];
-    NSString* iv = nil;
+    NSData* iv = nil;
 
     if ([args count] > kArgIV) {
-        iv = [TiUtils stringValue:[args objectAtIndex:kArgIV]];
+        iv = [BCXCryptoUtilities base64DataFromString:[TiUtils stringValue:[args objectAtIndex:kArgIV]]];
     }
 
     NSData *decryptedData = [data AES256DecryptWithKeyAndIV:password withIV:iv];

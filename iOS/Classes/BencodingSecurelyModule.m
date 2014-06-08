@@ -10,8 +10,12 @@
 #import "TiHost.h"
 #import "TiUtils.h"
 #import <CommonCrypto/CommonKeyDerivation.h>
+#import <CommonCrypto/CommonCryptor.h>
 #import "BCXCryptoUtilities.h"
+
+
 @implementation BencodingSecurelyModule
+
 
 #pragma mark Internal
 
@@ -60,20 +64,30 @@
 
 -(NSString *)randomForIV:(id)args
 {
-    int length = ([args count] > 0) ? [TiUtils intValue:[args objectAtIndex:0]] : 16;
+    //AES block size (currently, only 128-bit blocks are supported).
+    NSUInteger kAlgorithmIVSize = kCCBlockSizeAES128;
 
-    NSMutableData *data = [NSMutableData dataWithLength:length];
+    NSMutableData *data = [NSMutableData dataWithLength:kAlgorithmIVSize];
 
     int result = SecRandomCopyBytes(kSecRandomDefault,
-                                    length,
+                                    kAlgorithmIVSize,
                                     data.mutableBytes);
     NSAssert(result == 0, @"Unable to generate random bytes: %d",
              errno);
 
-    NSString *plainText = [[NSString alloc] initWithData:data
-                                                encoding:NSUTF8StringEncoding];
+    NSString *plainText = nil;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+    plainText = [data base64EncodedStringWithOptions:0];
+#else
+    plainText = [data base64Encoding];
+#endif
+
+    //NSLog(@"[ERROR] plainText: %@", plainText);
+
     return plainText;
 }
+
 
 -(NSString *)generateRandomKey:(id)args
 {

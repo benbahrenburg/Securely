@@ -81,7 +81,7 @@
 //    return nil;
 //}
 
-- (NSData *)AES256EncryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv
+- (NSData *)AES256EncryptWithKeyAndIV:(NSString*)key withIV:(NSData*)iv
 {
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES256 + 1]; // room for terminator (unused)
@@ -104,7 +104,7 @@
 
     CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
                                           keyPtr, kCCKeySizeAES256,
-                                          (iv == nil ? NULL :[iv cStringUsingEncoding:NSUTF8StringEncoding]) /* initialization vector (optional) */,
+                                          (iv == nil ? NULL :[iv bytes]) /* initialization vector (optional) */,
                                           [self bytes], dataLength, /* input */
                                           buffer, bufferSize, /* output */
                                           &numBytesEncrypted);
@@ -119,7 +119,7 @@
     return nil;
 }
 
-- (NSData *)AES256DecryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv
+- (NSData *)AES256DecryptWithKeyAndIV:(NSString*)key withIV:(NSData*)iv
 {
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES256 + 1]; // room for terminator (unused)
@@ -139,7 +139,7 @@
     size_t numBytesDecrypted    = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
                                           keyPtr, kCCKeySizeAES256,
-                                          (iv == nil ? NULL :[iv cStringUsingEncoding:NSUTF8StringEncoding]) /* initialization vector (optional) */,
+                                          (iv == nil ? NULL :[iv bytes]) /* initialization vector (optional) */,
                                           [self bytes], dataLength, /* input */
                                           buffer, bufferSize, /* output */
                                           &numBytesDecrypted);

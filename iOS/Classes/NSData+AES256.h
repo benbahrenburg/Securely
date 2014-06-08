@@ -24,7 +24,7 @@
 /// @return encrypt with the passed key
 ///
 //- (NSData *)AES256EncryptWithKey:(NSString*)key;
-- (NSData *)AES256EncryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv;
+- (NSData *)AES256EncryptWithKeyAndIV:(NSString*)key withIV:(NSData*)iv;
 ///
 /// Decrypts the string with the passed key.
 ///
@@ -32,5 +32,5 @@
 /// @return decrypted data
 ///
 //- (NSData *)AES256DecryptWithKey:(NSString*)key;
-- (NSData *)AES256DecryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv;
+- (NSData *)AES256DecryptWithKeyAndIV:(NSString*)key withIV:(NSData*)iv;
 @end
