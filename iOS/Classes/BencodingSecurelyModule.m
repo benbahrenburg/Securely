@@ -58,6 +58,22 @@
 	[super didReceiveMemoryWarning:notification];
 }
 
+-(NSString *)randomForIV:(id)args
+{
+    int length = ([args count] > 0) ? [TiUtils intValue:[args objectAtIndex:0]] : 16;
+
+    NSMutableData *data = [NSMutableData dataWithLength:length];
+
+    int result = SecRandomCopyBytes(kSecRandomDefault,
+                                    length,
+                                    data.mutableBytes);
+    NSAssert(result == 0, @"Unable to generate random bytes: %d",
+             errno);
+
+    NSString *plainText = [[NSString alloc] initWithData:data
+                                                encoding:NSUTF8StringEncoding];
+    return plainText;
+}
 
 -(NSString *)generateRandomKey:(id)args
 {
@@ -68,7 +84,6 @@
     //NSLog(@"[ERROR] output: %@", output);
     return output;
 }
-
 
 -(NSString *) makeDerivedKey:(NSString *)seed
 {

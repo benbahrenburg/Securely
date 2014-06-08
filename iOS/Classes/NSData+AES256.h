@@ -23,14 +23,14 @@
 /// @param key 32 bytes
 /// @return encrypt with the passed key
 ///
-- (NSData *)AES256EncryptWithKey:(NSString*)key;
-
+//- (NSData *)AES256EncryptWithKey:(NSString*)key;
+- (NSData *)AES256EncryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv;
 ///
 /// Decrypts the string with the passed key.
 ///
 /// @param key 32 bytes
 /// @return decrypted data
 ///
-- (NSData *)AES256DecryptWithKey:(NSString*)key;
-
+//- (NSData *)AES256DecryptWithKey:(NSString*)key;
+- (NSData *)AES256DecryptWithKeyAndIV:(NSString*)key withIV:(NSString*)iv;
 @end
