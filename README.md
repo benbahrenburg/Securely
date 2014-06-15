@@ -4,10 +4,11 @@ Securely provides building blocks to create secure Titanium apps.
 
 The following proxy objects allow for you to build a composible cross-platform security layer to meet your various security requirements.
 
-<h2>Already using Securely? Important grade information</h2>
+<h2>Important grade information</h2>
 
 If you are using securely in your application now, there are breaking changes coming in version 1.5.  These changes will be put in place to improve your default security.  More information will be available closer to release. You can review the beta releases in the dist folders labeled 1.4x.B.
 
+Examples of the new Secure Properties storageType and securityLevel functionality are available [here](https://gist.github.com/benbahrenburg/5a8a25e7aa518ba55bd4).
 
 <h2>Before you start</h2>
 * These are iOS and Android native modules designed to work with Titanium SDK 3.0.0.GA
