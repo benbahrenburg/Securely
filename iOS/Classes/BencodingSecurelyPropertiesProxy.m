@@ -348,17 +348,17 @@ return;\
     return [_provider listProperties];
 }
 
--(void)setIdentifier:(id)value
-{
-    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-}
-
--(void)setAccessGroup:(id)value
-{
-    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-}
--(void)setSecret:(id)args
-{
-    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-}
+//-(void)setIdentifier:(id)value
+//{
+//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
+//}
+//
+//-(void)setAccessGroup:(id)value
+//{
+//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
+//}
+//-(void)setSecret:(id)args
+//{
+//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
+//}
 @end
