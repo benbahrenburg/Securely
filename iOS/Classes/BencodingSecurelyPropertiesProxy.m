@@ -11,6 +11,7 @@
 #import "PropertyPList.h"
 #import "TiUtils.h"
 #import "NSData+CommonCrypto.h"
+#import "BCXCryptoUtilities.h"
 
 @implementation BencodingSecurelyPropertiesProxy
 
@@ -22,6 +23,7 @@
         _valuesEncrypted = NO;
         _fieldsEncrypted = NO;
         _keyCacheLimit = 500;
+        _debug = NO;
         _keyCache = [[NSMutableDictionary alloc] init];
     }
 
@@ -30,6 +32,7 @@
 
 -(void)_initWithProperties:(NSDictionary*)properties
 {
+    _debug = [TiUtils  boolValue:@"debug" properties:properties def:NO];
     NSString *identifier = [TiUtils stringValue:@"identifier" properties:properties];
     NSString *accessGroup = [TiUtils stringValue:@"accessGroup" properties:properties];
 
@@ -37,7 +40,8 @@
     _securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Low];
     _secret = [TiUtils stringValue:@"secret" properties:properties];
 
-    if(_storageType!=kBCXKeyChain_Storage && _storageType!=kBCXKeyChain_Storage){
+
+    if(_storageType!=kBCXPLIST_Storage && _storageType!=kBCXKeyChain_Storage){
         NSLog(@"[ERROR] Invalid storageType provided, defaulting to KeyChain Storage");
         _storageType = kBCXKeyChain_Storage;
     }
@@ -75,6 +79,9 @@
                                                         withEncryptedField:_fieldsEncrypted
                                                         withEncryptedValues:_valuesEncrypted
                                                                 withSecret:_secret];
+        if(_debug){
+            NSLog(@"[DEBUG] Securely : Using keychain storage");
+        }
     }
 
     if(_storageType == kBCXPLIST_Storage){
@@ -83,6 +90,15 @@
                                                      withEncryptedField:_fieldsEncrypted
                                                     withEncryptedValues:_valuesEncrypted
                                                                 withSecret:_secret];
+        if(_debug){
+            NSLog(@"[DEBUG] Securely : Using PList storage");
+        }
+    }
+
+    if(_debug){
+        NSLog(@"[DEBUG] Securely : Fields Encrypted: %@",((_fieldsEncrypted) ? @"YES" : @"NO"));
+        NSLog(@"[DEBUG] Securely : Values Encrypted: %@",((_valuesEncrypted) ? @"YES" : @"NO"));
+        NSLog(@"[DEBUG] Securely all provided properties %@", properties);
     }
 
     [super _initWithProperties:properties];
@@ -105,22 +121,29 @@
 }
 -(NSString*)composeSecret:(NSString*)key
 {
+
     [self manageKeyCache];
 
-    //First check if the key is in cache, this avoids
-    //having to hash it more often
+    //First check if the key is in cache, this avoids having to hash it more often
     if ([_keyCache objectForKey:key]){
+        //if(_debug){
+        //    NSLog(@"[DEBUG] Securely : key value found in case");
+        //}
         return (NSString*)[_keyCache objectForKey:key];
     }else{
         //Create the seed
         NSString *seed = _secret;
-        [seed stringByAppendingString:@"_"];
-        [seed stringByAppendingString:key];
+        seed = [seed stringByAppendingString:@"_"];
+        seed=  [seed stringByAppendingString:key];
         //Do the SHA hash
-        NSString* value = [NSString stringWithUTF8String:[[[seed dataUsingEncoding:NSUTF8StringEncoding] SHA512Hash] bytes]];
+        NSString* hashValue = [BCXCryptoUtilities createSHA512:seed];
+        //if(_debug){
+        //    NSLog(@"[DEBUG] Securely secret key:%@ for user key: %@ ",hashValue,key);
+        //}
         //Add the new key into our hash table for faster lookup next time
-        [_keyCache setValue:value forKey:key];
-        return value;
+        [_keyCache setValue:hashValue forKey:key];
+
+        return hashValue;
     }
 }
 
@@ -179,7 +202,10 @@
 
 -(BOOL)propertyExists: (NSString *) key
 {
-    return [_provider propertyExists:[self obtainKey:key]];
+    if(_debug){
+        NSLog(@"[DEBUG] Securely propertyExists: key: %@",key);
+    }
+    return [_provider propertyExists:key];
 }
 
 #define GETSPROP \
@@ -209,6 +235,8 @@ if (![self propertyExists:[self obtainKey:key]]) return defaultValue; \
 -(NSString *)getString:(id)args
 {
     GETSPROP
+    NSString *realKey = [self obtainKey:key];
+    //NSLog(@"[DEBUG] Securely getString: key: %@ realKey:%@ ",key,realKey);
     return[_provider getString:[self obtainKey:key]];
 }
 
@@ -238,17 +266,17 @@ ENSURE_TYPE(args,NSArray);\
 NSString *key = [args objectAtIndex:0];\
 id value = [args count] > 1 ? [args objectAtIndex:1] : nil;\
 if (value==nil || value==[NSNull null]) {\
-[_provider removeProperty:key];\
+[_provider removeProperty:[self obtainKey:key]];\
 return;\
 }\
-if ([self propertyDelta:value withKey:[self obtainKey:key]]) {\
+if ([self propertyDelta:value withKey:key]) {\
 return;\
 }\
 
 -(void)setBool:(id)args
 {
 	SETSPROP
-    [_provider setBool:[TiUtils boolValue:args] withKey:[self obtainKey:key]];
+    [_provider setBool:[TiUtils boolValue:value] withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];
 }
 
@@ -269,28 +297,33 @@ return;\
 -(void)setString:(id)args
 {    
 	SETSPROP
+    NSString *realKey = [self obtainKey:key];
+    //NSLog(@"[DEBUG] Securely setString: value: %@ realKey:%@ ",value,realKey);
     [_provider setString:[TiUtils stringValue:value] withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setList:(id)args
 {
+
 	SETSPROP
-    [_provider setList:args withKey:[self obtainKey:key]];
+    [_provider setList:value withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];
 }
 
 -(void)setObject:(id)args
 {
     SETSPROP
-    [_provider setObject:args withKey:[self obtainKey:key]];
+    [_provider setObject:value withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];
 }
 
--(id)hasProperty:(id)key
+-(id)hasProperty:(id)field
 {
-    ENSURE_TYPE(key, NSString);
-    return [_provider hasProperty:[self obtainKey:key]];
+    ENSURE_SINGLE_ARG(field,NSString);
+    NSString *secureField = [self obtainKey:[TiUtils stringValue:field]];
+    BOOL doesExist = [self propertyExists:secureField];
+    return NUMBOOL(doesExist);
 }
 
 -(void)removeProperty:(id)key
@@ -313,15 +346,15 @@ return;\
 
 -(void)setIdentifier:(id)value
 {
-    NSLog(@"[ERROR] Indentifier needs to be set at creation of the PROXY");
+    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
 }
 
 -(void)setAccessGroup:(id)value
 {
-    NSLog(@"[ERROR] Access Group needs to be set at creation of the PROXY");
+    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
 }
 -(void)setSecret:(id)args
 {
-    NSLog(@"[ERROR] Secret needs to be set at creation of the PROXY");
+    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
 }
 @end

@@ -8,6 +8,7 @@
 #import "TiUtils.h"
 #import "BCXCryptoUtilities.h"
 #import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation BCXCryptoUtilities
 
@@ -378,5 +379,20 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 +(BOOL)stringIsNilOrEmpty:(NSString*)aString
 {
     return !(aString && aString.length);
+}
+
++(NSString *)createSHA512:(NSString *)string
+{
+    //It matches PHP SHA512 algorithm output
+    //http://stackoverflow.com/questions/3829068/hash-a-password-string-using-sha512-like-c-sharp
+    const char *cstr = [string cStringUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [NSData dataWithBytes:cstr length:string.length];
+    uint8_t digest[CC_SHA512_DIGEST_LENGTH];
+    CC_SHA512(data.bytes, data.length, digest);
+    NSMutableString* output = [NSMutableString  stringWithCapacity:CC_SHA512_DIGEST_LENGTH * 2];
+
+    for(int i = 0; i < CC_SHA512_DIGEST_LENGTH; i++)
+        [output appendFormat:@"%02x", digest[i]];
+    return output;
 }
 @end

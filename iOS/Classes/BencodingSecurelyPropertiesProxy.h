@@ -18,6 +18,7 @@
     NSMutableDictionary* _keyCache;
     int _keyCacheLimit;
     NSString *_propertyToken;
+    BOOL _debug;
 }
 
 @end

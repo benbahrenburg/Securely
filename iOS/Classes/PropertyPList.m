@@ -43,20 +43,23 @@
 
 #pragma private methods
 
--(NSString *)encrypt:(NSString*)plainTextValue withSecret:(NSString*)secret
+-(NSString *)encrypt:(NSString*)plainText withSecret:(NSString*)secret
 {
-    NSData *encryptedData = [[plainTextValue dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[secret dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
+    NSData *encryptedData = [[plainText dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[secret dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
 
     NSString *encryptedString = [NSString base64StringFromData:encryptedData
                                                         length:[encryptedData length]];
+
+    //NSLog(@"[DEBUG] Securely encrypt: plainTextValue: %@ encryptedString:%@ ",plainText,encryptedString);
     return encryptedString;
 }
 
--(NSString *)decrypt:(NSString *)encryptedTextValue withSecret:(NSString*)secret
+-(NSString *)decrypt:(NSString *)encryptedText withSecret:(NSString*)secret
 {
-    NSData *encryptedData = [NSData base64DataFromString:encryptedTextValue];
+    NSData *encryptedData = [NSData base64DataFromString:encryptedText];
     NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[secret dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
     NSString *plainText =  [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
+    //NSLog(@"[DEBUG] Securely decrypt: plainTextValue: %@ encryptedString:%@ ",plainText,encryptedText);
     return plainText;
 }
 

@@ -179,8 +179,9 @@
 
 -(void)setList:(id)value withKey:(NSString*)key
 {
+    //NSLog(@"Provider setList : %@",value);
     NSString *storageValue =  (_encryptedValues)? [self encrypt:[value JSONString] withSecret:_secret] : [value JSONString];
-
+    //NSLog(@"storageValue : %@",storageValue);
  	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
 }
 
