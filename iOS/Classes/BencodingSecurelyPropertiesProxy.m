@@ -36,8 +36,12 @@
     NSString *identifier = [TiUtils stringValue:@"identifier" properties:properties];
     NSString *accessGroup = [TiUtils stringValue:@"accessGroup" properties:properties];
 
+    if (![properties objectForKey:@"securityLevel"]) {
+        NSLog(@"[ERROR] securityLevel not provided, a default of MED will be used");
+    }
+
     _storageType = [TiUtils intValue:@"storageType" properties:properties def:kBCXKeyChain_Storage];
-    _securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Low];
+    _securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Med];
     _secret = [TiUtils stringValue:@"secret" properties:properties];
 
 
