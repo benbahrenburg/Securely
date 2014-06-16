@@ -21,6 +21,14 @@ public class SecurelyModule extends KrollModule
 
 	public static final String SECURELY_MODULE_FULL_NAME = "becoding.securely";
 	public static boolean DEBUG = false;
+	
+	@Kroll.constant public static final int PROPERTY_TYPE_KEYCHAIN = 1;
+	@Kroll.constant public static final int PROPERTY_TYPE_PREFERENCES = 2;
+	
+	@Kroll.constant public static final int PROPERTY_SECURE_LEVEL_LOW = 1;
+	@Kroll.constant public static final int PROPERTY_SECURE_LEVEL_MED = 2;
+	@Kroll.constant public static final int PROPERTY_SECURE_LEVEL_HIGH = 3;
+		
 	public SecurelyModule()
 	{
 		super();
