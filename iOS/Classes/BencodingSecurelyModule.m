@@ -163,6 +163,18 @@
 }
 
 
+int const kBCSecAttrAccessibleWhenUnlocked = 1;
+int const kBCSecAttrAccessibleAfterFirstUnlock = 2;
+int const kBCSecAttrAccessibleWhenUnlockedThisDeviceOnly = 3;
+int const kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly = 4;
+int const kBCSecAttrAccessibleAlwaysThisDeviceOnly = 5;
+
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_UNLOCKED, kBCSecAttrAccessibleWhenUnlocked);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_AFTER_FIRST_UNLOCK, kBCSecAttrAccessibleAfterFirstUnlock);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_UNLOCKED_THIS_DEVICE_ONLY, kBCSecAttrAccessibleWhenUnlockedThisDeviceOnly);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY, kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_ALWAYS_THIS_DEVICE_ONLY, kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly);
+
 int const kBCXKeyChain_Storage = 1;
 int const kBCXPLIST_Storage = 2;
 int const kBCXProperty_Security_Low = 1;

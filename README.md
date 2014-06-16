@@ -105,9 +105,9 @@ JSONKit
 
 Project: [http://github.com/johnezang/JSONKit](http://github.com/johnezang/JSONKit)
 
-PDKeychainBindingsController
+sskeychain
 
-Project: [https://github.com/carlbrown/PDKeychainBindingsController](https://github.com/carlbrown/PDKeychainBindingsController)
+Project: [https://github.com/soffes/sskeychain)
 
 
 <h2>Licensing & Support</h2>

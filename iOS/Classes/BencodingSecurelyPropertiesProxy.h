@@ -13,8 +13,6 @@
     BOOL _fieldsEncrypted;
     BOOL _valuesEncrypted;
     NSString* _secret;
-    int _storageType;
-    int _securityLevel;
     NSMutableDictionary* _keyCache;
     int _keyCacheLimit;
     NSString *_propertyToken;

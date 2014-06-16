@@ -7,14 +7,15 @@
 
 #import <Foundation/Foundation.h>
 #import "Property.h"
+#import "BxsskeychainBindings.h"
 
 @interface PropertyKeyChain :NSObject<Property>{
 @private
     NSString* _identifier;
-    NSString* _accessGroup;
     NSString *_secret;
     BOOL _encryptFields;
     BOOL _encryptedValues;
+    BxSSkeychainBindings * _binder;
 }
 
 @end

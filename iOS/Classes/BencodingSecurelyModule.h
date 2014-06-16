@@ -11,9 +11,16 @@
 {
 }
 
+extern int const kBCSecAttrAccessibleWhenUnlocked;
+extern int const kBCSecAttrAccessibleAfterFirstUnlock;
+extern int const kBCSecAttrAccessibleWhenUnlockedThisDeviceOnly;
+extern int const kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
+extern int const kBCSecAttrAccessibleAlwaysThisDeviceOnly;
+
 extern int const kBCXKeyChain_Storage;
 extern int const kBCXPLIST_Storage;
 extern int const kBCXProperty_Security_Low;
 extern int const kBCXProperty_Security_Med;
 extern int const kBCXProperty_Security_High;
+
 @end

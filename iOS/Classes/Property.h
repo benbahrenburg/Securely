@@ -10,10 +10,11 @@
 
 @required
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
-                  withAccessGroup:(NSString*)accessGroup
+                    withAccessibleLevel:(int)SecAttrAccessible
                  withEncryptedField:(BOOL)encryptFields
               withEncryptedValues:(BOOL)encryptedValues
-                       withSecret:(NSString*)secret;
+                       withSecret:(NSString*)secret
+                  withSyncAllowed:(BOOL)syncAllowed;
 - (id)objectForKey:(NSString *)defaultName;
 -(BOOL)propertyExists: (NSString *) key;
 -(id)getBool:(NSString*)key;

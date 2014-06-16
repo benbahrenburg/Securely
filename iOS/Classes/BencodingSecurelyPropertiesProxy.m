@@ -32,68 +32,74 @@
 
 -(void)_initWithProperties:(NSDictionary*)properties
 {
+    int accessibleLevel = [TiUtils intValue:@"acessibleLevel" properties:properties def:kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly];
+
+    BOOL syncAllowed = [TiUtils  boolValue:@"allowSync" properties:properties def:NO];
+
     _debug = [TiUtils  boolValue:@"debug" properties:properties def:NO];
+
     NSString *identifier = [TiUtils stringValue:@"identifier" properties:properties];
-    NSString *accessGroup = [TiUtils stringValue:@"accessGroup" properties:properties];
 
     if (![properties objectForKey:@"securityLevel"]) {
         NSLog(@"[ERROR] securityLevel not provided, a default of MED will be used");
     }
 
-    _storageType = [TiUtils intValue:@"storageType" properties:properties def:kBCXKeyChain_Storage];
-    _securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Med];
+    int storageType = [TiUtils intValue:@"storageType" properties:properties def:kBCXKeyChain_Storage];
+    int securityLevel = [TiUtils intValue:@"securityLevel" properties:properties def:kBCXProperty_Security_Med];
     _secret = [TiUtils stringValue:@"secret" properties:properties];
 
 
-    if(_storageType!=kBCXPLIST_Storage && _storageType!=kBCXKeyChain_Storage){
+    if(storageType!=kBCXPLIST_Storage && storageType!=kBCXKeyChain_Storage){
         NSLog(@"[ERROR] Invalid storageType provided, defaulting to KeyChain Storage");
-        _storageType = kBCXKeyChain_Storage;
+        storageType = kBCXKeyChain_Storage;
     }
 
-    if(_storageType==kBCXPLIST_Storage && _securityLevel == kBCXProperty_Security_Low){
+    if(storageType==kBCXPLIST_Storage && securityLevel == kBCXProperty_Security_Low){
          NSLog(@"[ERROR] PREFERENCE Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
-        _securityLevel = kBCXProperty_Security_Med;
+        securityLevel = kBCXProperty_Security_Med;
     }
 
-    if((_securityLevel == kBCXProperty_Security_Med ||
-       _securityLevel == kBCXProperty_Security_High ) && _secret == nil){
+    if((securityLevel == kBCXProperty_Security_Med ||
+       securityLevel == kBCXProperty_Security_High ) && _secret == nil){
         NSLog(@"[ERROR] A secret is required for MED and HIGH securityLevel");
         NSLog(@"[ERROR] Since no secret provided BUNDLE ID will be used");
         _secret = [[NSBundle mainBundle] bundleIdentifier];
     }
 
-    if(_securityLevel == kBCXProperty_Security_Med ||
-       _securityLevel == kBCXProperty_Security_High ){
+    if(securityLevel == kBCXProperty_Security_Med ||
+       securityLevel == kBCXProperty_Security_High ){
         _valuesEncrypted = YES;
     }
 
-    if(_securityLevel == kBCXProperty_Security_High ){
+    if(securityLevel == kBCXProperty_Security_High ){
         _fieldsEncrypted = YES;
     }
 
-    if(_storageType == kBCXKeyChain_Storage && identifier == nil){
+    if(storageType == kBCXKeyChain_Storage && identifier == nil){
         NSLog(@"[ERROR] The identifier parameter is required for KeyChain Storage");
         NSLog(@"[ERROR] Since identifier was provided BUNDLE ID will be used");
         identifier = [[NSBundle mainBundle] bundleIdentifier];
     }
 
-    if(_storageType == kBCXKeyChain_Storage){
+    if(storageType == kBCXKeyChain_Storage){
         _provider = [[PropertyKeyChain alloc] initWithIdentifierAndOptions:identifier
-                                                           withAccessGroup:accessGroup
+                                                       withAccessibleLevel:accessibleLevel
                                                         withEncryptedField:_fieldsEncrypted
-                                                        withEncryptedValues:_valuesEncrypted
-                                                                withSecret:_secret];
+                                                       withEncryptedValues:_valuesEncrypted
+                                                                withSecret:_secret
+                                                           withSyncAllowed:syncAllowed];
         if(_debug){
             NSLog(@"[DEBUG] Securely : Using keychain storage");
         }
     }
 
-    if(_storageType == kBCXPLIST_Storage){
+    if(storageType == kBCXPLIST_Storage){
         _provider = [[PropertyPList alloc] initWithIdentifierAndOptions:_propertyToken
-                                                           withAccessGroup:accessGroup
+                                                    withAccessibleLevel:accessibleLevel
                                                      withEncryptedField:_fieldsEncrypted
                                                     withEncryptedValues:_valuesEncrypted
-                                                                withSecret:_secret];
+                                                                withSecret:_secret
+                                                            withSyncAllowed:syncAllowed];
         if(_debug){
             NSLog(@"[DEBUG] Securely : Using PList storage");
         }
@@ -184,15 +190,6 @@
     [self manageKeyCache];
 }
 
--(id)getStorageType:(id) unused
-{
-    return [NSNumber numberWithInt:_storageType];
-}
-
--(id)getSecurityLevel:(id) unused
-{
-    return [NSNumber numberWithInt:_securityLevel];
-}
 
 -(NSNumber*)hasValuesEncrypted: (id) unused
 {

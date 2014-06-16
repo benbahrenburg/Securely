@@ -16,10 +16,11 @@
 @implementation PropertyPList
 
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
-                  withAccessGroup:(NSString*)accessGroup
+              withAccessibleLevel:(int)SecAttrAccessible
                withEncryptedField:(BOOL)encryptFields
               withEncryptedValues:(BOOL)encryptedValues
                        withSecret:(NSString*)secret
+                  withSyncAllowed:(BOOL)syncAllowed
 {
     if (self = [super init]) {
 

@@ -6,10 +6,9 @@
  */
 
 #import "PropertyKeyChain.h"
-#import "BCXPDKeychainBindings.h"
+
 #import "JSONKit.h"
 #import "TiUtils.h"
-#import "BCXPDKeychainBindingsController.h"
 #import "NSData+Base64.h"
 #import "NSString+Base64.h"
 #import "NSData+CommonCrypto.h"
@@ -19,36 +18,26 @@
 
 
 -(id)initWithIdentifierAndOptions:(NSString *)identifier
-                  withAccessGroup:(NSString*)accessGroup
+              withAccessibleLevel:(int)SecAttrAccessible
                withEncryptedField:(BOOL)encryptFields
               withEncryptedValues:(BOOL)encryptedValues
                        withSecret:(NSString*)secret
+                withSyncAllowed:(BOOL)syncAllowed
 {
     if (self = [super init]) {
         _encryptedValues = encryptedValues;
         _encryptFields = encryptFields;
         _secret = secret;
         _identifier = identifier;
-        _accessGroup = accessGroup;
 
         if(_identifier ==nil){
             NSLog(@"[ERROR] Identifer provided was null, using bundleIdentifier");
             _identifier = [[NSBundle mainBundle] bundleIdentifier];
         }
 
-        //NSLog(@"[DEBUG] Created with a provided identifer %@",_identifier);
-        [[BCXPDKeychainBindings sharedKeychainBindings] setServiceName:_identifier];
-
-#if TARGET_IPHONE_SIMULATOR
-        if(accessGroup !=nil){
-            NSLog(@"[DEBUG] Cannot set access group in simulator");
-        }
-#else
-        if(accessGroup !=nil){
-            //NSLog(@"[DEBUG] Created with a provided accessGroup %@",accessGroup);
-            [[BCXPDKeychainBindings sharedKeychainBindings] setAccessGroup:accessGroup];
-        }
-#endif
+        _binder = [[BxSSkeychainBindings alloc] initWithIdentifierAndOptions:_identifier
+                                                         withAccessibleLevel:SecAttrAccessible
+                                                             withSyncAllowed:syncAllowed];
 
     }
 
@@ -76,7 +65,7 @@
 
 -(NSString*)decryptFromKeyChain:(NSString*)key
 {
-    NSString* result =[[BCXPDKeychainBindingsController sharedKeychainBindingsController] stringForKey:key];
+    NSString* result =[_binder stringForKey:key];
     if(result ==nil){
         return nil;
     }else{
@@ -87,22 +76,22 @@
 
 #pragma Public APIs
 
-- (id)objectForKey:(NSString *)defaultName {
+- (id)objectForKey:(NSString *)key {
     //return [[[PDKeychainBindingsController sharedKeychainBindingsController] valueBuffer] objectForKey:defaultName];
-    return [[BCXPDKeychainBindingsController sharedKeychainBindingsController] valueForKeyPath:[NSString stringWithFormat:@"values.%@",defaultName]];
+    return [_binder objectForKey:key];
 }
 
 -(BOOL)propertyExists: (NSString *) key
 {
 	if (![key isKindOfClass:[NSString class]]) return NO;
-	return ([[BCXPDKeychainBindings sharedKeychainBindings] objectForKey:key] != nil);
+	return ([_binder objectForKey:key] != nil);
 }
 
 -(id)getBool:(NSString*)key
 {
     return (_encryptedValues) ?
         [PropertyCommon decryptToBool:[self decryptFromKeyChain:key]] :
-        [NSNumber numberWithBool:[[BCXPDKeychainBindings sharedKeychainBindings] boolForKey:key]];
+        [NSNumber numberWithBool:[_binder boolForKey:key]];
 }
 
 
@@ -110,7 +99,7 @@
 {
     return (_encryptedValues) ?
         [PropertyCommon decryptToDouble:[self decryptFromKeyChain:key]] :
-        [NSNumber numberWithDouble:[[BCXPDKeychainBindings sharedKeychainBindings] doubleForKey:key]];
+        [NSNumber numberWithDouble:[_binder doubleForKey:key]];
 
 }
 
@@ -118,20 +107,20 @@
 {
     return (_encryptedValues) ?
         [PropertyCommon decryptToInt:[self decryptFromKeyChain:key]] :
-        [NSNumber numberWithInt:[[BCXPDKeychainBindings sharedKeychainBindings] integerForKey:key]];
+        [NSNumber numberWithInt:[_binder integerForKey:key]];
 }
 
 -(NSString*)getString:(NSString*)key
 {
     NSString *result = (_encryptedValues) ?
     [self decryptFromKeyChain:key] :
-    [[BCXPDKeychainBindings sharedKeychainBindings] stringForKey:key];
+    [_binder stringForKey:key];
     return (result ==nil) ? nil : result;
 }
 
 -(id)getList:(NSString*)key
 {
-	NSString *jsonValue = [[BCXPDKeychainBindings sharedKeychainBindings] stringForKey:key];
+	NSString *jsonValue = [_binder stringForKey:key];
     if(_encryptedValues){
         jsonValue = [self decrypt:jsonValue withSecret:_secret];
     }
@@ -149,7 +138,7 @@
         [self encrypt:[PropertyCommon boolToString:value] withSecret:_secret] :
         [PropertyCommon boolToString:value];
 
-	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
+	[_binder setString:storageValue forKey:key];
 }
 
 -(void)setDouble:(double)value withKey:(NSString*)key
@@ -158,7 +147,7 @@
         [self encrypt:[PropertyCommon doubleToString:value] withSecret:_secret] :
     [PropertyCommon doubleToString:value];
 
-	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
+	[_binder setString:storageValue forKey:key];
 }
 
 -(void)setInt:(int)value withKey:(NSString*)key
@@ -167,14 +156,14 @@
     [self encrypt:[PropertyCommon intToString:value] withSecret:_secret] :
     [PropertyCommon intToString:value];
 
-	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
+	[_binder setString:storageValue forKey:key];
 }
 
 -(void)setString:(NSString*)value withKey:(NSString*)key
 {
     NSString *storageValue =  (_encryptedValues)? [self encrypt:value withSecret:_secret] : value;
 
-	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
+	[_binder setString:storageValue forKey:key];
 }
 
 -(void)setList:(id)value withKey:(NSString*)key
@@ -182,7 +171,7 @@
     //NSLog(@"Provider setList : %@",value);
     NSString *storageValue =  (_encryptedValues)? [self encrypt:[value JSONString] withSecret:_secret] : [value JSONString];
     //NSLog(@"storageValue : %@",storageValue);
- 	[[BCXPDKeychainBindings sharedKeychainBindings] setObject:storageValue forKey:key];
+ 	[_binder setString:storageValue forKey:key];
 }
 
 -(void)setObject:(id)value withKey:(NSString*)key
@@ -197,12 +186,12 @@
 
 -(void)removeProperty:(NSString*)key
 {
-	[[BCXPDKeychainBindings sharedKeychainBindings] removeObjectForKey:key];
+	[_binder removeObjectForKey:key];
 }
 
 -(void)removeAllProperties
 {
-    [[BCXPDKeychainBindings sharedKeychainBindings] removeAllItems];
+    [_binder removeAllItems];
 }
 
 -(id)listProperties
@@ -210,7 +199,7 @@
     if(_encryptFields){
         return nil;
     }else{
-        id results = [[BCXPDKeychainBindings sharedKeychainBindings] allKeys];
+        id results = [_binder allKeys];
         return ((results ==nil) ? [NSNull null] : results);
     }
 }
