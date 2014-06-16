@@ -144,7 +144,12 @@ static BCXPDKeychainBindingsController *sharedInstance = nil;
     [query setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id<NSCopying>)(kSecClass)];
     [query setObject:key forKey:(__bridge id<NSCopying>)(kSecAttrAccount)];
     [query setObject:[self serviceName] forKey:(__bridge id<NSCopying>)(kSecAttrService)];
-    
+
+#ifdef BXBSKEYCHAIN_SYNCHRONIZATION_AVAILABLE
+    [query setObject:@NO forKey:(__bridge id<NSCopying>)(kSecAttrSynchronizable)];
+
+#endif
+
 	if (!string)  {
 		//Need to delete the Key 
 

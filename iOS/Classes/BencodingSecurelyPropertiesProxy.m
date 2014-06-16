@@ -239,7 +239,7 @@ if (![self propertyExists:[self obtainKey:key]]) return defaultValue; \
 -(NSString *)getString:(id)args
 {
     GETSPROP
-    NSString *realKey = [self obtainKey:key];
+    //NSString *realKey = [self obtainKey:key];
     //NSLog(@"[DEBUG] Securely getString: key: %@ realKey:%@ ",key,realKey);
     return[_provider getString:[self obtainKey:key]];
 }
@@ -301,7 +301,7 @@ return;\
 -(void)setString:(id)args
 {    
 	SETSPROP
-    NSString *realKey = [self obtainKey:key];
+    //NSString *realKey = [self obtainKey:key];
     //NSLog(@"[DEBUG] Securely setString: value: %@ realKey:%@ ",value,realKey);
     [_provider setString:[TiUtils stringValue:value] withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];

@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "BCXPDKeychainBindings.h"
 
+#if __IPHONE_7_0 || __MAC_10_9
+// Keychain synchronization available at compile time
+#define BXBSKEYCHAIN_SYNCHRONIZATION_AVAILABLE 1
+#endif
+
 
 @interface BCXPDKeychainBindingsController : NSObject {
 @private
