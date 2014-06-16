@@ -51,7 +51,7 @@
     }
 
     if(_storageType==kBCXPLIST_Storage && _securityLevel == kBCXProperty_Security_Low){
-         NSLog(@"[ERROR] PLIST Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
+         NSLog(@"[ERROR] PREFERENCE Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
         _securityLevel = kBCXProperty_Security_Med;
     }
 
