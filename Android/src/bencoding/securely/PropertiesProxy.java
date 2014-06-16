@@ -91,7 +91,8 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			LogHelpers.error("PREFERENCE Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
 			securityLevel = SecurelyModule.PROPERTY_SECURE_LEVEL_MED;
 		}
-		
+
+	    
 		if (options.containsKey("identifier")) {
 			_identifier = TiConvert.toString(options.get("identifier"));
 			LogHelpers.Level2Log("Setting identifer to : " + _identifier);			
@@ -99,10 +100,20 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
 			LogHelpers.Level2Log("Setting secret to : " + _secret);		
-		}	
+		}else{
+
+			if((securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_MED) ||
+					(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH)){
+			
+				LogHelpers.error("A secret is required for MED and HIGH securityLevel");				
+				LogHelpers.error("Since no secret provided BUNDLE ID will be used");				
+				_secret = TiApplication.getInstance().getAppGUID();
+				
+			}
+		}
 
 		if((securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_MED) ||
-		(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH)){
+				(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH)){
 			_encryptValues=true;
 		}
 		
