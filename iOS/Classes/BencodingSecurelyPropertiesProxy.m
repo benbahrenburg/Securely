@@ -77,7 +77,7 @@
 
     if(storageType == kBCXKeyChain_Storage && identifier == nil){
         NSLog(@"[ERROR] The identifier parameter is required for KeyChain Storage");
-        NSLog(@"[ERROR] Since identifier was provided BUNDLE ID will be used");
+        NSLog(@"[ERROR] Since identifier was not provided BUNDLE ID will be used");
         identifier = [[NSBundle mainBundle] bundleIdentifier];
     }
 
