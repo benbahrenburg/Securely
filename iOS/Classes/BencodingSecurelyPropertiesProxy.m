@@ -345,6 +345,21 @@ return;\
     return [_provider listProperties];
 }
 
+-(void)lock:(id)unused
+{
+
+}
+
+-(void)unlock:(id)unused
+{
+
+}
+
+-(id)isLocked:(id)unused
+{
+   return NUMBOOL(NO);
+}
+
 //-(void)setIdentifier:(id)value
 //{
 //    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");

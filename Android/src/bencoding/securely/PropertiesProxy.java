@@ -124,7 +124,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if(storageType == SecurelyModule.PROPERTY_TYPE_PREFERENCES){
 			_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
 		}else{
-			LogHelpers.error("KeyChain has not been implemented yet");
+			_provider = new keyStorePropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
 		}
 	}
 	
@@ -385,6 +385,22 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			_provider.dispose();
 			_provider = null;
 		}	
+	}
+	
+	@Kroll.method
+	public void lock()
+	{
+		_provider.lock();
+	}
+	
+	@Kroll.method
+	public void unlock(){
+		_provider.unlock();
+	}
+	
+	@Kroll.method
+	public boolean isLocked(){
+		return _provider.isLocked();
 	}
 	
 	@Override
