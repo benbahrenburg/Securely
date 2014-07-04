@@ -15,5 +15,8 @@ public interface IPropertiesProvider {
 	public void setString(String key, String value);
 	public String getString(String key,Object defaultValue);
 	public void removeAllProperties();
+	public void lock();
+	public void unlock();
+	public boolean isLocked();
 	public void dispose();
 }

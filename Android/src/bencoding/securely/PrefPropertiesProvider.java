@@ -171,4 +171,15 @@ public class PrefPropertiesProvider implements IPropertiesProvider{
 			_appProperties = null;
 		}			
 	}
+
+	@Override
+	public void lock() {}
+
+	@Override
+	public void unlock() {}
+
+	@Override
+	public boolean isLocked() {
+		return false;
+	}
 }
