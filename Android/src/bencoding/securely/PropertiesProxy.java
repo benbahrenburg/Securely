@@ -121,11 +121,13 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			_encryptFieldNames=true;
 		}
 		
-		if(storageType == SecurelyModule.PROPERTY_TYPE_PREFERENCES){
-			_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
-		}else{
-			_provider = new keyStorePropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
-		}
+		_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
+		
+//		if(storageType == SecurelyModule.PROPERTY_TYPE_PREFERENCES){
+//			_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
+//		}else{
+//			_provider = new keyStorePropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
+//		}
 	}
 	
 	@Kroll.method

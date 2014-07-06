@@ -27,6 +27,16 @@ public class keyStorePropertiesProvider implements IPropertiesProvider{
 		super();	
 		_secret = secret;
 		_ks.password(_secret);
+		boolean isAvailable = CKeystore.featureAvailable(TiApplication.getAppRootOrCurrentActivity());
+		if(!isAvailable){
+			LogHelpers.error("Keystore not available");			
+		}else{
+			boolean isUnlocked = CKeystore.isOpen(TiApplication.getAppRootOrCurrentActivity());
+			if(!isUnlocked){
+				LogHelpers.error("Keystore is locked, unlocking");
+				CKeystore.startUnlock(TiApplication.getAppRootOrCurrentActivity());
+			}
+		}
 	}
 
 	private void saveToKeyStore(String key, String value){
@@ -63,6 +73,31 @@ public class keyStorePropertiesProvider implements IPropertiesProvider{
 			return null;
 		}
 	}	
+	
+	private String rawToString(byte[] keyBytes){
+        ByteArrayInputStream bis = new ByteArrayInputStream(keyBytes);
+        ObjectInput in = null;
+        Object results = null;
+      try {
+			in = new ObjectInputStream(bis);
+			results = in.readObject();
+		} catch (ClassNotFoundException e) {
+			LogHelpers.error(e.getLocalizedMessage());			
+		} catch (IOException e) {
+			LogHelpers.error(e.getLocalizedMessage());
+		}finally {
+		  try {
+			    bis.close();
+			    if (in != null) {
+				    in.close();
+				}			    
+			  } catch (IOException ex) {
+			    // ignore close exception
+			  }
+			}
+      
+      return (String)results;		
+	}
 	@Override
 	public Object getRawValue(String key) {
 	      byte[] keyBytes = _ks.get(key);
@@ -160,34 +195,40 @@ public class keyStorePropertiesProvider implements IPropertiesProvider{
 
 	@Override
 	public void setString(String key, String value) {
-		String ValueAsString = TiConvert.toString(value);
-		LogHelpers.Level2Log("setString key:" + key + " value:" + ValueAsString);
 		
-		String PassKey = ComposeSecret(key);
-		LogHelpers.Level2Log("setString PassKey:" + PassKey);
+		boolean success = CKeystore.putBytes(TiApplication.getAppRootOrCurrentActivity(),key,value.getBytes());
 		
-		String EncryptedValue = EncryptContent(PassKey,ValueAsString);	
-		LogHelpers.Level2Log("setString EncryptedValue:" + EncryptedValue);
-		saveToKeyStore(key,EncryptedValue);
+//		String ValueAsString = TiConvert.toString(value);
+//		LogHelpers.Level2Log("setString key:" + key + " value:" + ValueAsString);
+//		
+//		String PassKey = ComposeSecret(key);
+//		LogHelpers.Level2Log("setString PassKey:" + PassKey);
+//		
+//		String EncryptedValue = EncryptContent(PassKey,ValueAsString);	
+//		LogHelpers.Level2Log("setString EncryptedValue:" + EncryptedValue);
+//		saveToKeyStore(key,EncryptedValue);
 	}
 
 	@Override
 	public String getString(String key, Object defaultValue) {
 		
-		String ifMissingValue = ((defaultValue == null)? null : TiConvert.toString(defaultValue));
-		if(!hasProperty(key)){
-			return ifMissingValue;
-		}
+		byte[] storedValue = CKeystore.getBytes(TiApplication.getAppRootOrCurrentActivity(),key);
+		String TextValue = rawToString(storedValue);
 		
-		Object rawValue = getRawValue(key);
-		
-		if(rawValue  == null){
-			return null;
-		}
-		
-		String StoredValue = (String)rawValue;
-		String PassKey = ComposeSecret(key);
-		String TextValue = DecryptContent(PassKey,StoredValue);		
+//		String ifMissingValue = ((defaultValue == null)? null : TiConvert.toString(defaultValue));
+//		if(!hasProperty(key)){
+//			return ifMissingValue;
+//		}
+//		
+//		Object rawValue = getRawValue(key);
+//		
+//		if(rawValue  == null){
+//			return null;
+//		}
+//		
+//		String StoredValue = (String)rawValue;
+//		String PassKey = ComposeSecret(key);
+//		String TextValue = DecryptContent(PassKey,StoredValue);		
 		return TextValue;
 	}
 
