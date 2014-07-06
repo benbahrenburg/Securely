@@ -97,7 +97,12 @@
 #endif
 
 	if (status != errSecSuccess && error != NULL) {
-		*error = [[self class] errorWithCode:status];
+        if(status == errSecItemNotFound){
+            status = errSecSuccess;
+            *error = nil;
+        }else{
+            *error = [[self class] errorWithCode:status];
+        }
 	}
 
 	return (status == errSecSuccess);
