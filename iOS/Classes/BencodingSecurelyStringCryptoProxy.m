@@ -326,14 +326,37 @@
     return plainText;
     
 }
--(NSString *) sha256:(id)args
+
+-(NSString *)sha256:(id)args
 {
-    ENSURE_ARG_COUNT(args,1);
-    NSString* plainText = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSData* data = [[plainText dataUsingEncoding:NSUTF8StringEncoding]SHA256Hash];
-    NSString *hashText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    enum Args {
+		kArgValue = 0,
+		kArgCount
+	};
+
+	ENSURE_ARG_COUNT(args, kArgCount);
+
+    NSString *value = [TiUtils stringValue:[args objectAtIndex:kArgValue]];
+    NSString *hashText = [BCXCryptoUtilities createSHA256:value];
     return hashText;
 }
+
+
+-(NSString *)sha512:(id)args
+{
+    enum Args {
+		kArgValue = 0,
+		kArgCount
+	};
+
+	ENSURE_ARG_COUNT(args, kArgCount);
+
+    NSString *value = [TiUtils stringValue:[args objectAtIndex:kArgValue]];
+    NSString *hashText = [BCXCryptoUtilities createSHA512:value];
+    return hashText;
+}
+
 
 -(NSString *) toHex:(id)args
 {

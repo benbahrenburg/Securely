@@ -26,5 +26,6 @@
 + (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 + (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 +(BOOL)stringIsNilOrEmpty:(NSString*)aString;
++(NSString *)createSHA256:(NSString*)input;
 +(NSString *)createSHA512:(NSString *)string;
 @end

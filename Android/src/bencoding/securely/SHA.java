@@ -32,4 +32,25 @@ public class SHA {
 		}
 			
 	}
+	
+	public static String sha512(String data){
+
+		try
+		{
+			byte[] b = data.getBytes();
+			MessageDigest algorithm = MessageDigest.getInstance("SHA-512");
+			algorithm.reset();
+			algorithm.update(b);
+			byte messageDigest[] = algorithm.digest();
+			StringBuilder result = new StringBuilder();
+			for (int i=0; i < messageDigest.length; i++) {
+				result.append(Integer.toString(( messageDigest[i] & 0xff ) + 0x100, 16).substring(1));
+			}
+			return result.toString();
+		} catch(NoSuchAlgorithmException e) {
+			LogHelpers.Log("SHA-512 is not a supported algorithm");
+			return null;
+		}
+			
+	}
 }
