@@ -12,7 +12,7 @@
 
 @implementation BCXCryptoUtilities
 
-NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+NSString *BCXLetters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 +(NSString*)base64forData:(NSData*)theData
 {
@@ -144,7 +144,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 {
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     for (int i=0; i<len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+        [randomString appendFormat: @"%C", [BCXLetters characterAtIndex: arc4random() % [BCXLetters length]]];
     }
     return randomString;
 }

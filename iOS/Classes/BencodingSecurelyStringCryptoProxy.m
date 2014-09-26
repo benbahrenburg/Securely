@@ -230,7 +230,7 @@
 		kArgPassword = 0,
         kArgPlainText = 1,
         kArgCount,
-        kArgUseHex = kArgCount        // Optional
+        kArgUseHex = kArgCount// Optional
 	};
     
     ENSURE_ARG_COUNT(args, kArgCount);
