@@ -124,12 +124,20 @@
     if(_encryptedValues){
         jsonValue = [self decrypt:jsonValue withSecret:_secret];
     }
+    
+    //NSLog(@"Provider getList : %@",jsonValue);
     return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
 }
 
 -(id)getObject:(NSString*)key
 {
-	[self getList:key];
+    NSString *jsonValue = [_binder stringForKey:key];
+    if(_encryptedValues){
+        jsonValue = [self decrypt:jsonValue withSecret:_secret];
+    }
+    
+    //NSLog(@"Provider getObject : %@",jsonValue);
+    return ((jsonValue ==nil) ? [NSNull null] : [jsonValue objectFromJSONString]);
 }
 
 -(void)setBool:(BOOL)value withKey:(NSString*)key
@@ -168,9 +176,9 @@
 
 -(void)setList:(id)value withKey:(NSString*)key
 {
-    //NSLog(@"Provider setList : %@",value);
+    NSLog(@"Provider setList : %@",value);
     NSString *storageValue =  (_encryptedValues)? [self encrypt:[value JSONString] withSecret:_secret] : [value JSONString];
-    //NSLog(@"storageValue : %@",storageValue);
+    NSLog(@"storageValue : %@",storageValue);
  	[_binder setString:storageValue forKey:key];
 }
 

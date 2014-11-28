@@ -92,7 +92,7 @@
     return obj ? [obj doubleValue] : 0;
 }
 
-- (NSInteger)integerForKey:(NSString *)key{
+- (int)integerForKey:(NSString *)key{
     id obj = [self findForKey:key];
     return obj ? [obj intValue] : 0;
 }

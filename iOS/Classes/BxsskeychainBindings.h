@@ -20,7 +20,7 @@ NSString* _identifier;
 
 - (BOOL)boolForKey:(NSString *)key;
 - (double)doubleForKey:(NSString *)key;
-- (NSInteger)integerForKey:(NSString *)key;
+- (int)integerForKey:(NSString *)key;
 - (id)objectForKey:(NSString *)key;
 - (void)setString:(NSString *)value forKey:(NSString *)key;
 - (void)removeObjectForKey:(NSString *)key;

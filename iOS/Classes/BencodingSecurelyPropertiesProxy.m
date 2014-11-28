@@ -306,7 +306,6 @@ return;\
 
 -(void)setList:(id)args
 {
-
 	SETSPROP
     [_provider setList:value withKey:[self obtainKey:key]];
     [self triggerEvent:key actionType:@"modify"];
@@ -342,35 +341,8 @@ return;\
 
 -(id)listProperties:(id)args
 {
-    return [_provider listProperties];
+    NSLog(@"[DEBUG] listProperties is not available in secure properties.");
+    return nil;
 }
-
--(void)lock:(id)unused
-{
-
-}
-
--(void)unlock:(id)unused
-{
-
-}
-
--(id)isLocked:(id)unused
-{
-   return NUMBOOL(NO);
-}
-
-//-(void)setIdentifier:(id)value
-//{
-//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-//}
-//
-//-(void)setAccessGroup:(id)value
-//{
-//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-//}
-//-(void)setSecret:(id)args
-//{
-//    NSLog(@"[TRACE] method deprecated, this now needs to be set when you create the proxy object");
-//}
 @end
+
