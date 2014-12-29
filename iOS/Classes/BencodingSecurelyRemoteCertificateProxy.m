@@ -39,18 +39,23 @@
     }
     
     NSString *thumbprint = [self findFingerprint: SecTrustGetCertificateAtIndex(challenge.protectionSpace.serverTrust, 0)];
-    
-    [connection cancel];
-
     if(_debug){
         NSLog(@"[DEBUG] Thumbprint %@",thumbprint);
     }
+    
+    NSString *url = [[[connection currentRequest] URL] absoluteString];
+    if(_debug){
+        NSLog(@"[DEBUG] url %@",url);
+    }
+    
+    [connection cancel];
     
     if ([self _hasListeners:@"completed"])
     {
         NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:
                                NUMBOOL(YES),@"success",
                                thumbprint,@"thumbprint",
+                               url, @"url",
                                nil];
         [self fireEvent:@"completed" withObject:event];
     }
@@ -61,11 +66,17 @@
     
     NSLog(@"[ERROR] CONNECTION ERROR %@",[error localizedDescription]);
     
+    NSString *url = [[[connection currentRequest] URL] absoluteString];
+    if(_debug){
+        NSLog(@"[DEBUG] url %@",url);
+    }
+    
     if ([self _hasListeners:@"completed"])
     {
         NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:
                                NUMBOOL(NO),@"success",
                                [error localizedDescription],@"error",
+                               url, @"url",
                                nil];
         [self fireEvent:@"completed" withObject:event];
     }

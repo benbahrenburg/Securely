@@ -63,16 +63,16 @@ public class keyStorePropertiesProvider implements IPropertiesProvider{
 		}
 	}
 	
-	private String DecryptContent(String PassKey, String value){
-		try {
-			String ClearText =  AESCrypto.decrypt(PassKey, value);
-			return ClearText;
-		} catch (Exception e) {
-			e.printStackTrace();
-			LogHelpers.Log(e);
-			return null;
-		}
-	}	
+//	private String DecryptContent(String PassKey, String value){
+//		try {
+//			String ClearText =  AESCrypto.decrypt(PassKey, value);
+//			return ClearText;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			LogHelpers.Log(e);
+//			return null;
+//		}
+//	}	
 	
 	private String rawToString(byte[] keyBytes){
         ByteArrayInputStream bis = new ByteArrayInputStream(keyBytes);
@@ -196,7 +196,7 @@ public class keyStorePropertiesProvider implements IPropertiesProvider{
 	@Override
 	public void setString(String key, String value) {
 		
-		boolean success = CKeystore.putBytes(TiApplication.getAppRootOrCurrentActivity(),key,value.getBytes());
+		//boolean success = CKeystore.putBytes(TiApplication.getAppRootOrCurrentActivity(),key,value.getBytes());
 		
 //		String ValueAsString = TiConvert.toString(value);
 //		LogHelpers.Level2Log("setString key:" + key + " value:" + ValueAsString);

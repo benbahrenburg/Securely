@@ -19,7 +19,7 @@ import org.appcelerator.titanium.TiApplication;
 public class SecurelyModule extends KrollModule
 {
 
-	public static final String SECURELY_MODULE_FULL_NAME = "becoding.securely";
+	public static final String SECURELY_MODULE_FULL_NAME = "bencoding.securely";
 	public static boolean DEBUG = false;
 	
 	@Kroll.constant public static final int PROPERTY_TYPE_KEYCHAIN = 1;
