@@ -118,7 +118,7 @@ NSString *BCXLetters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012
     unsigned char whole_byte;
     char byte_chars[3] = {'\0','\0','\0'};
     int i = 0;
-    int length = string.length;
+    int length = (int)string.length;
     while (i < length-1) {
         char c = [string characterAtIndex:i++];
         if (c < '0' || (c > '9' && c < 'a') || c > 'f')
@@ -385,7 +385,7 @@ NSString *BCXLetters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012
 {
     const char* str = [input UTF8String];
     unsigned char result[CC_SHA256_DIGEST_LENGTH];
-    CC_SHA256(str, strlen(str), result);
+    CC_SHA256(str, (int)strlen(str), result);
 
     NSMutableString *ret = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH*2];
     for(int i = 0; i<CC_SHA256_DIGEST_LENGTH; i++)
@@ -402,11 +402,26 @@ NSString *BCXLetters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012
     const char *cstr = [string cStringUsingEncoding:NSUTF8StringEncoding];
     NSData *data = [NSData dataWithBytes:cstr length:string.length];
     uint8_t digest[CC_SHA512_DIGEST_LENGTH];
-    CC_SHA512(data.bytes, data.length, digest);
+    CC_SHA512(data.bytes, (int)data.length, digest);
     NSMutableString* output = [NSMutableString  stringWithCapacity:CC_SHA512_DIGEST_LENGTH * 2];
 
     for(int i = 0; i < CC_SHA512_DIGEST_LENGTH; i++)
         [output appendFormat:@"%02x", digest[i]];
     return output;
 }
+
++(BOOL) passwordCurrentlyEnabled
+{
+    if(![TiUtils isIOS8OrGreater]){
+        return NO;
+    }
+}
+
++(BOOL) touchIDEnabled
+{
+    if(![TiUtils isIOS8OrGreater]){
+        return NO;
+    }
+}
+
 @end

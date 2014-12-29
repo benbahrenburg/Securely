@@ -28,4 +28,7 @@
 +(BOOL)stringIsNilOrEmpty:(NSString*)aString;
 +(NSString *)createSHA256:(NSString*)input;
 +(NSString *)createSHA512:(NSString *)string;
++(BOOL) passwordCurrentlyEnabled;
++(BOOL) touchIDEnabled;
+
 @end

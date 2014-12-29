@@ -109,11 +109,6 @@
         
 }
 
--(NSNumber *) keychainSupported:(id)unused
-{
-    return NUMBOOL(YES);
-}
-
 -(void)_listenerAdded:(NSString *)type count:(int)count
 {
 	if (count == 1 && [type isEqualToString:@"protectedDataDidBecomeAvailable"])
