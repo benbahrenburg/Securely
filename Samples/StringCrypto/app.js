@@ -33,6 +33,12 @@ decryptedText = stringCrypto.AESDecrypt(password,encryptedText);
 Ti.API.info("Decrypted Test Passed? " + (decryptedText==testString));
 Ti.API.info("Decrypted value " + decryptedText);
 
+var sha256 = stringCrypto.sha256("This is a message I want to hash");
+Ti.API.info("sha256 hashed value " + sha256);
+
+var sha512 = stringCrypto.sha512("This is a message I want to hash");
+Ti.API.info("sha512 hashed value " + sha512);
+
 function onDecrypt(e){	
 	Ti.API.info(JSON.stringify(e));
 };

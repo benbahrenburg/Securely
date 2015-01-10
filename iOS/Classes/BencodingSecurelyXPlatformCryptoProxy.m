@@ -1,6 +1,6 @@
 /**
  * Securely Titanium Security Project
- * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
  * Licensed under the terms of the Apache Public License
  * Please see the LICENSE included with this distribution for details.
  */
@@ -18,6 +18,8 @@
     ENSURE_TYPE(args,NSDictionary);
     BOOL success = NO;
     NSData *data = nil;
+    NSData *iv = nil;
+
     NSString *statusMsg = @"invalid data returned";
     
     if (![args objectForKey:@"password"]) {
@@ -67,6 +69,10 @@
     BOOL debug =[TiUtils boolValue:@"debug" def:NO];
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     id inputValue = [args objectForKey:@"inputValue"];
     
     if(debug){
@@ -101,10 +107,15 @@
         NSLog(@"[ERROR] zero bytes found in inputValue, try using a TiFile type");
         return;
     }
-    
+
+    if (![args objectForKey:@"iv"]) {
+         iv = [BCXCryptoUtilities base64DataFromString:(NSString *)[args objectForKey:@"iv"]];
+    }
+
+
     @try {
        
-        NSData* encryptedData = [data AES256EncryptWithKey:password];
+        NSData* encryptedData = [data AES256EncryptWithKeyAndIV:password withIV:iv];
         
         if(encryptedData==nil){
             statusMsg = @"Invalid data in encryption process";
@@ -183,13 +194,21 @@
     id inputValue = [args objectForKey:@"readPath"];
     NSString *returnType = [TiUtils stringValue:@"returnType" properties:args def:@"blob"];
     NSString* password = [args objectForKey:@"password"];
-    
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     if(debug){
         NSLog(@"[DEBUG] Is of type: %@", [inputValue class]);
     }
  
     NSData *data =nil;
-    
+    NSData *iv = nil;
+
+    if (![args objectForKey:@"iv"]) {
+        iv = [BCXCryptoUtilities base64DataFromString:(NSString *)[args objectForKey:@"iv"]];
+    }
+
     if([inputValue isKindOfClass:[TiBlob class]]){
         ENSURE_TYPE(inputValue,TiBlob);
         data = [(TiBlob *)inputValue data];
@@ -234,7 +253,8 @@
     
     @try {
         
-        decryptedData = [data AES256DecryptWithKey:password];
+        decryptedData = [data AES256DecryptWithKeyAndIV:password withIV:iv];
+
         if(decryptedData==nil){
             success = NO;
             statusMsg = @"Invalid decryption action, null returned";
@@ -285,27 +305,41 @@
     enum Args {
 		kArgPassword = 0,
         kArgPlainText = 1,
-        kArgCount
+        kArgCount,
+        kArgIV = kArgCount        // Optional
 	};
     
     ENSURE_ARG_COUNT(args, kArgCount);
     
     NSString* password = [TiUtils stringValue:[args objectAtIndex:kArgPassword]];
     //DebugLog(@"password: %@", password);
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     NSString* plainText = [TiUtils stringValue:[args objectAtIndex:kArgPlainText]];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:plainText]){
+        NSLog(@"[ERROR] text provided is empty or null");
+        return;
+    }
     //DebugLog(@"plainText: %@", plainText);
     NSData* data = [plainText dataUsingEncoding:NSUTF8StringEncoding];
-    NSData* encryptedData = [data AES256EncryptWithKey:password];
-    
-    // #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
-    if ([TiUtils isIOS7OrGreater]) {
-        NSString *encryptedString = [encryptedData base64EncodedStringWithOptions:0];
-        return encryptedString;
-	}	
-    else {
-        NSString *encryptedString = [encryptedData base64Encoding];
-        return encryptedString;
-	}	
+    NSData *iv = nil;
+
+    if ([args count] > kArgIV) {
+        iv = [BCXCryptoUtilities base64DataFromString:[TiUtils stringValue:[args objectAtIndex:kArgIV]]];
+    }
+
+    NSData* encryptedData = [data AES256EncryptWithKeyAndIV:password withIV:iv];
+    NSString *encryptedString = nil;
+
+    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+        encryptedString= [encryptedData base64EncodedStringWithOptions:0];
+    #else
+        encryptedString = [encryptedData base64Encoding];
+    #endif
+
+    return encryptedString;
 
 }
 
@@ -315,7 +349,8 @@
     enum Args {
 		kArgPassword = 0,
         kArgEncryptedText = 1,
-        kArgCount
+        kArgCount,
+        kArgIV = kArgCount        // Optional
 	};
     
     ENSURE_ARG_COUNT(args, kArgCount);
@@ -327,7 +362,14 @@
     //NSLog(@"encryptedText: %@", encryptedText);
     
     NSData *data = [BCXCryptoUtilities base64DataFromString:encryptedText];
-    NSData *decryptedData = [data AES256DecryptWithKey:password];
+    NSData* iv = nil;
+
+    if ([args count] > kArgIV) {
+        iv = [BCXCryptoUtilities base64DataFromString:[TiUtils stringValue:[args objectAtIndex:kArgIV]]];
+    }
+
+    NSData *decryptedData = [data AES256DecryptWithKeyAndIV:password withIV:iv];
+
     NSString *plainText = [[NSString alloc] initWithData:decryptedData
                                                 encoding:NSUTF8StringEncoding];
     //NSLog(@"plainText: %@", plainText);

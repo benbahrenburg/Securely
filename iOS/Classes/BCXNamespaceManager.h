@@ -1,10 +1,9 @@
-//
-//  BCNamespaceManager.h
-//  Securely
-//
-//  Created by Ben on 4/17/13.
-//
-//
+/**
+ * Securely Titanium Security Project
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
+ * Licensed under the terms of the Apache Public License
+ * Please see the LICENSE included with this distribution for details.
+ */
 
 #ifndef __BCX_NAMESPACE_PREFIX_
 #define __BCX_NAMESPACE_PREFIX_	BCX

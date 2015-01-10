@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -31,20 +31,22 @@
 		430F1AF8171C70C500A3E288 /* RNCryptManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 430F1AF4171C70C500A3E288 /* RNCryptManager.m */; };
 		431FC215171B4654007C8298 /* BCXCryptoUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 431FC213171B4654007C8298 /* BCXCryptoUtilities.h */; };
 		431FC216171B4654007C8298 /* BCXCryptoUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FC214171B4654007C8298 /* BCXCryptoUtilities.m */; };
+		434B68D4194E76B100188505 /* BencodingSecurelyIVProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B68D2194E76B100188505 /* BencodingSecurelyIVProxy.h */; };
+		434B68D5194E76B100188505 /* BencodingSecurelyIVProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 434B68D3194E76B100188505 /* BencodingSecurelyIVProxy.m */; };
 		434F4103182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 434F4101182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h */; };
 		434F4104182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */; };
 		434F4107182E881D00BD6D9B /* NSData+AES256.h in Headers */ = {isa = PBXBuildFile; fileRef = 434F4105182E881D00BD6D9B /* NSData+AES256.h */; };
 		434F4108182E881D00BD6D9B /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 434F4106182E881D00BD6D9B /* NSData+AES256.m */; };
+		435888B818DE9D4C0043724F /* PropertyKeyChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 435888B618DE9D4C0043724F /* PropertyKeyChain.h */; };
+		435888B918DE9D4C0043724F /* PropertyKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 435888B718DE9D4C0043724F /* PropertyKeyChain.m */; };
+		435888BC18DEB0E60043724F /* PropertyPList.h in Headers */ = {isa = PBXBuildFile; fileRef = 435888BA18DEB0E60043724F /* PropertyPList.h */; };
+		435888BD18DEB0E60043724F /* PropertyPList.m in Sources */ = {isa = PBXBuildFile; fileRef = 435888BB18DEB0E60043724F /* PropertyPList.m */; };
 		435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D316D41B680093B1BD /* NSData+Base64.h */; };
 		435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D416D41B680093B1BD /* NSData+Base64.m */; };
 		435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */; };
 		435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D616D41B680093B1BD /* NSData+CommonCrypto.m */; };
 		435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 435D89D716D41B680093B1BD /* NSString+Base64.h */; };
 		435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 435D89D816D41B680093B1BD /* NSString+Base64.m */; };
-		43857BD7169F7274004D600C /* BCXPDKeychainBindings.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD3169F7274004D600C /* BCXPDKeychainBindings.h */; };
-		43857BD8169F7274004D600C /* BCXPDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD4169F7274004D600C /* BCXPDKeychainBindings.m */; };
-		43857BD9169F7274004D600C /* BCXPDKeychainBindingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BD5169F7274004D600C /* BCXPDKeychainBindingsController.h */; };
-		43857BDA169F7274004D600C /* BCXPDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BD6169F7274004D600C /* BCXPDKeychainBindingsController.m */; };
 		43857BE1169F72B5004D600C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43857BE0169F72B5004D600C /* Security.framework */; };
 		43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */; };
 		43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */; };
@@ -52,12 +54,26 @@
 		43857BF2169FA0A3004D600C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 43857BF0169FA0A3004D600C /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */; };
 		43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */; };
+		43B36ED318DF67FA00CF71AF /* PropertyCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B36ED118DF67FA00CF71AF /* PropertyCommon.h */; };
+		43B36ED418DF67FA00CF71AF /* PropertyCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B36ED218DF67FA00CF71AF /* PropertyCommon.m */; };
+		43C1681B194F4E0300A39EC7 /* BxSSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C16817194F4E0300A39EC7 /* BxSSKeychain.h */; };
+		43C1681C194F4E0300A39EC7 /* BxSSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C16818194F4E0300A39EC7 /* BxSSKeychain.m */; };
+		43C1681D194F4E0300A39EC7 /* BxSSKeychainQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C16819194F4E0300A39EC7 /* BxSSKeychainQuery.h */; };
+		43C1681E194F4E0300A39EC7 /* BxSSKeychainQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C1681A194F4E0300A39EC7 /* BxSSKeychainQuery.m */; };
+		43C16821194F52FA00A39EC7 /* BxsskeychainBindings.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C1681F194F52FA00A39EC7 /* BxsskeychainBindings.h */; };
+		43C16822194F52FA00A39EC7 /* BxsskeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C16820194F52FA00A39EC7 /* BxsskeychainBindings.m */; };
 		43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */; };
 		43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */; };
 		43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */; };
 		43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */; };
 		AA747D9F0F9514B9006C5449 /* BencodingSecurely_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		CAF31E1F1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF31E1D1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.h */; };
+		CAF31E201A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF31E1E1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.m */; };
+		CAF31E251A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF31E211A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.h */; };
+		CAF31E261A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF31E221A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.m */; };
+		CAF31E271A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF31E231A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.h */; };
+		CAF31E281A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF31E241A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,20 +97,23 @@
 		430F1AF4171C70C500A3E288 /* RNCryptManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCryptManager.m; sourceTree = "<group>"; };
 		431FC213171B4654007C8298 /* BCXCryptoUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCXCryptoUtilities.h; path = Classes/BCXCryptoUtilities.h; sourceTree = "<group>"; };
 		431FC214171B4654007C8298 /* BCXCryptoUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCXCryptoUtilities.m; path = Classes/BCXCryptoUtilities.m; sourceTree = "<group>"; };
+		434B68D2194E76B100188505 /* BencodingSecurelyIVProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyIVProxy.h; path = Classes/BencodingSecurelyIVProxy.h; sourceTree = "<group>"; };
+		434B68D3194E76B100188505 /* BencodingSecurelyIVProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyIVProxy.m; path = Classes/BencodingSecurelyIVProxy.m; sourceTree = "<group>"; };
 		434F4101182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyXPlatformCryptoProxy.h; path = Classes/BencodingSecurelyXPlatformCryptoProxy.h; sourceTree = "<group>"; };
 		434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyXPlatformCryptoProxy.m; path = Classes/BencodingSecurelyXPlatformCryptoProxy.m; sourceTree = "<group>"; };
 		434F4105182E881D00BD6D9B /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+AES256.h"; path = "Classes/NSData+AES256.h"; sourceTree = "<group>"; };
 		434F4106182E881D00BD6D9B /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+AES256.m"; path = "Classes/NSData+AES256.m"; sourceTree = "<group>"; };
+		435888B518DE9B5F0043724F /* Property.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Property.h; path = Classes/Property.h; sourceTree = "<group>"; };
+		435888B618DE9D4C0043724F /* PropertyKeyChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyKeyChain.h; path = Classes/PropertyKeyChain.h; sourceTree = "<group>"; };
+		435888B718DE9D4C0043724F /* PropertyKeyChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyKeyChain.m; path = Classes/PropertyKeyChain.m; sourceTree = "<group>"; };
+		435888BA18DEB0E60043724F /* PropertyPList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyPList.h; path = Classes/PropertyPList.h; sourceTree = "<group>"; };
+		435888BB18DEB0E60043724F /* PropertyPList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyPList.m; path = Classes/PropertyPList.m; sourceTree = "<group>"; };
 		435D89D316D41B680093B1BD /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "Classes/AESCrypt/NSData+Base64.h"; sourceTree = "<group>"; };
 		435D89D416D41B680093B1BD /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "Classes/AESCrypt/NSData+Base64.m"; sourceTree = "<group>"; };
 		435D89D516D41B680093B1BD /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+CommonCrypto.h"; path = "Classes/AESCrypt/NSData+CommonCrypto.h"; sourceTree = "<group>"; };
 		435D89D616D41B680093B1BD /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+CommonCrypto.m"; path = "Classes/AESCrypt/NSData+CommonCrypto.m"; sourceTree = "<group>"; };
 		435D89D716D41B680093B1BD /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Base64.h"; path = "Classes/AESCrypt/NSString+Base64.h"; sourceTree = "<group>"; };
 		435D89D816D41B680093B1BD /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Base64.m"; path = "Classes/AESCrypt/NSString+Base64.m"; sourceTree = "<group>"; };
-		43857BD3169F7274004D600C /* BCXPDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCXPDKeychainBindings.h; path = Classes/PDKeychainBindingsController/BCXPDKeychainBindings.h; sourceTree = "<group>"; };
-		43857BD4169F7274004D600C /* BCXPDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCXPDKeychainBindings.m; path = Classes/PDKeychainBindingsController/BCXPDKeychainBindings.m; sourceTree = "<group>"; };
-		43857BD5169F7274004D600C /* BCXPDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BCXPDKeychainBindingsController.h; path = Classes/PDKeychainBindingsController/BCXPDKeychainBindingsController.h; sourceTree = "<group>"; };
-		43857BD6169F7274004D600C /* BCXPDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BCXPDKeychainBindingsController.m; path = Classes/PDKeychainBindingsController/BCXPDKeychainBindingsController.m; sourceTree = "<group>"; };
 		43857BE0169F72B5004D600C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPropertiesProxy.h; path = Classes/BencodingSecurelyPropertiesProxy.h; sourceTree = "<group>"; };
 		43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPropertiesProxy.m; path = Classes/BencodingSecurelyPropertiesProxy.m; sourceTree = "<group>"; };
@@ -102,12 +121,26 @@
 		43857BF0169FA0A3004D600C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyFileCryptoProxy.h; path = Classes/BencodingSecurelyFileCryptoProxy.h; sourceTree = "<group>"; };
 		43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyFileCryptoProxy.m; path = Classes/BencodingSecurelyFileCryptoProxy.m; sourceTree = "<group>"; };
+		43B36ED118DF67FA00CF71AF /* PropertyCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyCommon.h; path = Classes/PropertyCommon.h; sourceTree = "<group>"; };
+		43B36ED218DF67FA00CF71AF /* PropertyCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyCommon.m; path = Classes/PropertyCommon.m; sourceTree = "<group>"; };
+		43C16817194F4E0300A39EC7 /* BxSSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BxSSKeychain.h; sourceTree = "<group>"; };
+		43C16818194F4E0300A39EC7 /* BxSSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BxSSKeychain.m; sourceTree = "<group>"; };
+		43C16819194F4E0300A39EC7 /* BxSSKeychainQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BxSSKeychainQuery.h; sourceTree = "<group>"; };
+		43C1681A194F4E0300A39EC7 /* BxSSKeychainQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BxSSKeychainQuery.m; sourceTree = "<group>"; };
+		43C1681F194F52FA00A39EC7 /* BxsskeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BxsskeychainBindings.h; path = Classes/BxsskeychainBindings.h; sourceTree = "<group>"; };
+		43C16820194F52FA00A39EC7 /* BxsskeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BxsskeychainBindings.m; path = Classes/BxsskeychainBindings.m; sourceTree = "<group>"; };
 		43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyPDFProxy.h; path = Classes/BencodingSecurelyPDFProxy.h; sourceTree = "<group>"; };
 		43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyPDFProxy.m; path = Classes/BencodingSecurelyPDFProxy.m; sourceTree = "<group>"; };
 		43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyStringCryptoProxy.h; path = Classes/BencodingSecurelyStringCryptoProxy.h; sourceTree = "<group>"; };
 		43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyStringCryptoProxy.m; path = Classes/BencodingSecurelyStringCryptoProxy.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* BencodingSecurely_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BencodingSecurely_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CAF31E1D1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyRemoteCertificateProxy.h; path = Classes/BencodingSecurelyRemoteCertificateProxy.h; sourceTree = "<group>"; };
+		CAF31E1E1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyRemoteCertificateProxy.m; path = Classes/BencodingSecurelyRemoteCertificateProxy.m; sourceTree = "<group>"; };
+		CAF31E211A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyCapabilitiesProxy.h; path = Classes/BencodingSecurelyCapabilitiesProxy.h; sourceTree = "<group>"; };
+		CAF31E221A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyCapabilitiesProxy.m; path = Classes/BencodingSecurelyCapabilitiesProxy.m; sourceTree = "<group>"; };
+		CAF31E231A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BencodingSecurelyKeyChainAuthProxy.h; path = Classes/BencodingSecurelyKeyChainAuthProxy.h; sourceTree = "<group>"; };
+		CAF31E241A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BencodingSecurelyKeyChainAuthProxy.m; path = Classes/BencodingSecurelyKeyChainAuthProxy.m; sourceTree = "<group>"; };
 		D2AAC07E0554694100DB518D /* libBencodingSecurely.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBencodingSecurely.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -156,27 +189,25 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				43A5CACF171366070073BEC8 /* RNCryptor */,
-				435D89E116D41DD50093B1BD /* Categories */,
-				43857BEE169FA0A3004D600C /* JSONKit */,
-				43857BD1169F7247004D600C /* PDKeychainBindingsController */,
-				43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */,
-				43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */,
+				CAF31E211A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.h */,
+				CAF31E221A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.m */,
+				CAF31E231A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.h */,
+				CAF31E241A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.m */,
+				CAF31E181A51166F0090A8AE /* Network */,
+				439E9B7E194E7C1B00DF2E76 /* IV */,
+				436AED0C194E29FA002E73EA /* Properties */,
+				436AED0D194E44C4002E73EA /* Utils */,
+				436AED0F194E44FE002E73EA /* Strings */,
+				436AED10194E450C002E73EA /* Files */,
+				436AED11194E4517002E73EA /* PDF */,
+				436AED12194E4526002E73EA /* XPlatform */,
+				436AED13194E4559002E73EA /* 3rdParty */,
 				24DE9E0F11C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h */,
 				24DE9E1011C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m */,
 				24DD6CF71134B3F500162E58 /* BencodingSecurelyModule.h */,
 				24DD6CF81134B3F500162E58 /* BencodingSecurelyModule.m */,
-				43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */,
-				43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */,
-				43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */,
-				43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */,
-				43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */,
-				43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */,
-				431FC213171B4654007C8298 /* BCXCryptoUtilities.h */,
-				431FC214171B4654007C8298 /* BCXCryptoUtilities.m */,
 				4305090F171F147E0089BF67 /* BCXNamespaceManager.h */,
-				434F4101182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h */,
-				434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */,
+				435D89E116D41DD50093B1BD /* Categories */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -205,15 +236,77 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
-		43857BD1169F7247004D600C /* PDKeychainBindingsController */ = {
+		436AED0C194E29FA002E73EA /* Properties */ = {
 			isa = PBXGroup;
 			children = (
-				43857BD3169F7274004D600C /* BCXPDKeychainBindings.h */,
-				43857BD4169F7274004D600C /* BCXPDKeychainBindings.m */,
-				43857BD5169F7274004D600C /* BCXPDKeychainBindingsController.h */,
-				43857BD6169F7274004D600C /* BCXPDKeychainBindingsController.m */,
+				43857BE2169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h */,
+				43857BE3169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m */,
+				435888B518DE9B5F0043724F /* Property.h */,
+				435888B618DE9D4C0043724F /* PropertyKeyChain.h */,
+				435888B718DE9D4C0043724F /* PropertyKeyChain.m */,
+				435888BA18DEB0E60043724F /* PropertyPList.h */,
+				435888BB18DEB0E60043724F /* PropertyPList.m */,
+				43B36ED118DF67FA00CF71AF /* PropertyCommon.h */,
+				43B36ED218DF67FA00CF71AF /* PropertyCommon.m */,
+				43C1681F194F52FA00A39EC7 /* BxsskeychainBindings.h */,
+				43C16820194F52FA00A39EC7 /* BxsskeychainBindings.m */,
 			);
-			name = PDKeychainBindingsController;
+			name = Properties;
+			sourceTree = "<group>";
+		};
+		436AED0D194E44C4002E73EA /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				431FC213171B4654007C8298 /* BCXCryptoUtilities.h */,
+				431FC214171B4654007C8298 /* BCXCryptoUtilities.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		436AED0F194E44FE002E73EA /* Strings */ = {
+			isa = PBXGroup;
+			children = (
+				43E497C416BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h */,
+				43E497C516BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m */,
+			);
+			name = Strings;
+			sourceTree = "<group>";
+		};
+		436AED10194E450C002E73EA /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				43A4E89716D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h */,
+				43A4E89816D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m */,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		436AED11194E4517002E73EA /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				43C426DD17137F5500C0089A /* BencodingSecurelyPDFProxy.h */,
+				43C426DE17137F5500C0089A /* BencodingSecurelyPDFProxy.m */,
+			);
+			name = PDF;
+			sourceTree = "<group>";
+		};
+		436AED12194E4526002E73EA /* XPlatform */ = {
+			isa = PBXGroup;
+			children = (
+				434F4101182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h */,
+				434F4102182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m */,
+			);
+			name = XPlatform;
+			sourceTree = "<group>";
+		};
+		436AED13194E4559002E73EA /* 3rdParty */ = {
+			isa = PBXGroup;
+			children = (
+				43C16816194F4E0300A39EC7 /* SSKeychain */,
+				43A5CACF171366070073BEC8 /* RNCryptor */,
+				43857BEE169FA0A3004D600C /* JSONKit */,
+			);
+			name = 3rdParty;
 			sourceTree = "<group>";
 		};
 		43857BEE169FA0A3004D600C /* JSONKit */ = {
@@ -226,6 +319,15 @@
 			path = Classes/JSONKit;
 			sourceTree = "<group>";
 		};
+		439E9B7E194E7C1B00DF2E76 /* IV */ = {
+			isa = PBXGroup;
+			children = (
+				434B68D2194E76B100188505 /* BencodingSecurelyIVProxy.h */,
+				434B68D3194E76B100188505 /* BencodingSecurelyIVProxy.m */,
+			);
+			name = IV;
+			sourceTree = "<group>";
+		};
 		43A5CACF171366070073BEC8 /* RNCryptor */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,6 +336,27 @@
 			);
 			name = RNCryptor;
 			path = Classes/RNCryptor;
+			sourceTree = "<group>";
+		};
+		43C16816194F4E0300A39EC7 /* SSKeychain */ = {
+			isa = PBXGroup;
+			children = (
+				43C16817194F4E0300A39EC7 /* BxSSKeychain.h */,
+				43C16818194F4E0300A39EC7 /* BxSSKeychain.m */,
+				43C16819194F4E0300A39EC7 /* BxSSKeychainQuery.h */,
+				43C1681A194F4E0300A39EC7 /* BxSSKeychainQuery.m */,
+			);
+			name = SSKeychain;
+			path = Classes/SSKeychain;
+			sourceTree = "<group>";
+		};
+		CAF31E181A51166F0090A8AE /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				CAF31E1D1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.h */,
+				CAF31E1E1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.m */,
+			);
+			name = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,18 +370,26 @@
 				434F4107182E881D00BD6D9B /* NSData+AES256.h in Headers */,
 				24DD6CF91134B3F500162E58 /* BencodingSecurelyModule.h in Headers */,
 				24DE9E1111C5FE74003F90F6 /* BencodingSecurelyModuleAssets.h in Headers */,
-				43857BD7169F7274004D600C /* BCXPDKeychainBindings.h in Headers */,
-				43857BD9169F7274004D600C /* BCXPDKeychainBindingsController.h in Headers */,
+				43C1681B194F4E0300A39EC7 /* BxSSKeychain.h in Headers */,
+				43C1681D194F4E0300A39EC7 /* BxSSKeychainQuery.h in Headers */,
+				435888BC18DEB0E60043724F /* PropertyPList.h in Headers */,
 				43857BE4169F7F99004D600C /* BencodingSecurelyPropertiesProxy.h in Headers */,
+				43C16821194F52FA00A39EC7 /* BxsskeychainBindings.h in Headers */,
 				43857BF1169FA0A3004D600C /* JSONKit.h in Headers */,
+				CAF31E1F1A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.h in Headers */,
+				CAF31E251A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.h in Headers */,
 				43E497C616BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.h in Headers */,
 				435D89DB16D41B680093B1BD /* NSData+Base64.h in Headers */,
 				435D89DD16D41B680093B1BD /* NSData+CommonCrypto.h in Headers */,
 				435D89DF16D41B680093B1BD /* NSString+Base64.h in Headers */,
+				435888B818DE9D4C0043724F /* PropertyKeyChain.h in Headers */,
 				434F4103182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.h in Headers */,
 				43A4E89916D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.h in Headers */,
+				CAF31E271A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.h in Headers */,
 				43C426DF17137F5500C0089A /* BencodingSecurelyPDFProxy.h in Headers */,
 				431FC215171B4654007C8298 /* BCXCryptoUtilities.h in Headers */,
+				434B68D4194E76B100188505 /* BencodingSecurelyIVProxy.h in Headers */,
+				43B36ED318DF67FA00CF71AF /* PropertyCommon.h in Headers */,
 				430F1AF7171C70C500A3E288 /* RNCryptManager.h in Headers */,
 				43050911171F147E0089BF67 /* BCXNamespaceManager.h in Headers */,
 			);
@@ -290,9 +421,10 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "Securely" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -335,18 +467,26 @@
 			files = (
 				24DD6CFA1134B3F500162E58 /* BencodingSecurelyModule.m in Sources */,
 				24DE9E1211C5FE74003F90F6 /* BencodingSecurelyModuleAssets.m in Sources */,
-				43857BD8169F7274004D600C /* BCXPDKeychainBindings.m in Sources */,
-				43857BDA169F7274004D600C /* BCXPDKeychainBindingsController.m in Sources */,
+				43C1681C194F4E0300A39EC7 /* BxSSKeychain.m in Sources */,
 				43857BE5169F7F99004D600C /* BencodingSecurelyPropertiesProxy.m in Sources */,
+				CAF31E281A5130750090A8AE /* BencodingSecurelyKeyChainAuthProxy.m in Sources */,
 				43857BF2169FA0A3004D600C /* JSONKit.m in Sources */,
 				434F4108182E881D00BD6D9B /* NSData+AES256.m in Sources */,
+				CAF31E261A5130750090A8AE /* BencodingSecurelyCapabilitiesProxy.m in Sources */,
+				43B36ED418DF67FA00CF71AF /* PropertyCommon.m in Sources */,
 				43E497C716BC2D1F0090B512 /* BencodingSecurelyStringCryptoProxy.m in Sources */,
+				43C16822194F52FA00A39EC7 /* BxsskeychainBindings.m in Sources */,
+				CAF31E201A51303B0090A8AE /* BencodingSecurelyRemoteCertificateProxy.m in Sources */,
 				435D89DC16D41B680093B1BD /* NSData+Base64.m in Sources */,
 				435D89DE16D41B680093B1BD /* NSData+CommonCrypto.m in Sources */,
+				43C1681E194F4E0300A39EC7 /* BxSSKeychainQuery.m in Sources */,
+				434B68D5194E76B100188505 /* BencodingSecurelyIVProxy.m in Sources */,
+				435888B918DE9D4C0043724F /* PropertyKeyChain.m in Sources */,
 				435D89E016D41B680093B1BD /* NSString+Base64.m in Sources */,
 				43A4E89A16D5734B00D512D7 /* BencodingSecurelyFileCryptoProxy.m in Sources */,
 				43C426E017137F5500C0089A /* BencodingSecurelyPDFProxy.m in Sources */,
 				434F4104182E870400BD6D9B /* BencodingSecurelyXPlatformCryptoProxy.m in Sources */,
+				435888BD18DEB0E60043724F /* PropertyPList.m in Sources */,
 				431FC216171B4654007C8298 /* BCXCryptoUtilities.m in Sources */,
 				430F1AF8171C70C500A3E288 /* RNCryptManager.m in Sources */,
 			);
@@ -367,15 +507,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 24DD6D1B1134B66800162E58 /* titanium.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv6,
-					armv7,
-				);
 				"ARCHS[sdk=iphoneos*]" = (
 					armv6,
 					armv7,
 				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -416,15 +552,11 @@
 			baseConfigurationReference = 24DD6D1B1134B66800162E58 /* titanium.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					armv7,
-				);
 				"ARCHS[sdk=iphoneos*]" = (
 					armv6,
 					armv7,
 				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/BencodingSecurely.dst;
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -444,6 +576,7 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=iphoneos*]" = 5.1.1;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "-DTI_POST_1_2";
 				OTHER_LDFLAGS = "-ObjC";
@@ -458,14 +591,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 24DD6D1B1134B66800162E58 /* titanium.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD)";
 				"ARCHS[sdk=iphonesimulator*]" = i386;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -475,6 +602,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BencodingSecurely_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "TI_VERSION=$(TI_VERSION)";
+				GCC_THUMB_SUPPORT = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
@@ -486,6 +614,8 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INSTALL_PATH = /usr/local/lib;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DDEBUG",
 					"-DTI_POST_1_2",
@@ -497,6 +627,7 @@
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
 			};
 			name = Debug;
 		};
@@ -505,14 +636,8 @@
 			baseConfigurationReference = 24DD6D1B1134B66800162E58 /* titanium.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD)";
 				"ARCHS[sdk=iphonesimulator*]" = i386;
 				DSTROOT = /tmp/BencodingSecurely.dst;
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -520,6 +645,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = BencodingSecurely_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "TI_VERSION=$(TI_VERSION)";
+				GCC_THUMB_SUPPORT = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
@@ -531,13 +657,14 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INSTALL_PATH = /usr/local/lib;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "-DTI_POST_1_2";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = BencodingSecurely;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
 			};
 			name = Release;
 		};
@@ -548,6 +675,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_THUMB_SUPPORT = NO;
 				PRODUCT_NAME = "Build & test";
 			};
 			name = Debug;
@@ -559,6 +687,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_THUMB_SUPPORT = NO;
 				PRODUCT_NAME = "Build & test";
 				ZERO_LINK = NO;
 			};

@@ -27,7 +27,7 @@ public class LogHelpers {
 	public static void info(String message){
 		Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 	}
-	public static void  Log(String message){
+	public static void Log(String message){
 		if(SecurelyModule.DEBUG){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 		}

@@ -10,6 +10,7 @@ package bencoding.securely;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
+
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 
@@ -44,6 +45,7 @@ public class PlatformProxy extends KrollProxy {
 	@Kroll.method
 	public boolean deviceProvisioned(){
 		try{
+			@SuppressWarnings("deprecation")
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(),Settings.Secure.DEVICE_PROVISIONED);
 			return (enable==1);
 		} catch (SettingNotFoundException e) {
@@ -54,6 +56,7 @@ public class PlatformProxy extends KrollProxy {
 	@Kroll.method
 	public boolean allowSideLoading(){
 		try{
+			@SuppressWarnings("deprecation")
 			int enable = Settings.Secure.getInt(TiApplication.getInstance().getContentResolver(),Settings.Secure.INSTALL_NON_MARKET_APPS);
 			return (enable==1);
 		} catch (SettingNotFoundException e) {

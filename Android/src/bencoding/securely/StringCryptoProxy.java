@@ -24,6 +24,11 @@ public class StringCryptoProxy  extends KrollProxy {
 		return SHA.sha256(data);
 	}
 
+	@Kroll.method
+	public static String sha512(String data) {
+		return SHA.sha512(data);
+	}
+	
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{

@@ -1,6 +1,6 @@
 /**
  * Securely Titanium Security Project
- * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
  * Licensed under the terms of the Apache Public License
  * Please see the LICENSE included with this distribution for details.
  */
@@ -42,6 +42,10 @@
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     id inputValue = [args objectForKey:@"value"];
     
     if([inputValue isKindOfClass:[TiBlob class]]){
@@ -148,6 +152,10 @@
 	ENSURE_TYPE(callback,KrollCallback);
     
     NSString* password = [args objectForKey:@"password"];
+    if([BCXCryptoUtilities stringIsNilOrEmpty:password]){
+        NSLog(@"[ERROR] password provided is empty or null");
+        return;
+    }
     NSString* resultType =[[TiUtils stringValue:@"resultType" properties:args def:@"hex"] lowercaseString];
     
     if([resultType isEqualToString:@"blob"]){
@@ -222,7 +230,7 @@
 		kArgPassword = 0,
         kArgPlainText = 1,
         kArgCount,
-        kArgUseHex = kArgCount        // Optional
+        kArgUseHex = kArgCount// Optional
 	};
     
     ENSURE_ARG_COUNT(args, kArgCount);
@@ -318,14 +326,37 @@
     return plainText;
     
 }
--(NSString *) sha256:(id)args
+
+-(NSString *)sha256:(id)args
 {
-    ENSURE_ARG_COUNT(args,1);
-    NSString* plainText = [TiUtils stringValue:[args objectAtIndex:0]];
-    NSData* data = [[plainText dataUsingEncoding:NSUTF8StringEncoding]SHA256Hash];
-    NSString *hashText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    enum Args {
+		kArgValue = 0,
+		kArgCount
+	};
+
+	ENSURE_ARG_COUNT(args, kArgCount);
+
+    NSString *value = [TiUtils stringValue:[args objectAtIndex:kArgValue]];
+    NSString *hashText = [BCXCryptoUtilities createSHA256:value];
     return hashText;
 }
+
+
+-(NSString *)sha512:(id)args
+{
+    enum Args {
+		kArgValue = 0,
+		kArgCount
+	};
+
+	ENSURE_ARG_COUNT(args, kArgCount);
+
+    NSString *value = [TiUtils stringValue:[args objectAtIndex:kArgValue]];
+    NSString *hashText = [BCXCryptoUtilities createSHA512:value];
+    return hashText;
+}
+
 
 -(NSString *) toHex:(id)args
 {

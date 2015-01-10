@@ -222,23 +222,41 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	
 	@Kroll.method
 	public String encrypt(String key, String value) {
-		try {						
+		try {				
+			if(key.isEmpty()){
+				LogHelpers.error("empty key provided.");
+				return null;				
+			}
+			if(value.isEmpty()){
+				LogHelpers.error("empty value to encrypt provided.");
+				return null;
+			}			
 			String EncryptedText = doEncode(key,value);
 			return EncryptedText;
 		} catch (Exception e) {
-			e.printStackTrace();
-			LogHelpers.Log(e);
+			LogHelpers.error("encrypt failed returning null");
+			LogHelpers.error("encrypt:" + e.getMessage());
+			LogHelpers.error(e);			
 			return null;			
 		}		
 	}
 	@Kroll.method
 	public String decrypt(String key, String value) {		
 		try {
+			if(key.isEmpty()){
+				LogHelpers.error("empty key provided.");
+				return null;				
+			}
+			if(value.isEmpty()){
+				LogHelpers.error("empty value to decrypt provided.");
+				return null;
+			}	
 			String ClearText =  doDecode(key, value);
 			return ClearText;
 		} catch (Exception e) {
-			e.printStackTrace();
-			LogHelpers.Log(e);
+			LogHelpers.error("decrypt failed returning null");
+	    	LogHelpers.error("decrypt:" + e.getMessage());
+	        LogHelpers.error(e);
 			return null;			
 		}
 	}
@@ -264,7 +282,8 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	        return encrypedValue;
 
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	    	LogHelpers.error("doEncode:" + e.getMessage());
+	        LogHelpers.error(e);
 	        throw e;
 	    } 
 	}
@@ -301,7 +320,8 @@ public class XPlatformCryptoProxy  extends KrollProxy {
 	        return decrypedValue;
 
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	    	LogHelpers.error("doDecode:" + e.getMessage());
+	        LogHelpers.error(e);
 	        throw e;
 	    } 
 	}

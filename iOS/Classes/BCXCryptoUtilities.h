@@ -1,6 +1,6 @@
 /**
  * Securely Titanium Security Project
- * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
  * Licensed under the terms of the Apache Public License
  * Please see the LICENSE included with this distribution for details.
  */
@@ -25,4 +25,10 @@
 +(NSString *) encodeDataPBKtoString: (NSData *) data ofLength: (SInt32) len;
 + (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 + (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
++(BOOL)stringIsNilOrEmpty:(NSString*)aString;
++(NSString *)createSHA256:(NSString*)input;
++(NSString *)createSHA512:(NSString *)string;
++(BOOL) passwordCurrentlyEnabled;
++(BOOL) touchIDEnabled;
+
 @end

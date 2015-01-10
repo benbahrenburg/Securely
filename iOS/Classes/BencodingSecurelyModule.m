@@ -1,16 +1,21 @@
 /**
  * Securely Titanium Security Project
- * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
  * Licensed under the terms of the Apache Public License
  * Please see the LICENSE included with this distribution for details.
  */
+
 #import "BencodingSecurelyModule.h"
 #import "TiBase.h"
 #import "TiHost.h"
 #import "TiUtils.h"
 #import <CommonCrypto/CommonKeyDerivation.h>
+#import <CommonCrypto/CommonCryptor.h>
 #import "BCXCryptoUtilities.h"
+
+
 @implementation BencodingSecurelyModule
+
 
 #pragma mark Internal
 
@@ -58,6 +63,7 @@
 }
 
 
+
 -(NSString *)generateRandomKey:(id)args
 {
     int len = ([args count] > 0) ? [TiUtils intValue:[args objectAtIndex:0]] : 32;
@@ -67,7 +73,6 @@
     //NSLog(@"[ERROR] output: %@", output);
     return output;
 }
-
 
 -(NSString *) makeDerivedKey:(NSString *)seed
 {
@@ -151,5 +156,30 @@
         [self fireEvent:@"protectedDataWillBecomeUnavailable" withObject:notification];
     }
 }
-    
+
+
+int const kBCSecAttrAccessibleWhenUnlocked = 1;
+int const kBCSecAttrAccessibleAfterFirstUnlock = 2;
+int const kBCSecAttrAccessibleWhenUnlockedThisDeviceOnly = 3;
+int const kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly = 4;
+int const kBCSecAttrAccessibleAlwaysThisDeviceOnly = 5;
+
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_UNLOCKED, kBCSecAttrAccessibleWhenUnlocked);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_AFTER_FIRST_UNLOCK, kBCSecAttrAccessibleAfterFirstUnlock);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_UNLOCKED_THIS_DEVICE_ONLY, kBCSecAttrAccessibleWhenUnlockedThisDeviceOnly);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_WHEN_AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY, kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly);
+MAKE_SYSTEM_UINT(KEYCHAIN_ACCESSIBLE_ALWAYS_THIS_DEVICE_ONLY, kBCSecAttrAccessibleAfterFirstUnlockThisDeviceOnly);
+
+int const kBCXKeyChain_Storage = 1;
+int const kBCXPLIST_Storage = 2;
+int const kBCXProperty_Security_Low = 1;
+int const kBCXProperty_Security_Med = 2;
+int const kBCXProperty_Security_High = 3;
+
+MAKE_SYSTEM_UINT(PROPERTY_TYPE_KEYCHAIN, kBCXKeyChain_Storage);
+MAKE_SYSTEM_UINT(PROPERTY_TYPE_PREFERENCES, kBCXPLIST_Storage);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_LOW, kBCXProperty_Security_Low);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_MED, kBCXProperty_Security_Med);
+MAKE_SYSTEM_UINT(PROPERTY_SECURE_LEVEL_HIGH, kBCXProperty_Security_High);
+
 @end

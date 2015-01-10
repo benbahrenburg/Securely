@@ -1,6 +1,6 @@
 /**
  * Securely Titanium Security Project
- * Copyright (c) 2009-2013 by Benjamin Bahrenburg. All Rights Reserved.
+ * Copyright (c) 2014 by Benjamin Bahrenburg. All Rights Reserved.
  * Licensed under the terms of the Apache Public License
  * Please see the LICENSE included with this distribution for details.
  */
@@ -8,10 +8,11 @@
 #import "TiUtils.h"
 #import "BCXCryptoUtilities.h"
 #import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation BCXCryptoUtilities
 
-NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+NSString *BCXLetters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 +(NSString*)base64forData:(NSData*)theData
 {
@@ -117,7 +118,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     unsigned char whole_byte;
     char byte_chars[3] = {'\0','\0','\0'};
     int i = 0;
-    int length = string.length;
+    int length = (int)string.length;
     while (i < length-1) {
         char c = [string characterAtIndex:i++];
         if (c < '0' || (c > '9' && c < 'a') || c > 'f')
@@ -143,7 +144,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 {
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     for (int i=0; i<len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+        [randomString appendFormat: @"%C", [BCXLetters characterAtIndex: arc4random() % [BCXLetters length]]];
     }
     return randomString;
 }
@@ -374,4 +375,53 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     return theData;
 }
+
++(BOOL)stringIsNilOrEmpty:(NSString*)aString
+{
+    return !(aString && aString.length);
+}
+
++(NSString *)createSHA256:(NSString*)input
+{
+    const char* str = [input UTF8String];
+    unsigned char result[CC_SHA256_DIGEST_LENGTH];
+    CC_SHA256(str, (int)strlen(str), result);
+
+    NSMutableString *ret = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH*2];
+    for(int i = 0; i<CC_SHA256_DIGEST_LENGTH; i++)
+    {
+        [ret appendFormat:@"%02x",result[i]];
+    }
+    return ret;
+}
+
++(NSString *)createSHA512:(NSString *)string
+{
+    //It matches PHP SHA512 algorithm output
+    //http://stackoverflow.com/questions/3829068/hash-a-password-string-using-sha512-like-c-sharp
+    const char *cstr = [string cStringUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [NSData dataWithBytes:cstr length:string.length];
+    uint8_t digest[CC_SHA512_DIGEST_LENGTH];
+    CC_SHA512(data.bytes, (int)data.length, digest);
+    NSMutableString* output = [NSMutableString  stringWithCapacity:CC_SHA512_DIGEST_LENGTH * 2];
+
+    for(int i = 0; i < CC_SHA512_DIGEST_LENGTH; i++)
+        [output appendFormat:@"%02x", digest[i]];
+    return output;
+}
+
++(BOOL) passwordCurrentlyEnabled
+{
+    if(![TiUtils isIOS8OrGreater]){
+        return NO;
+    }
+}
+
++(BOOL) touchIDEnabled
+{
+    if(![TiUtils isIOS8OrGreater]){
+        return NO;
+    }
+}
+
 @end
