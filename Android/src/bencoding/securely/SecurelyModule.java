@@ -86,7 +86,7 @@ public class SecurelyModule extends KrollModule
 	@Kroll.method
 	public String generateDerivedKey(String seed) {
 		try {			
-			String genKey = AESCrypto.getRawKey(seed.getBytes()).toString();
+			String genKey = new String(AESCrypto.getRawKey(seed.getBytes()));
 			return genKey;
 		} catch (Exception e) {
 			e.printStackTrace();
