@@ -2,7 +2,7 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.53.B
+version: 1.7
 apiversion: 2
 architectures: armv7 i386 x86_64 arm64
 description: Security Plugin for Titanium Development
@@ -16,4 +16,4 @@ name: Securely
 moduleid: bencoding.securely
 guid: 36a465bb-c79d-4c6c-b90c-a5e14a7e817b
 platform: iphone
-minsdk: 3.1.3.GA
+minsdk: 3.5.1.GA
