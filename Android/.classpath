@@ -9,10 +9,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/benbahrenburg/Android/sdk/platforms/android-19/android.jar"/>
-	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.4.1.GA/android/kroll-apt.jar"/>
-	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.4.1.GA/android/kroll-common.jar"/>
-	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.4.1.GA/android/modules/titanium-filesystem.jar"/>
-	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.4.1.GA/android/titanium.jar"/>
-	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.4.1.GA/android/kroll-v8.jar"/>
+	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.5.1.GA/android/kroll-apt.jar"/>
+	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.5.1.GA/android/kroll-common.jar"/>
+	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.5.1.GA/android/kroll-v8.jar"/>
+	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.5.1.GA/android/titanium.jar"/>
+	<classpathentry kind="lib" path="/Users/benbahrenburg/Library/Application Support/Titanium/mobilesdk/osx/3.5.1.GA/android/modules/titanium-filesystem.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
