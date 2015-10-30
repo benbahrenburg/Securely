@@ -70,7 +70,7 @@ To learn more about this part of the module, please view the documentation [here
 
 ----
 
-<h2>String Crypo</h2>
+<h2>String Crypto</h2>
 
 Securely provides the ability to encrypt and decrypt JavaScript strings and JSON objects through a variety of algorithms.
 
@@ -80,7 +80,7 @@ To learn more about this part of the module, please view the documentation [here
 ----
 
 
-<h2>File Crypo</h2>
+<h2>File Crypto</h2>
 
 Securely provides the ability to encrypt and decrypt local device files.
 
