@@ -116,7 +116,7 @@ Project: [https://github.com/soffes/sskeychain)
 
 This project is licensed under the OSI approved Apache Public License (version 2). For details please see the license associated with each project.
 
-Developed by [Ben Bahrenburg](http://bahrenburgs.com) available on twitter [@benCoding](http://twitter.com/benCoding)
+Developed by [Ben Bahrenburg](http://bahrenburgs.com) available on twitter [@bencoding](http://twitter.com/bencoding)
 
 <h2>Learn More</h2>
 
