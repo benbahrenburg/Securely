@@ -2,7 +2,7 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.7
+version: 2.0.0
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
 description: Security Plugin for Titanium Development
@@ -16,4 +16,4 @@ name: Securely
 moduleid: bencoding.securely
 guid: e351d9c1-4169-49e3-bf51-0fb0daa9e77e
 platform: android
-minsdk: 3.5.1.GA
+minsdk: 5.0.2.GA
