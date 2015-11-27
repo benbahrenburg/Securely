@@ -123,9 +123,9 @@ Please check the module's example folder or [github repo](https://github.com/ben
 
 <h3>Twitter</h3>
 
-Please consider following the [@benCoding Twitter](http://www.twitter.com/benCoding) for updates 
+Please consider following the [@bencoding Twitter](http://www.twitter.com/bencoding) for updates 
 and more about Titanium.
 
 <h3>Blog</h3>
 
-For module updates, Titanium tutorials and more please check out my blog at [benCoding.Com](http://benCoding.com).
+For module updates, Titanium tutorials and more please check out my blog at [bencoding.Com](http://bencoding.com).
