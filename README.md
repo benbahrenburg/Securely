@@ -13,7 +13,7 @@ Examples of the new Secure Properties storageType and securityLevel functionalit
 The documentation will be updated when there is an opportunity. If you'd like to contribute please send a PR with the update.
 
 <h2>Before you start</h2>
-* These are iOS and Android native modules designed to work with Titanium SDK 5.0.2.GA and later.
+* These are iOS and Android native modules designed to work with Titanium SDK 5.1.0.GA and later.
 * Before using this module you first need to install the package. If you need instructions on how to install a 3rd party module please read this installation guide.
 
 <h2>Download the compiled release</h2>

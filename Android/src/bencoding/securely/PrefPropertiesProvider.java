@@ -30,9 +30,6 @@ public class PrefPropertiesProvider implements IPropertiesProvider{
 		return ((composed == null)? Seed : composed);
 	};
 	
-	private boolean keyExists(String key){
-		return _appProperties.hasProperty(key);		
-	}
 	
 	private String EncryptContent(String PassKey, String value){
 		try {
@@ -83,7 +80,7 @@ public class PrefPropertiesProvider implements IPropertiesProvider{
 	@Override
 	public boolean hasProperty(String key)
 	{
-		return keyExists(key);
+		return _appProperties.hasProperty(key);
 	}
 	
 	@Override
@@ -100,9 +97,7 @@ public class PrefPropertiesProvider implements IPropertiesProvider{
 	@Override
 	public void removeProperty(String key)
 	{
-		if (keyExists(key)) {
-			_appProperties.removeProperty(key);
-		}
+		_appProperties.removeProperty(key);
 	}
 
 	@Override

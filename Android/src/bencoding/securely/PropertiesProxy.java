@@ -198,7 +198,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public void removeProperty(String key)
 	{
-		if (keyExists(keyEncrypt(key))) {
+		if (keyExists(key)) {
 			_provider.removeProperty(keyEncrypt(key));
 			fireChanged(key,"removed");
 		}

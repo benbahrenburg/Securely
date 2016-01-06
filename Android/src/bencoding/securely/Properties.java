@@ -16,8 +16,7 @@ import android.content.SharedPreferences;
  */
 public class Properties
 {
-
-	SharedPreferences preferences;
+	SharedPreferences _preferences;
 
 	/**
 	 * Instantiates the private SharedPreferences collection with the given name and context.
@@ -26,10 +25,10 @@ public class Properties
 	 * @param name the name used to create/retrieve preferences.
 	 * @param clear whether to clear all keys and values in the instantiated SharedPreferences collection.
 	 */
-	public Properties(Context context, String name, boolean clear) {
-		preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);
+	public Properties(Context context, String name, boolean clear) {	
+		_preferences = context.getSharedPreferences(name,Context.MODE_PRIVATE);	
 		if (clear) {
-			preferences.edit().clear().commit();
+			_preferences.edit().clear().commit();
 		}
 	}
 
@@ -43,18 +42,20 @@ public class Properties
 	public String getString(String key, String def)
 	{
 		LogHelpers.DebugLog("getString called with key:" + key + ", def:" + def);
-
-		Object value = preferences.getAll().get(key);
+		
+		Object value = _preferences.getAll().get(key);
 		if (value != null) {
+			LogHelpers.DebugLog("getString called with key:" + key + " ,value:" + value.toString());
 			return value.toString();
 		} else {
+			LogHelpers.DebugLog("getString called with key:" + key + " ,value: null returning def:" + def);
 			return def;
 		}
 	}
 
 	public SharedPreferences getPreference()
 	{
-		return preferences;
+		return _preferences;
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class Properties
 	public void setString(String key, String value)
 	{
 		LogHelpers.DebugLog("setString called with key:"+key+", value:"+value);
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = _preferences.edit();
 		if (value==null) {
 			editor.remove(key);
 		} else {
@@ -87,7 +88,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("getInt called with key:" + key + ", def:" + def);
 		try {
-			return preferences.getInt(key,def);
+			return _preferences.getInt(key,def);
 		} catch(ClassCastException cce) {
 			//Value stored as something other than int. Try and convert to int
 			String val = getString(key,"");
@@ -109,7 +110,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("setInt called with key:" + key + ", value:" + value);
 
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = _preferences.edit();
 		editor.putInt(key,value);
 		editor.commit();
 	}
@@ -125,7 +126,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("getDouble called with key:" + key + ", def:" + def);
 		String stringValue = null;
-		Object string = preferences.getAll().get(key);
+		Object string = _preferences.getAll().get(key);
 		if (string == null) {
 			return def;
 		}
@@ -148,7 +149,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("setDouble called with key:" + key + ", value:" + value);
 		
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = _preferences.edit();
 		editor.putString(key,value + "");
 		editor.commit();
 	}
@@ -164,7 +165,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("getBool called with key:" + key + ", def:" + def);
 		try {
-			return preferences.getBoolean(key,def);
+			return _preferences.getBoolean(key,def);
 		} catch(ClassCastException cce) {
 			//Value stored as something other than boolean. Try and convert to boolean
 			String val = getString(key,"");
@@ -187,7 +188,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("setBool called with key:" + key + ", value:" + value);
 
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = _preferences.edit();
 		editor.putBoolean(key,value);
 		editor.commit();
 	}
@@ -203,14 +204,14 @@ public class Properties
 	{
 		LogHelpers.DebugLog("getList called with key:" + key + ", def:" + def);
 
-		int length = preferences.getInt(key+".length", -1);
+		int length = _preferences.getInt(key+".length", -1);
 		if (length == -1) {
 			return def;
 		}
 
 		String list[] = new String[length];
 		for (int i = 0; i < length; i++) {
-			list[i] = preferences.getString(key+"."+i, "");
+			list[i] = _preferences.getString(key+"."+i, "");
 		}
 		return list;
 	}
@@ -226,7 +227,7 @@ public class Properties
 	{
 		LogHelpers.DebugLog("setList called with key:" + key + ", value:" + value);
 
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = _preferences.edit();
 		for (int i = 0; i < value.length; i++)
 		{
 			editor.putString(key+"."+i, value[i]);
@@ -254,7 +255,8 @@ public class Properties
 	 */
 	public boolean hasProperty(String key)
 	{
-		return preferences.contains(key);
+		LogHelpers.DebugLog("hasProperty called with key:" + key);
+		return _preferences.contains(key);
 	}
 
 	/**
@@ -265,7 +267,7 @@ public class Properties
 	public String[] listProperties()
 	{
 		ArrayList<String> properties = new ArrayList<String>();
-		for (String key : preferences.getAll().keySet())
+		for (String key : _preferences.getAll().keySet())
 		{
 			if (key.endsWith(".length")) {
 				properties.add(key.substring(0, key.length()-7));
@@ -287,10 +289,14 @@ public class Properties
 	 */
 	public void removeProperty(String key)
 	{
-		if (preferences.contains(key)) {
-			SharedPreferences.Editor editor = preferences.edit();
+		LogHelpers.DebugLog("removeProperty called with key:" + key);
+		if (_preferences.contains(key)) {
+			SharedPreferences.Editor editor = _preferences.edit();
 			editor.remove(key);
 			editor.commit();
+			LogHelpers.DebugLog("removeProperty called with key:" + key + " value removed");
+		}else{
+			LogHelpers.DebugLog("removeProperty called with key:" + key + " value does not exist");
 		}
 	}
 }
