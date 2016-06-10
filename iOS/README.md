@@ -9,7 +9,7 @@ The Securely Properties moduel is used to store values in the KeyChain using the
 
 <h2>Download the release</h2>
 
-There is two ways you can download this module. The go to the [dist](https://github.com/benbahrenburg/Securely/tree/master/dist) folder. This will have a release compiled for anyone download it from github.
+There is two ways you can download this module. The go to the [dist](https://github.com/benbahrenburg/Securely/tree/master/iOS/dist) folder. This will have a release compiled for anyone download it from github.
 
 
 <h2>Building from source?</h2>
