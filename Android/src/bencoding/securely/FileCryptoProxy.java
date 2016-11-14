@@ -13,8 +13,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.util.Arrays;
+//import java.security.SecureRandom;
 import java.util.HashMap;
 
 import javax.crypto.Cipher;
@@ -43,27 +46,32 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		super();
 
 	}
-	
-	
-	private static byte[] getRawKey(byte[] seed) throws Exception {
-		KeyGenerator kgen = KeyGenerator.getInstance("AES");
-		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-		sr.setSeed(seed);
-		try {
-			kgen.init(256, sr);
-			} catch (Exception e) {
-			// Log.w(LOG, "This device doesn't support 256 bits, trying 192 bits.");
-			try {
-			kgen.init(192, sr);
-			} catch (Exception e1) {
-			// Log.w(LOG, "This device doesn't support 192 bits, trying 128 bits.");
-			kgen.init(128, sr);
-			}
-		}
-		SecretKey skey = kgen.generateKey();
-		byte[] raw = skey.getEncoded();
-		return raw;
-	}
+		
+//	private static byte[] getRawKey(byte[] seed) throws Exception {
+////		SecretKey key = new SecretKeySpec(seed, "AES");
+////		byte[] raw = key.getEncoded();	
+////		return raw;
+//		KeyGenerator kgen = KeyGenerator.getInstance("AES");
+////		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
+////		sr.setSeed(seed);
+//		try {
+//			kgen.init(256);
+//			//kgen.init(256, sr);
+//			} catch (Exception e) {
+//			// Log.w(LOG, "This device doesn't support 256 bits, trying 192 bits.");
+//			try {
+//				kgen.init(192);
+//			//kgen.init(192, sr);
+//			} catch (Exception e1) {
+//			// Log.w(LOG, "This device doesn't support 192 bits, trying 128 bits.");
+//				kgen.init(128);
+//			//kgen.init(128, sr);
+//			}
+//		}
+//		SecretKey skey = kgen.generateKey();
+//		byte[] raw = skey.getEncoded();
+//		return raw;
+//	}
     private void doCallback(KrollFunction callback,HashMap<String, Object> event){
 		if(callback!=null){		
 			callback.call(getKrollObject(), event);
@@ -101,11 +109,9 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		@Override
 		public void run() {
 			try {	
-				byte[] raw = null;
-				raw = getRawKey(_secret.getBytes());				
-				SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-				Cipher cipher = Cipher.getInstance("AES");
-				cipher.init(Cipher.DECRYPT_MODE, skeySpec);					
+				SecretKeySpec key = builKey(_secret);
+				Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+				cipher.init(Cipher.DECRYPT_MODE, key);					
 				CipherInputStream is = new CipherInputStream(_from,cipher);
 				
 				Utils.streamCopy(is, _to);
@@ -143,6 +149,7 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			}
 		}			
 	}
+	
 	private class AESEncryptRunnable implements Runnable
 	{
 		private OutputStream _to = null;
@@ -175,12 +182,9 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		public void run() {
 			try {	
 
-				byte[] raw = null;
-				raw = getRawKey(_secret.getBytes());
-
-				SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-				Cipher cipher = Cipher.getInstance("AES");
-				cipher.init(Cipher.ENCRYPT_MODE, skeySpec);				
+				SecretKeySpec key = builKey(_secret);
+				Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+				cipher.init(Cipher.ENCRYPT_MODE, key);				
 				CipherOutputStream os = new CipherOutputStream(_to, cipher);
 
 				Utils.streamCopy(_from, os);
@@ -215,7 +219,25 @@ public class FileCryptoProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 			}
 		}			
 	}
-	
+
+    private SecretKeySpec builKey(String myKey) {
+        try {
+        	byte[] key = myKey.getBytes("UTF-8");
+        	MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16); 
+            return new SecretKeySpec(key, "AES");
+        } 
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } 
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }		
+    }
+    
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{

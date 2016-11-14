@@ -7,61 +7,51 @@
  */
 package bencoding.securely;
 
-import java.security.SecureRandom;
+//import java.security.SecureRandom;
+
+import java.security.Key;
+import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+ 
 public class AESCrypto {
 
-    public static String encrypt(String seed, String cleartext) throws Exception {
-        byte[] rawKey = getRawKey(seed.getBytes());
-        byte[] result = encrypt(rawKey, cleartext.getBytes());
-        return Converters.toHex(result);
+    public static String encrypt(String seed, String cleartext) throws Exception {        
+    	SecretKeySpec key = builKey(seed);
+         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+         cipher.init(Cipher.ENCRYPT_MODE, key);
+         byte[] result = cipher.doFinal(cleartext.getBytes("UTF-8"));
+         return Converters.toHex(result);	
 	}
 
 	public static String decrypt(String seed, String encrypted) throws Exception {
-        byte[] rawKey = getRawKey(seed.getBytes());
-        byte[] enc = Converters.toByte(encrypted);
-        byte[] result = decrypt(rawKey, enc);
-        return new String(result);
+		SecretKeySpec key = builKey(seed);
+		byte[] enc = Converters.toByte(encrypted);
+		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] original = cipher.doFinal(enc);
+        return new String(original);
 	}
-
-	public static byte[] getRawKey(byte[] seed) throws Exception {
-		KeyGenerator kgen = KeyGenerator.getInstance("AES");
-		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-		sr.setSeed(seed);
-		try {
-			kgen.init(256, sr);
-			} catch (Exception e) {
-			// Log.w(LOG, "This device doesn't support 256 bits, trying 192 bits.");
-			try {
-			kgen.init(192, sr);
-			} catch (Exception e1) {
-			// Log.w(LOG, "This device doesn't support 192 bits, trying 128 bits.");
-			kgen.init(128, sr);
-			}
-		}
-		SecretKey skey = kgen.generateKey();
-		byte[] raw = skey.getEncoded();
-		return raw;
-	}
-
-	private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
-	    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-	        Cipher cipher = Cipher.getInstance("AES");
-	    cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-	    byte[] encrypted = cipher.doFinal(clear);
-	        return encrypted;
-	}
-
-	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
-	    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-	        Cipher cipher = Cipher.getInstance("AES");
-	    cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-	    byte[] decrypted = cipher.doFinal(encrypted);
-	        return decrypted;
-	}
+	
+    public static SecretKeySpec builKey(String myKey) {
+        try {
+        	byte[] key = myKey.getBytes("UTF-8");
+        	MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16); 
+            return new SecretKeySpec(key, "AES");
+        } 
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } 
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }		
+    }
 }

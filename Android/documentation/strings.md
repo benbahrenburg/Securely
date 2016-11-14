@@ -165,6 +165,21 @@ string
 
 ----
 
+<h3>sha512</h3>
+
+This method takes a string value and returns a sha512 hash of the results.
+
+<b>Arguments</b>
+
+The sha512 method takes the following argument.
+
+<b>text</b> - (required) The text you wish to hash.
+
+<b>Return value</b>
+string
+
+----
+
 <h3>toHex</h3>
 
 This method takes a string value and returns a hex value of the results.

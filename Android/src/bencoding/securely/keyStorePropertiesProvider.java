@@ -15,7 +15,7 @@ import bencoding.securely.androidkeystore.android.security.KeyStore;
 
 public class keyStorePropertiesProvider implements IPropertiesProvider{
 
-	private static final boolean IS_JB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;	    
+	private static final boolean IS_JB = Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;	    
 	private static final String OLD_UNLOCK_ACTION = "android.credentials.UNLOCK";
 	private static final String UNLOCK_ACTION = "com.android.credentials.UNLOCK";
 	    

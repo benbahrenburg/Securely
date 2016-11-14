@@ -1,3 +1,7 @@
+<h1>Version 3X and able contains breaking changes</h1>
+On android version 3x or greater contains breaking changes to the encrypt and decrypt functions.
+Please use the pre-3-changes if you need the older logic
+
 <h1>Bencoding.Securely</h1>
 
 Securely provides building blocks to create secure Titanium apps.

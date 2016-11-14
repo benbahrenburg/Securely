@@ -7,8 +7,9 @@
  */
 package bencoding.securely;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -69,14 +70,16 @@ public class SecurelyModule extends KrollModule
 	}
 	@Kroll.method
 	public String generateRandomKey(@Kroll.argument(optional=true) Object seedLength) {
-		int randomSeed = 130;
+		int randomSeed = 128;
 		if((seedLength!=null) && (seedLength instanceof Integer)){			
 			randomSeed=(Integer)seedLength;
 		}
-		try {			
-			SecureRandom random = new SecureRandom();
-			String seed = new BigInteger(randomSeed, random).toString(32);
-			return generateDerivedKey(seed);
+		try {	
+		    KeyGenerator generator = KeyGenerator.getInstance("AES");
+		    generator.init(randomSeed);
+
+		    SecretKey key = generator.generateKey();
+		    return generateDerivedKey(new String(key.getEncoded()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			LogHelpers.Log(e);
@@ -86,8 +89,8 @@ public class SecurelyModule extends KrollModule
 	@Kroll.method
 	public String generateDerivedKey(String seed) {
 		try {			
-			String genKey = new String(AESCrypto.getRawKey(seed.getBytes()));
-			return genKey;
+			SecretKeySpec key = AESCrypto.builKey(seed);
+			return new String(key.getEncoded());
 		} catch (Exception e) {
 			e.printStackTrace();
 			LogHelpers.Log(e);
