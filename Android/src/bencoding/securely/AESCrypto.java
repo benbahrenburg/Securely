@@ -7,11 +7,7 @@
  */
 package bencoding.securely;
 
-//import java.security.SecureRandom;
-
-import java.security.Key;
 import java.security.MessageDigest;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -40,10 +36,11 @@ public class AESCrypto {
     public static SecretKeySpec builKey(String myKey) {
         try {
         	byte[] key = myKey.getBytes("UTF-8");
-        	MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16); 
-            return new SecretKeySpec(key, "AES");
+        	//MessageDigest sha = MessageDigest.getInstance("SHA-1");
+//            key = sha.digest(key);
+//            key = Arrays.copyOf(key, 16); 
+        	byte[] sha256 = MessageDigest.getInstance("SHA-256").digest(key);
+            return new SecretKeySpec(sha256, "AES");
         } 
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
