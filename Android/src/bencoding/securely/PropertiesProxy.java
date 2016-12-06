@@ -174,7 +174,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@Kroll.method
 	public boolean hasProperty(String key)
 	{
-		return keyExists(keyEncrypt(key));
+		return keyExists(key);
 	}
 	
 	@Kroll.method
