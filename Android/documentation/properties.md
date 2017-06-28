@@ -2,7 +2,7 @@
 
 BenCoding.Securely.Properties
 
-The Securely Properties module is used to store values in the KeyChain using the same API as Titanium.App.Properties.  
+The Securely Properties module is used to store values in the KeyChain using the same API as Titanium.App.Properties.
 
 <h2>Getting Started</h2>
 * First you need to download and install the module as discussed [here.](https://github.com/benbahrenburg/Securely)
@@ -38,6 +38,12 @@ This parameter is an optional value used on the iOS platform. Access groups can 
 <b>secret</b> : String
 
 This is a required parameter. secret is the password used to encrypt and decrypt all property values. The same secret used to encrypt must be used during the decryption process or a null value will be returned.
+
+Note that if you provide an `iv` paramater and are using Android API >=23 then a secret is not required. See the next propery.
+
+<b>iv</b> : String
+
+If this value, the Initialization Vector, is set and the device is using API >=23 then the `secret` is ignored and the KeyStore will be used to generate and securely store the encryption key. This is for the Android platform only.
 
 <b>encryptFieldNames</b> : Boolean
 
@@ -387,7 +393,7 @@ var array = [
   {name:'Name 1', address:'1 Main St'},
 	{name:'Name 2', address:'2 Main St'},
 	{name:'Name 3', address:'3 Main St'},
-	{name:'Name 4', address:'4 Main St'}	
+	{name:'Name 4', address:'4 Main St'}
 ];
 
 //Use the properties variable shown in the require section
@@ -413,9 +419,9 @@ var array = [
 	{name:'Name 1', address:'1 Main St'},
 	{name:'Name 2', address:'2 Main St'},
 	{name:'Name 3', address:'3 Main St'},
-	{name:'Name 4', address:'4 Main St'}	
+	{name:'Name 4', address:'4 Main St'}
 ];
-	
+
 //Use the properties variable shown in the require section
 properties.setObject('MyObject',array);
 </code></pre>
@@ -452,7 +458,7 @@ The event is fired when the application changes a KeyChain Property directly usi
 <h2>Dependent Projects</h2>
 Securely for iOS uses several wonderful open source projects.  I highly encourage you to check them out using the information below.
 
-JSONKit 
+JSONKit
 
 Project: [http://github.com/johnezang/JSONKit](http://github.com/johnezang/JSONKit)
 
