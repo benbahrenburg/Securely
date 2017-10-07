@@ -40,11 +40,13 @@ public class SecurelyModule extends KrollModule
 	{
 	}
 
+	@Deprecated
 	@Kroll.method
 	public void disableLevel2Logging()
 	{
 		LogHelpers.UpdateSecureWrite(false);
 	}
+	@Deprecated
 	@Kroll.method
 	public void enableLevel2Logging()
 	{

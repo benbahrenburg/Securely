@@ -10,20 +10,21 @@ import org.appcelerator.kroll.common.Log;
 
 public class LogHelpers {
 	
-	private static boolean _writeIfSecure = false;
+	private static final boolean _writeIfSecure = false;
 	public LogHelpers()
 	{
 		super();
 	}
-	
+
+	@Deprecated
 	public static void UpdateSecureWrite(boolean value){
-		_writeIfSecure = value;
-	}	
+		Log.w(SecurelyModule.SECURELY_MODULE_FULL_NAME, "This method has been deprecated and has no effect in this version of the module.");
+	}
 	public static void Level2Log(String message){
 		if(_writeIfSecure){
 			Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
-		}	
-	}	
+		}
+	}
 	public static void info(String message){
 		Log.i(SecurelyModule.SECURELY_MODULE_FULL_NAME, message);
 	}

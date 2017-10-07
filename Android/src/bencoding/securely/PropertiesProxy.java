@@ -21,28 +21,29 @@ import org.appcelerator.titanium.TiLifecycle;
 import org.appcelerator.titanium.util.TiConvert;
 
 import android.app.Activity;
+import android.os.Build;
 
 @Kroll.proxy(creatableInModule=SecurelyModule.class)
-public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent, KrollProxyListener 
+public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecycleEvent, KrollProxyListener
 {
 	private String _secret = "";
 	private IPropertiesProvider _provider = null;
-	
+
 	private String _identifier;
 	private Boolean _encryptValues = false;
 	private Boolean _encryptFieldNames = false;
 	private static String _changedEventName = "changed";
-	
+
 	private static String STORAGE_TYPE ="storageType";
 	private static String SECURITY_LEVEL ="securityLevel";
-	
+
 	private String buildName(String name){
 		return SecurelyModule.SECURELY_MODULE_FULL_NAME + "_" + name;
 	};
-	
+
 	public PropertiesProxy()
 	{
-		super();	
+		super();
 		_encryptValues = false;
 		_encryptFieldNames = false;
 		_identifier = buildName(TiApplication.getInstance().getAppGUID());
@@ -52,63 +53,70 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	private String keyEncrypt(String key){
 		if(_encryptFieldNames){
 			String composed =  SHA.sha256(key);
-			return ((composed == null)? key : composed);			
+			return ((composed == null)? key : composed);
 		}else{
 			return key;
 		}
 
 	};
-	
-	private boolean keyExists(String key){		
-		return _provider.hasProperty(((_encryptFieldNames) ? keyEncrypt(key) :key ));	
+
+	private boolean keyExists(String key){
+		return _provider.hasProperty(((_encryptFieldNames) ? keyEncrypt(key) :key ));
 	}
-		
+
 	private void fireChanged(String propertyName, String actionType){
         if (hasListeners(_changedEventName)) {
             HashMap<String, Object> event = new HashMap<String, Object>();
             event.put("propertyName",propertyName);
-            event.put("actionType",actionType);	            
+            event.put("actionType",actionType);
             fireEvent(_changedEventName, event);
         }else{
         	LogHelpers.DebugLog("[DEBUG] no changed listener defined");
         }
 	}
-	
+
 	@Override
 	public void handleCreationDict(KrollDict options)
 	{
 		super.handleCreationDict(options);
-		
+
 		int storageType = options.optInt(STORAGE_TYPE, SecurelyModule.PROPERTY_TYPE_PREFERENCES);
 		int securityLevel = options.optInt(SECURITY_LEVEL, SecurelyModule.PROPERTY_SECURE_LEVEL_MED);
-		
+		boolean useKeyStoreKey = options.containsKey("iv") && Build.VERSION.SDK_INT >= 23;
+
 		if((storageType != SecurelyModule.PROPERTY_TYPE_PREFERENCES) && (storageType != SecurelyModule.PROPERTY_TYPE_KEYCHAIN)){
 			LogHelpers.error("Invalid storageType provided, defaulting to Preference Storage");
 			storageType = SecurelyModule.PROPERTY_TYPE_PREFERENCES;
 		}
-	    
+
 		if((storageType == SecurelyModule.PROPERTY_TYPE_PREFERENCES) && (securityLevel == SecurelyModule.PROPERTY_SECURE_LEVEL_LOW)){
 			LogHelpers.error("PREFERENCE Storage required MED or HIGH securityLevel, increasing securityLevel to MED");
 			securityLevel = SecurelyModule.PROPERTY_SECURE_LEVEL_MED;
 		}
 
-	    
+
 		if (options.containsKey("identifier")) {
 			_identifier = TiConvert.toString(options.get("identifier"));
-			LogHelpers.Level2Log("Setting identifer to : " + _identifier);			
+			LogHelpers.Level2Log("Setting identifer to : " + _identifier);
 		}
+
+		if (options.containsKey("iv") && !useKeyStoreKey) {
+			LogHelpers.error("Use of KeyStore generated key is only support for Android  >= 23");
+			LogHelpers.error("Falling back to using secret");
+		}
+
 		if (options.containsKey("secret")) {
 			_secret = TiConvert.toString(options.get("secret"));
-			LogHelpers.Level2Log("Setting secret to : " + _secret);		
-		}else{
+			LogHelpers.Level2Log("Setting secret to : " + _secret);
+		} else if (!useKeyStoreKey) {
 
-			if((securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_MED) ||
+	    if((securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_MED) ||
 					(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH)){
-			
-				LogHelpers.error("A secret is required for MED and HIGH securityLevel");				
-				LogHelpers.error("Since no secret provided BUNDLE ID will be used");				
+
+				LogHelpers.error("A secret is required for MED and HIGH securityLevel");
+				LogHelpers.error("Since no secret provided BUNDLE ID will be used");
 				_secret = TiApplication.getInstance().getAppGUID();
-				
+
 			}
 		}
 
@@ -116,20 +124,25 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 				(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH)){
 			_encryptValues=true;
 		}
-		
+
 		if(securityLevel==SecurelyModule.PROPERTY_SECURE_LEVEL_HIGH){
 			_encryptFieldNames=true;
 		}
-		
-		_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
-		
+
+    if (useKeyStoreKey) {
+			LogHelpers.error(TiConvert.toString(options.get("iv")));
+      _provider = new KeyStoreKeyPropertiesProvider(_identifier, TiConvert.toString(options.get("iv")), _encryptValues, _encryptFieldNames);
+    } else {
+      _provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
+    }
+
 //		if(storageType == SecurelyModule.PROPERTY_TYPE_PREFERENCES){
 //			_provider = new PrefPropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
 //		}else{
 //			_provider = new keyStorePropertiesProvider(_identifier, _secret, _encryptValues, _encryptFieldNames);
 //		}
 	}
-	
+
 	@Kroll.method
 	public boolean getBool(String key,@Kroll.argument(optional=true) Object defaultValue )
 	{
@@ -150,10 +163,10 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toDouble(defaultValue);
-			}		
+			}
 			return ifMissingValue;
 		}
-		
+
 		return _provider.getDouble(keyEncrypt(key), null);
 	}
 
@@ -164,10 +177,10 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 		if(!keyExists(key)){
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toInt(defaultValue);
-			}			
+			}
 			return ifMissingValue;
-		}		
-		
+		}
+
 		return _provider.getInt(keyEncrypt(key), null);
 	}
 
@@ -176,7 +189,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	{
 		return keyExists(key);
 	}
-	
+
 	@Kroll.method
 	public boolean hasFieldsEncrypted()
 	{
@@ -188,7 +201,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	{
 		return _encryptValues;
 	}
-	
+
 	@Kroll.method
 	public String[] listProperties()
 	{
@@ -256,35 +269,35 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public String getString(String key,@Kroll.argument(optional=true) Object defaultValue)
 	{
 		String ifMissingValue = null;
-		
+
 		if(!keyExists(key)){
-			
+
 			if(defaultValue != null){
 				ifMissingValue = TiConvert.toString(defaultValue);
-			}	
-			
+			}
+
 			return ifMissingValue;
 		}
-		
+
 		return _provider.getString(keyEncrypt(key), null);
 	}
-	
+
 	@Kroll.method
-	public void setObject(String key, @SuppressWarnings("rawtypes") HashMap value) 
+	public void setObject(String key, @SuppressWarnings("rawtypes") HashMap value)
 	{
 		if(value == null){
-			
+
 			setString(key,null);
 			return;
-			
+
 		}
-			
+
 		try {
-			
+
 			String serializedString = Converters.serializeObjectToString(value);
-	        LogHelpers.Level2Log("setObject serialized : " + serializedString);	
+	        LogHelpers.Level2Log("setObject serialized : " + serializedString);
 			setString(key,serializedString);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			LogHelpers.Log(e);
@@ -294,33 +307,33 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	@SuppressWarnings("rawtypes")
 	@Kroll.method
 	public HashMap getObject(String key, @Kroll.argument(optional=true) HashMap defaultValue)
-	{	
+	{
 		if(!keyExists(key)){
-			
-			LogHelpers.DebugLog("getObject no properties found returning default");	
+
+			LogHelpers.DebugLog("getObject no properties found returning default");
 			return defaultValue;
-			
+
 		}else{
-			
+
 			String temp = getString(key,null);
-			LogHelpers.DebugLog("getObject string return : " + temp);	
+			LogHelpers.DebugLog("getObject string return : " + temp);
 			if(temp == null){
 				return null;
 			}
-			
+
 			try {
-				LogHelpers.DebugLog("getObject Start deserialization ");	
+				LogHelpers.DebugLog("getObject Start deserialization ");
 				Object convertedObject = Converters.deserializeObjectFromString(temp);
-				LogHelpers.DebugLog("getObject Finished deserialization ");	
+				LogHelpers.DebugLog("getObject Finished deserialization ");
 				return (HashMap) convertedObject;
 			} catch (Exception e) {
 				e.printStackTrace();
 				LogHelpers.Log(e);
 				return null;
-			}						
+			}
 		}
 	}
-	
+
 	@Kroll.method
 	public void setList(String key, Object value)
 	{
@@ -334,7 +347,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 
 		try {
 			String serializedString = Converters.serializeObjectToString(value);
-	        LogHelpers.Level2Log("setList serialized : " + serializedString);	
+	        LogHelpers.Level2Log("setList serialized : " + serializedString);
 			setString(key,serializedString);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -347,64 +360,64 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	{
 		if(!keyExists(key)){
 			if(defaultValue==null){
-				LogHelpers.DebugLog("getList null value returned");	
+				LogHelpers.DebugLog("getList null value returned");
 				return null;
 			}else{
 				if (!(defaultValue.getClass().isArray())) {
 					throw new IllegalArgumentException("Default value must be an array");
-				}					
+				}
 				return (Object[]) defaultValue;
-			}			
+			}
 		}else{
 
 			String temp = getString(key,null);
-			LogHelpers.Level2Log("getList string return : " + temp);	
+			LogHelpers.Level2Log("getList string return : " + temp);
 			if(temp == null){
 				return null;
 			}
-			
+
 			try {
-				LogHelpers.Level2Log("getList Start deserialization ");	
+				LogHelpers.Level2Log("getList Start deserialization ");
 				Object convertedObject = Converters.deserializeObjectFromString(temp);
-				LogHelpers.Level2Log("getList Finished deserialization ");	
+				LogHelpers.Level2Log("getList Finished deserialization ");
 				return (Object[]) convertedObject;
 			} catch (Exception e) {
 				e.printStackTrace();
 				LogHelpers.Log(e);
 				return null;
-			}			
+			}
 		}
-	}	
-	
+	}
+
 	@Kroll.method
 	public void removeAllProperties(){
 		_provider.removeAllProperties();
 	}
-	
+
 	@Override
 	public void onDestroy(Activity arg0) {
 		if(_provider!=null){
 			_provider.dispose();
 			_provider = null;
-		}	
+		}
 	}
-	
+
 	@Kroll.method
 	public void lock()
 	{
 		_provider.lock();
 	}
-	
+
 	@Kroll.method
 	public void unlock(){
 		_provider.unlock();
 	}
-	
+
 	@Kroll.method
 	public boolean isLocked(){
 		return _provider.isLocked();
 	}
-	
+
 	@Override
 	public void onPause(Activity arg0) {}
 	@Override
@@ -413,7 +426,7 @@ public class PropertiesProxy  extends KrollProxy implements TiLifecycle.OnLifecy
 	public void onStart(Activity arg0) {}
 	@Override
 	public void onStop(Activity arg0) {}
-	
+
     @Override
     public void listenerAdded(String type, int count, KrollProxy proxy) {}
     @Override
