@@ -4,7 +4,7 @@
 #
 version: 3.1.2
 apiversion: 4
-architectures: armeabi-v7a x86
+architectures: arm64-v8a armeabi-v7a x86
 description: Security Plugin for Titanium Development
 author: Benjamin Bahrenburg (benCoding)
 license: See included license agreement
