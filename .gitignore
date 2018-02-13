@@ -16,3 +16,4 @@ xcuserdata
 profile
 *.moved-aside
 DerivedData
+/android/java-sources.txt
